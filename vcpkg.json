@@ -1,5 +1,5 @@
 {
-  "name": "cpp-template",
+  "name": "image-manager",
   "version": "0.1.0",
-  "dependencies": ["fmt"]
+  "dependencies": ["catch2", "fmt"]
 }

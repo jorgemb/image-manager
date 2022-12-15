@@ -2,6 +2,15 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/third_party/wxWidgets" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/third_party/wxWidgets/3rdparty/catch" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/third_party/wxWidgets/3rdparty/nanosvg" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/third_party/wxWidgets/3rdparty/pcre" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/third_party/wxWidgets/src/expat" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/third_party/wxWidgets/src/jpeg" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/third_party/wxWidgets/src/png" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/third_party/wxWidgets/src/tiff" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/third_party/wxWidgets/src/zlib" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/vcpkg" vcs="Git" />
   </component>
 </project>

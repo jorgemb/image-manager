@@ -11,12 +11,19 @@ else()
             CACHE STRING "Vcpkg toolchain file")
 endif()
 
-project ("cpp-template")
+project ("image-manager" VERSION 0.1)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED on)
 
-# Add packages
-find_package(fmt REQUIRED CONFIG)
+# Add external libraries
+#set(wxBUILD_MONOLITHIC ON)
+set(wxBUILD_SHARED OFF)
+add_subdirectory(third_party/wxWidgets)
 
-add_executable(main main.cpp)
-target_link_libraries(main PRIVATE fmt::fmt)
+# Add subprojects
+add_subdirectory(gui/)
+add_subdirectory(files/)
+
+# Main file
+add_executable(main WIN32 main.cpp)
+target_link_libraries(main PRIVATE imgr::gui)
