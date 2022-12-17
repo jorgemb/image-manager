@@ -1,5 +1,5 @@
 {
   "name": "image-manager",
   "version": "0.1.0",
-  "dependencies": ["catch2", "fmt"]
+  "dependencies": ["catch2", "fmt", "yaml-cpp"]
 }

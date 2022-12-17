@@ -9,7 +9,7 @@
 
 #include <wx/artprov.h>
 #include <wx/xrc/xmlres.h>
-#include <wx/dataview.h>
+#include <wx/treectrl.h>
 #include <wx/gdicmn.h>
 #include <wx/font.h>
 #include <wx/colour.h>
@@ -20,6 +20,7 @@
 #include <wx/panel.h>
 #include <wx/scrolwin.h>
 #include <wx/gbsizer.h>
+#include <wx/statusbr.h>
 #include <wx/frame.h>
 
 ///////////////////////////////////////////////////////////////////////////
@@ -35,13 +36,16 @@ namespace imgr
 		private:
 
 		protected:
-			wxDataViewTreeCtrl* m_tree_albums;
-			wxPanel* m_panel_image;
-			wxMediaCtrl* m_media_main;
-			wxScrolledWindow* m_panel_gallery;
+			wxTreeCtrl* tree_albums;
+			wxPanel* panel_image;
+			wxMediaCtrl* media_main;
+			wxScrolledWindow* panel_gallery;
+			wxStatusBar* bar_status;
 
 			// Virtual event handlers, override them in your derived class
-			virtual void ImageManagerOnActivateApp( wxActivateEvent& event ) { event.Skip(); }
+			virtual void ImageManagerOnActivate( wxActivateEvent& event ) { event.Skip(); }
+			virtual void TreeAlbums_OnTreeItemActivated( wxTreeEvent& event ) { event.Skip(); }
+			virtual void TreeAlbums_OnTreeSelChanged( wxTreeEvent& event ) { event.Skip(); }
 
 
 		public:

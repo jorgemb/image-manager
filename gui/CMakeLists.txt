@@ -1,6 +1,6 @@
 cmake_minimum_required (VERSION 3.16)
 
-add_library(gui
+add_library(gui STATIC
         include/gui/gui.h
         src/gui.cpp
         )

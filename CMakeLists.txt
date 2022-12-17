@@ -12,18 +12,23 @@ else()
 endif()
 
 project ("image-manager" VERSION 0.1)
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED on)
 
 # Add external libraries
-#set(wxBUILD_MONOLITHIC ON)
+set(wxBUILD_MONOLITHIC OFF)
 set(wxBUILD_SHARED OFF)
 add_subdirectory(third_party/wxWidgets)
 
+find_package(Catch2 3 REQUIRED)
+set_property(GLOBAL PROPERTY CTEST_TARGETS_ADDED 1)
+enable_testing()
+include(Catch)
+
 # Add subprojects
 add_subdirectory(gui/)
-add_subdirectory(files/)
+add_subdirectory(data/)
 
 # Main file
 add_executable(main WIN32 main.cpp)
-target_link_libraries(main PRIVATE imgr::gui)
+target_link_libraries(main PRIVATE imgr::gui imgr::data)
