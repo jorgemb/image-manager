@@ -15,8 +15,8 @@
 #include <format>
 #include <ranges>
 
-#include <data/directory_tree.h>
-#include <data/config.h>
+#include "../data/directory_tree.h"
+#include "../data/config.h"
 
 namespace fs = std::filesystem;
 
@@ -59,7 +59,7 @@ public:
 
         // Create yaml file for testing
         std::ofstream yaml_test("test.yml");
-        yaml_test << std::format("# Test files\nfiles:\n - {}\n - {}",
+        yaml_test << std::format("# Test files\nsearch_directories:\n - {}\n - {}",
                                  fs::current_path().string(),
                                  (fs::current_path()/"sandbox").string())
                                  << std::endl;
@@ -112,7 +112,7 @@ TEST_CASE("Config file read", "[Config]"){
         };
         auto paths = config.get_search_directories();
 
-        REQUIRE(std::ranges::mismatch(expected_paths, paths).in2 == std::ranges::end(paths));
+        REQUIRE(std::ranges::mismatch(expected_paths, paths).in1 == std::ranges::end(expected_paths));
     }
 
 }

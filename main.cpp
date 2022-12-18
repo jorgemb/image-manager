@@ -1,5 +1,5 @@
-#include <gui/gui.h>
-#include <data/directory_tree.h>
+#include "gui/gui/gui.h"
+#include "data/data/directory_tree.h"
 
 #include <wx/wx.h>
 #include <iostream>

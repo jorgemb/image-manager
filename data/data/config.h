@@ -11,7 +11,7 @@
 #include <vector>
 #include <ranges>
 
-#include <yaml-cpp/yaml.h>
+#include "yaml-cpp/yaml.h"
 
 namespace imgr {
 

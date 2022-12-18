@@ -1,0 +1,7 @@
+# Configuration file for running the ImageManager application
+
+# The search directories are a list of root level paths where the application is going to
+# search for photos and videos
+search_directories:
+  - path/to/dir1
+  - path/to/dir2

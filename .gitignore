@@ -482,3 +482,4 @@ FodyWeavers.xsd
 
 # CMAKE - CLION
 cmake-build*/
+/config.yml

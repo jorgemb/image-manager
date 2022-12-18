@@ -4,12 +4,12 @@ find_package(yaml-cpp CONFIG REQUIRED)
 find_package(fmt CONFIG REQUIRED)
 
 add_library(data
-        include/data/directory_tree.h
-        include/data/config.h
-        src/directory_tree.cpp
-        src/config.cpp
+        data/directory_tree.h
+        data/config.h
+        data/directory_tree.cpp
+        data/config.cpp
         )
-target_include_directories(data PUBLIC include/)
+target_include_directories(data PUBLIC .)
 target_link_libraries(data PUBLIC yaml-cpp)
 
 add_library(imgr::data ALIAS data)
