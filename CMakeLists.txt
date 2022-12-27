@@ -18,6 +18,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED on)
 # Add external libraries
 set(wxBUILD_MONOLITHIC OFF)
 set(wxBUILD_SHARED OFF)
+#set(wxBUILD_SAMPLES ALL)
 add_subdirectory(third_party/wxWidgets)
 
 find_package(Catch2 3 REQUIRED)
@@ -28,7 +29,8 @@ include(Catch)
 # Add subprojects
 add_subdirectory(gui/)
 add_subdirectory(data/)
+add_subdirectory(app/)
 
 # Main file
 add_executable(main WIN32 main.cpp)
-target_link_libraries(main PRIVATE imgr::gui imgr::data)
+target_link_libraries(main PRIVATE imgr::application)

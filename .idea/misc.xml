@@ -6,8 +6,5 @@
       <file path="$PROJECT_DIR$/third_party" />
       <file path="$PROJECT_DIR$/vcpkg" />
     </libraryRoots>
-    <excludeRoots>
-      <file path="$PROJECT_DIR$/form-builder" />
-    </excludeRoots>
   </component>
 </project>
