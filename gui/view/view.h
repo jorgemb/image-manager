@@ -9,6 +9,7 @@
 
 #include <wx/artprov.h>
 #include <wx/xrc/xmlres.h>
+#include "gui/image_gallery.h"
 #include <wx/statusbr.h>
 #include <wx/gdicmn.h>
 #include <wx/font.h>
@@ -16,9 +17,8 @@
 #include <wx/settings.h>
 #include <wx/string.h>
 #include <wx/treectrl.h>
-#include <wx/mediactrl.h>
-#include <wx/sizer.h>
 #include <wx/panel.h>
+#include <wx/sizer.h>
 #include <wx/scrolwin.h>
 #include <wx/frame.h>
 
@@ -38,8 +38,7 @@ namespace imgr
 			wxStatusBar* bar_status;
 			wxTreeCtrl* tree_albums;
 			wxPanel* panel_image;
-			wxMediaCtrl* media_main;
-			wxScrolledWindow* panel_gallery;
+			wxImageGallery* panel_gallery;
 
 			// Virtual event handlers, override them in your derived class
 			virtual void TreeAlbums_OnTreeSelChanged( wxTreeEvent& event ) { event.Skip(); }

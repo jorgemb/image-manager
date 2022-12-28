@@ -1,5 +1,11 @@
 {
   "name": "image-manager",
   "version": "0.1.0",
-  "dependencies": ["catch2", "fmt", "yaml-cpp"]
+  "dependencies": [
+    "catch2",
+    "fmt",
+    "openimageio",
+    "wxwidgets",
+    "yaml-cpp"
+  ]
 }

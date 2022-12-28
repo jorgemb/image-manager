@@ -5,14 +5,14 @@
 // PLEASE DO *NOT* EDIT THIS FILE!
 ///////////////////////////////////////////////////////////////////////////
 
-#include "gui.h"
+#include "view.h"
 
 ///////////////////////////////////////////////////////////////////////////
 using namespace imgr;
 
 ImageManager::ImageManager( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxFrame( parent, id, title, pos, size, style )
 {
-	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
+	this->SetSizeHints( wxSize( 800,600 ), wxDefaultSize );
 
 	bar_status = this->CreateStatusBar( 1, wxSTB_SIZEGRIP, wxID_ANY );
 	wxBoxSizer* top_box_hor;
@@ -24,25 +24,22 @@ ImageManager::ImageManager( wxWindow* parent, wxWindowID id, const wxString& tit
 	wxBoxSizer* top_box_ver;
 	top_box_ver = new wxBoxSizer( wxVERTICAL );
 
-	panel_image = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
-	wxBoxSizer* sizer_image;
-	sizer_image = new wxBoxSizer( wxVERTICAL );
-
-	media_main = new wxMediaCtrl( panel_image, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize);
-	media_main->SetPlaybackRate(1);
-	media_main->SetVolume(1);
-
-	media_main->Stop();
-	sizer_image->Add( media_main, 1, wxALL|wxEXPAND, 5 );
-
-
-	panel_image->SetSizer( sizer_image );
-	panel_image->Layout();
-	sizer_image->Fit( panel_image );
+	panel_image = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxFULL_REPAINT_ON_RESIZE|wxTAB_TRAVERSAL );
 	top_box_ver->Add( panel_image, 2, wxEXPAND | wxALL, 5 );
 
-	panel_gallery = new wxScrolledWindow( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxHSCROLL );
+	panel_gallery = new wxImageGallery( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxALWAYS_SHOW_SB|wxHSCROLL );
 	panel_gallery->SetScrollRate( 5, 5 );
+	panel_gallery->SetMinSize( wxSize( -1,200 ) );
+
+	wxFlexGridSizer* fgSizer1;
+	fgSizer1 = new wxFlexGridSizer( 0, 2, 0, 0 );
+	fgSizer1->SetFlexibleDirection( wxBOTH );
+	fgSizer1->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
+
+
+	panel_gallery->SetSizer( fgSizer1 );
+	panel_gallery->Layout();
+	fgSizer1->Fit( panel_gallery );
 	top_box_ver->Add( panel_gallery, 1, wxEXPAND | wxALL, 5 );
 
 

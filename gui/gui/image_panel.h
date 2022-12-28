@@ -10,8 +10,7 @@
 #include <wx/wx.h>
 
 namespace imgr {
-
-    class wxImagePanel: public wxPanel{
+    class wxImagePanel : public wxPanel {
     public:
         /// Default constructor with parent and path
         /// \param parent
@@ -20,25 +19,25 @@ namespace imgr {
 
         /// On paint event
         /// \param evt
-        void OnPaint(wxPaintEvent &evt);
+        void OnPaintEvent(wxPaintEvent &evt);
 
         /// On Resize event
         /// \param evt
         void OnResize(wxSizeEvent &evt);
 
-    protected:
-        wxSize DoGetBestClientSize() const override;
-
-    public:
 
         /// Repaints the control
-        void paint_now();
+        void PaintNow();
 
         /// Renders using the device context
         /// \param dc
-        void render(wxDC& dc);
+        void Render(wxDC &dc);
 
     private:
+        /// Does the actual resize of the panel
+        /// \param expected_size
+        void DoResize(const wxSize &expected_size);
+
         // Path to the image
         std::filesystem::path m_image_path;
 

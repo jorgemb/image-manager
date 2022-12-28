@@ -5,7 +5,7 @@
 #ifndef IMAGE_MANAGER_APPLICATION_H
 #define IMAGE_MANAGER_APPLICATION_H
 
-#include <gui/gui.h>
+#include <view/view.h>
 #include <data/directory_tree.h>
 #include <data/config.h>
 
@@ -37,10 +37,6 @@ namespace imgr {
 
         /// Refreshes the directory tree
         void refresh_tree(const wxTreeItemId& parent_item, const std::filesystem::path& current_path, imgr::DirectoryTree& current_tree);
-
-        /// Refreshes the thumbnail list using the images in the directory path
-        /// \param directory_path Root of the directory path to load images from
-        void refresh_thumbnail_list(const std::filesystem::path& directory_path);
     };
 
     /// Class to manage the application

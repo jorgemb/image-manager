@@ -7,7 +7,7 @@ if(DEFINED ENV{VCPKG_ROOT})
             CACHE STRING "Vcpkg toolchain file")
 else()
     message("Using VCPKG in manifest mode")
-    set(CMAKE_TOOLCHAIN_FILE "${CMAKE_CURRENT_SOURCE_DIR}/vcpkg/scripts/buildsystems/vcpkg.cmake"
+    set(CMAKE_TOOLCHAIN_FILE "${CMAKE_CURRENT_SOURCE_DIR}/third_party/vcpkg/scripts/buildsystems/vcpkg.cmake"
             CACHE STRING "Vcpkg toolchain file")
 endif()
 
@@ -16,11 +16,18 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED on)
 
 # Add external libraries
-set(wxBUILD_MONOLITHIC OFF)
-set(wxBUILD_SHARED OFF)
-#set(wxBUILD_SAMPLES ALL)
-add_subdirectory(third_party/wxWidgets)
 
+## WXWIDGETS
+#set(wxBUILD_MONOLITHIC OFF)
+#set(wxBUILD_SHARED OFF)
+##set(wxBUILD_SAMPLES ALL)
+#add_subdirectory(third_party/wxWidgets)
+find_package(wxWidgets CONFIG REQUIRED)
+
+# OpenImageIO
+#find_package(OpenImageIO CONFIG REQUIRED)
+
+# Catch2
 find_package(Catch2 3 REQUIRED)
 set_property(GLOBAL PROPERTY CTEST_TARGETS_ADDED 1)
 enable_testing()

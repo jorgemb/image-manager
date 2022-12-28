@@ -30,7 +30,7 @@ namespace imgr {
 
         if (item_data) {
             bar_status->SetStatusText(item_data->get_path().string());
-            refresh_thumbnail_list(item_data->get_path());
+            panel_gallery->SetImagesPath(item_data->get_path());
         } else {
             bar_status->SetStatusText("");
         }
@@ -67,28 +67,12 @@ namespace imgr {
         }
     }
 
-    void ImageManagerWindow::refresh_thumbnail_list(const std::filesystem::path &directory_path) {
-        // Delete previous list
-//        panel_gallery->DestroyChildren();
-
-        // Create the new list
-        auto sizer_gallery = new wxBoxSizer(wxHORIZONTAL);
-
-        for (int i: std::ranges::iota_view(1, 5)) {
-            auto filename = wxString::Format("C:\\Users\\jorge\\Desktop\\test\\%d.bmp", i);
-            sizer_gallery->Add(new wxImagePanel(panel_gallery, filename.ToStdString()), 0,
-                               wxALL |  wxEXPAND );
-        }
-        panel_gallery->SetSizer(sizer_gallery);
-        panel_gallery->Layout();
-        sizer_gallery->FitInside(panel_gallery);
-//        panel_gallery->SetSizerAndFit(sizer_gallery);
-
-    }
-
     bool ImageManagerApp::OnInit() {
         // Load configuration file
         m_config = std::make_unique<Config>("config.yml");
+
+        // Load all image handlers
+        wxInitAllImageHandlers();
 
         // Create main window
         auto *main_window = new ImageManagerWindow(nullptr);
