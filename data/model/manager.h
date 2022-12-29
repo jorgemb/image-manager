@@ -21,7 +21,7 @@ public:
 
     /// Getter for ID
     /// \return
-    unsigned long get_id() const { return m_id; }
+    uint64_t get_id() const { return m_id; }
 
     /// Getter for absolute path
     /// \return
@@ -34,7 +34,7 @@ private:
     friend class odb::access;
 
 #pragma db id auto
-    unsigned long m_id;
+    uint64_t m_id;
 
     std::string m_absolute_path;
 
@@ -78,8 +78,16 @@ public:
         return m_thumbnail;
     }
 
+    /// Returns the Album to which this photo belongs
+    /// \return
     const std::shared_ptr<Album> &get_album() const {
         return m_album;
+    }
+
+    /// Returns the ID of the photo
+    /// \return
+    uint64_t get_id() const{
+        return m_id;
     }
 
 private:
@@ -89,7 +97,7 @@ private:
     friend class odb::access;
 
 #pragma db id auto
-    unsigned long m_id;
+    uint64_t m_id;
 
     std::string m_filename;
 

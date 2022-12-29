@@ -5,7 +5,7 @@ title Loading images with Gallery
 participant     wxApp as app
 participant     wxGallery as gallery
 participant     wxGalleryImage as image
-participant     ImageStore as store
+participant     PhotoStore as store
 database        Database as db
 
 autonumber

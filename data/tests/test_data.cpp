@@ -8,32 +8,37 @@
 #include <catch2/reporters/catch_reporter_event_listener.hpp>
 #include <catch2/reporters/catch_reporter_registrars.hpp>
 
-#include <filesystem>
+#include "data/directory_tree.h"
+#include "data/config.h"
+#include "data/photo_store.h"
+#include "model/manager.h"
+
 #include <iostream>
 #include <random>
 #include <fstream>
-#include <format>
-#include <ranges>
+#include <memory>
 
-#include "../data/directory_tree.h"
-#include "../data/config.h"
+#include <fmt/core.h>
+#include <fmt/format.h>
 
-namespace fs = std::filesystem;
+#include <boost/filesystem.hpp>
+
+namespace fs = boost::filesystem;
 
 /// Creates a random string for the root file
 /// \param size
 /// \return
-std::string random_string(std::size_t size){
+std::string random_string(std::size_t size) {
     const std::string characters("abcdefghijklmnopqrstuvwxyz0123456789_");
 
     // Random parameters
     std::random_device device;
     std::default_random_engine generator(device());
-    std::uniform_int_distribution<std::size_t> distribution(0, characters.size()-1);
+    std::uniform_int_distribution<std::size_t> distribution(0, characters.size() - 1);
 
     // Return string
     std::string ret(size, '-');
-    std::transform(ret.begin(), ret.end(), ret.begin(), [&](auto& val){
+    std::transform(ret.begin(), ret.end(), ret.begin(), [&](auto &val) {
         return characters[distribution(generator)];
     });
 
@@ -41,7 +46,7 @@ std::string random_string(std::size_t size){
 }
 
 /// Sets up the directory environment for tests
-class EnvironmentSetup: public Catch::EventListenerBase{
+class EnvironmentSetup : public Catch::EventListenerBase {
 public:
     explicit EnvironmentSetup(const Catch::IConfig *config) : EventListenerBase(config) {}
 
@@ -59,10 +64,10 @@ public:
 
         // Create yaml file for testing
         std::ofstream yaml_test("test.yml");
-        yaml_test << std::format("# Test files\nsearch_directories:\n - {}\n - {}",
+        yaml_test << fmt::format("# Test files\nsearch_directories:\n - {}\n - {}",
                                  fs::current_path().string(),
-                                 (fs::current_path()/"sandbox").string())
-                                 << std::endl;
+                                 (fs::current_path() / "sandbox").string())
+                  << std::endl;
 
     }
 
@@ -74,10 +79,11 @@ public:
 private:
     fs::path temp_root;
 };
+
 CATCH_REGISTER_LISTENER(EnvironmentSetup)
 
 
-TEST_CASE("File tree", "[DirectoryTree]"){
+TEST_CASE("File tree", "[DirectoryTree]") {
     using namespace Catch::Matchers;
 
     // Initial tree
@@ -98,7 +104,7 @@ TEST_CASE("File tree", "[DirectoryTree]"){
     }
 }
 
-TEST_CASE("Config file read", "[Config]"){
+TEST_CASE("Config file read", "[Config]") {
     using namespace Catch::Matchers;
 
     // Load the initial file
@@ -112,7 +118,17 @@ TEST_CASE("Config file read", "[Config]"){
         };
         auto paths = config.get_search_directories();
 
-        REQUIRE(std::ranges::mismatch(expected_paths, paths).in1 == std::ranges::end(expected_paths));
+        REQUIRE_THAT(expected_paths, UnorderedEquals(paths));
     }
 
+}
+
+TEST_CASE("Check database connection", "[PhotoStore]"){
+    imgr::PhotoStore store("admin", "Password0!", "test", "localhost", 5432);
+
+    // Create the album
+    auto album = std::make_shared<imgr::model::Album>("sandbox");
+
+
+    std::vector<imgr::model::Photo> photos;
 }

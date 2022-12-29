@@ -13,9 +13,9 @@ add_library(data
         model/manager.h
         model/manager-odb.cxx
         model/manager-odb.hxx
-        )
+        data/photo_store.cpp data/photo_store.h)
 target_include_directories(data PUBLIC .)
-target_link_libraries(data PUBLIC yaml-cpp Boost::filesystem)
+target_link_libraries(data PUBLIC yaml-cpp Boost::filesystem odb::libodb odb::libodb-pgsql)
 
 add_library(imgr::data ALIAS data)
 
