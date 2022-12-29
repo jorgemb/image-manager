@@ -1,0 +1,28 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+title Loading images with Gallery
+participant     wxApp as app
+participant     wxGallery as gallery
+participant     wxGalleryImage as image
+participant     ImageStore as store
+database        Database as db
+
+autonumber
+
+-> gallery : LoadAlbum(album)
+gallery -> app : get_image_store()
+app --> gallery : ImageStoreRef
+gallery -> store : get_image_list(album)
+store --> gallery : ImageList
+
+loop On each Image from the ImageList
+    gallery -> image : LoadImage(image_id, store)
+    image -> store : load_image_thumbnail(image_id)
+    store -> db : load_image_thumbnail(image_id)
+    db --> store : ImageObject
+    store --> image : ImageObject
+    image --> gallery : ok?
+end
+
+@enduml

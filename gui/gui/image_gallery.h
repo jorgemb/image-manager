@@ -7,9 +7,10 @@
 
 #include <wx/scrolwin.h>
 
-#include <filesystem>
+#include <boost/filesystem.hpp>
 
 namespace imgr {
+namespace filesystem = boost::filesystem;
 
     class wxImageGallery : public wxScrolledWindow {
     public:
@@ -23,11 +24,11 @@ namespace imgr {
 
         /// Changes the path of the folder to load
         /// \param images_path
-        void SetImagesPath(const std::filesystem::path &images_path);
+        void SetImagesPath(const filesystem::path &images_path);
 
     private:
         /// Current path being displayed
-        std::filesystem::path m_current_path;
+        filesystem::path m_current_path;
     };
 
 } // imgr

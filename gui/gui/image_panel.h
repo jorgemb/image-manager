@@ -5,20 +5,22 @@
 #ifndef IMAGE_MANAGER_IMAGE_PANEL_H
 #define IMAGE_MANAGER_IMAGE_PANEL_H
 
-#include <filesystem>
-
 #include <wx/wx.h>
 
-namespace imgr {
-    class wxImagePanel : public wxPanel {
-    public:
-        /// Default constructor with parent and path
-        /// \param parent
-        /// \param image_path
-        wxImagePanel(wxWindow *parent, std::filesystem::path image_path);
+#include <boost/filesystem.hpp>
 
-        /// On paint event
-        /// \param evt
+namespace imgr {
+namespace filesystem = boost::filesystem;
+
+class wxImagePanel : public wxPanel {
+public:
+    /// Default constructor with parent and path
+    /// \param parent
+    /// \param image_path
+    wxImagePanel(wxWindow *parent, filesystem::path image_path);
+
+    /// On paint event
+    /// \param evt
         void OnPaintEvent(wxPaintEvent &evt);
 
         /// On Resize event
@@ -38,8 +40,8 @@ namespace imgr {
         /// \param expected_size
         void DoResize(const wxSize &expected_size);
 
-        // Path to the image
-        std::filesystem::path m_image_path;
+    // Path to the image
+    filesystem::path m_image_path;
 
         // Image data
         wxImage m_image, m_image_resized;

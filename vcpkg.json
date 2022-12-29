@@ -2,8 +2,11 @@
   "name": "image-manager",
   "version": "0.1.0",
   "dependencies": [
+    "boost-filesystem",
     "catch2",
     "fmt",
+    "libodb",
+    "libodb-pgsql",
     "openimageio",
     "wxwidgets",
     "yaml-cpp"

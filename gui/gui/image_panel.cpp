@@ -5,11 +5,8 @@
 #include "image_panel.h"
 #include <gui/exceptions.h>
 
-#include <filesystem>
-
-
 namespace imgr {
-    wxImagePanel::wxImagePanel(wxWindow *parent, std::filesystem::path image_path)
+    wxImagePanel::wxImagePanel(wxWindow *parent, filesystem::path image_path)
             : wxPanel(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL | wxDOUBLE_BORDER),
               m_image_path(image_path),
               m_last_width(-1), m_last_height(-1) {

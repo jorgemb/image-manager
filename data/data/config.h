@@ -5,38 +5,35 @@
 #ifndef IMAGE_MANAGER_CONFIG_H
 #define IMAGE_MANAGER_CONFIG_H
 
-#include <filesystem>
-#include <string_view>
-#include <optional>
 #include <vector>
-#include <ranges>
 
-#include "yaml-cpp/yaml.h"
+#include <yaml-cpp/yaml.h>
+
+#include <boost/filesystem.hpp>
 
 namespace imgr {
+namespace filesystem = boost::filesystem;
 
-    class Config {
-    public:
-        /// Constructs a Config object using the specified configuration file
-        /// \param config_file
-        explicit Config(const std::filesystem::path &config_file);
+class Config {
+public:
+    /// Constructs a Config object using the specified configuration file
+    /// \param config_file
+    explicit Config(const filesystem::path &config_file);
 
-        /// Returns a view of the search directories
-        /// \return Read only view of the search directories
-        auto get_search_directories() const{
-            return m_search_directories | std::views::all;
-        }
+    /// Returns a view of the search directories
+    /// \return Read only view of the search directories
+    const std::vector<filesystem::path> &get_search_directories() const;
 
-    private:
-        // Path to the config file
-        const std::filesystem::path m_config_file;
+private:
+    // Path to the config file
+    const filesystem::path m_config_file;
 
-        // YAML Node
-        YAML::Node m_data_tree;
+    // YAML Node
+    YAML::Node m_data_tree;
 
-        // Internal data
-        std::vector<std::filesystem::path> m_search_directories;
-    };
+    // Internal data
+    std::vector<filesystem::path> m_search_directories;
+};
 }
 
 

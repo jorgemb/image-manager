@@ -1,16 +1,21 @@
-cmake_minimum_required (VERSION 3.16)
+cmake_minimum_required(VERSION 3.16)
 
 find_package(yaml-cpp CONFIG REQUIRED)
 find_package(fmt CONFIG REQUIRED)
+find_package(odb CONFIG REQUIRED libodb pgsql)
+find_package(Boost REQUIRED COMPONENTS filesystem)
 
 add_library(data
         data/directory_tree.h
         data/config.h
         data/directory_tree.cpp
         data/config.cpp
+        model/manager.h
+        model/manager-odb.cxx
+        model/manager-odb.hxx
         )
 target_include_directories(data PUBLIC .)
-target_link_libraries(data PUBLIC yaml-cpp)
+target_link_libraries(data PUBLIC yaml-cpp Boost::filesystem)
 
 add_library(imgr::data ALIAS data)
 

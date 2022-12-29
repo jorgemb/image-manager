@@ -9,49 +9,54 @@
 #include <data/directory_tree.h>
 #include <data/config.h>
 
-#include <filesystem>
 #include <utility>
 
 #include <wx/wx.h>
 
+#include <boost/filesystem.hpp>
+
 namespace imgr {
-    class ImageManagerWindow: public imgr::ImageManager{
-    public:
-        ImageManagerWindow(wxWindow *parent) : ImageManager(parent) {}
+namespace filesystem = boost::filesystem;
 
-        /// Adds a tree root to the Window
-        /// \param tree_root
-        /// \return
-        void add_directory_root(const std::filesystem::path &tree_root);
+class ImageManagerWindow : public imgr::ImageManager {
+public:
+    ImageManagerWindow(wxWindow *parent) : ImageManager(parent) {}
 
-        /// Refreshes the full tree of the albums
-        void refresh_full_tree();
-    protected:
-        /// Called when the selection changes
-        /// \param event
-        void TreeAlbums_OnTreeSelChanged(wxTreeEvent &event) override;
+    /// Adds a tree root to the Window
+    /// \param tree_root
+    /// \return
+    void add_directory_root(const filesystem::path &tree_root);
 
-    private:
-        // Contains all the tree roots of images
-        std::vector<imgr::DirectoryTree> m_tree_roots;
+    /// Refreshes the full tree of the albums
+    void refresh_full_tree();
 
-        /// Refreshes the directory tree
-        void refresh_tree(const wxTreeItemId& parent_item, const std::filesystem::path& current_path, imgr::DirectoryTree& current_tree);
-    };
+protected:
+    /// Called when the selection changes
+    /// \param event
+    void TreeAlbums_OnTreeSelChanged(wxTreeEvent &event) override;
 
-    /// Class to manage the application
-    class ImageManagerApp: public wxApp{
-    public:
-        /// Entry point of the application
-        /// \return
-        bool OnInit() override;
+private:
+    // Contains all the tree roots of images
+    std::vector<imgr::DirectoryTree> m_tree_roots;
 
-    private:
-        // Configuration data for the application
-        std::unique_ptr<Config> m_config;
-    };
+    /// Refreshes the directory tree
+    void refresh_tree(const wxTreeItemId &parent_item, const filesystem::path &current_path,
+                      imgr::DirectoryTree &current_tree);
+};
 
-    wxDECLARE_APP(ImageManagerApp);
+/// Class to manage the application
+class ImageManagerApp : public wxApp {
+public:
+    /// Entry point of the application
+    /// \return
+    bool OnInit() override;
+
+private:
+    // Configuration data for the application
+    std::unique_ptr<Config> m_config;
+};
+
+wxDECLARE_APP(ImageManagerApp);
 
 } // imgr
 

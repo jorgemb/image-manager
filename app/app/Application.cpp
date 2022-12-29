@@ -6,22 +6,20 @@
 
 #include <gui/image_panel.h>
 
-#include <ranges>
-
 namespace imgr {
     class AlbumTreeData : public wxTreeItemData {
     public:
         /// Default constructor with path
-        explicit AlbumTreeData(const std::filesystem::path &path) : m_path(path) {}
+        explicit AlbumTreeData(const filesystem::path &path) : m_path(path) {}
 
         /// Returns the path associated to the item
         /// \return
-        const std::filesystem::path &get_path() const {
+        const filesystem::path &get_path() const {
             return m_path;
         }
 
     private:
-        std::filesystem::path m_path;
+        filesystem::path m_path;
     };
 
     void ImageManagerWindow::TreeAlbums_OnTreeSelChanged(wxTreeEvent &event) {
@@ -36,23 +34,23 @@ namespace imgr {
         }
     }
 
-    void ImageManagerWindow::refresh_tree(const wxTreeItemId &parent_item, const std::filesystem::path &current_path,
-                                          DirectoryTree &current_tree) {
-        // Add current
-        auto current_item = tree_albums->AppendItem(parent_item, current_path.filename().string(),
-                                                    -1, -1, new AlbumTreeData(current_path));
-        bool ok = current_item.IsOk();
+void ImageManagerWindow::refresh_tree(const wxTreeItemId &parent_item, const filesystem::path &current_path,
+                                      DirectoryTree &current_tree) {
+    // Add current
+    auto current_item = tree_albums->AppendItem(parent_item, current_path.filename().string(),
+                                                -1, -1, new AlbumTreeData(current_path));
+    bool ok = current_item.IsOk();
 
-        // Add children
-        for (auto &path: current_tree.children_of(current_path)) {
-            refresh_tree(current_item, path, current_tree);
-        }
+    // Add children
+    for (auto &path: current_tree.children_of(current_path)) {
+        refresh_tree(current_item, path, current_tree);
+    }
     }
 
-    void ImageManagerWindow::add_directory_root(const std::filesystem::path &tree_root) {
-        // Add the new root
-        m_tree_roots.emplace_back(tree_root);
-    }
+void ImageManagerWindow::add_directory_root(const filesystem::path &tree_root) {
+    // Add the new root
+    m_tree_roots.emplace_back(tree_root);
+}
 
     void ImageManagerWindow::refresh_full_tree() {
         tree_albums->DeleteAllItems();

@@ -11,8 +11,8 @@ else()
             CACHE STRING "Vcpkg toolchain file")
 endif()
 
-project ("image-manager" VERSION 0.1)
-set(CMAKE_CXX_STANDARD 20)
+project("image-manager" VERSION 0.1)
+set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED on)
 
 # Add external libraries
@@ -22,10 +22,14 @@ set(CMAKE_CXX_STANDARD_REQUIRED on)
 #set(wxBUILD_SHARED OFF)
 ##set(wxBUILD_SAMPLES ALL)
 #add_subdirectory(third_party/wxWidgets)
+
 find_package(wxWidgets CONFIG REQUIRED)
 
 # OpenImageIO
 #find_package(OpenImageIO CONFIG REQUIRED)
+
+# LibODB
+find_package(odb CONFIG REQUIRED COMPONENTS libodb pgsql)
 
 # Catch2
 find_package(Catch2 3 REQUIRED)
