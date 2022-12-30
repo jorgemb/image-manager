@@ -10,10 +10,11 @@ add_library(data
         data/config.h
         data/directory_tree.cpp
         data/config.cpp
-        model/manager.h
-        model/manager-odb.cxx
-        model/manager-odb.hxx
-        data/photo_store.cpp data/photo_store.h)
+        model/store.h
+        model/store-odb.cxx
+        model/store-odb.hxx
+        data/photo_store.cpp
+        data/photo_store.h)
 target_include_directories(data PUBLIC .)
 target_link_libraries(data PUBLIC yaml-cpp Boost::filesystem odb::libodb odb::libodb-pgsql)
 

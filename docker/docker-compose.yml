@@ -8,6 +8,8 @@ services:
       POSTGRES_PASSWORD: Password0!
     ports:
       - "5432:5432"
+    volumes:
+      - ../data/init:/docker-entrypoint-initdb.d
 
   admin:
     image: dpage/pgadmin4

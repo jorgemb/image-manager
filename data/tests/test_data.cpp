@@ -11,7 +11,7 @@
 #include "data/directory_tree.h"
 #include "data/config.h"
 #include "data/photo_store.h"
-#include "model/manager.h"
+#include "model/store.h"
 
 #include <iostream>
 #include <random>
@@ -124,11 +124,20 @@ TEST_CASE("Config file read", "[Config]") {
 }
 
 TEST_CASE("Check database connection", "[PhotoStore]"){
-    imgr::PhotoStore store("admin", "Password0!", "test", "localhost", 5432);
+    imgr::PhotoStore store("admin", "Password0!", "photo", "localhost", 5432);
 
     // Create the album
-    auto album = std::make_shared<imgr::model::Album>("sandbox");
+    fs::path album_path = fs::current_path() / "sandbox";
+    auto album = store.get_or_create_album(album_path);
 
+    SECTION("Check query of existing album"){
+        auto album_copy = store.get_or_create_album(album_path);
 
-    std::vector<imgr::model::Photo> photos;
+        REQUIRE(album->get_id() == album_copy->get_id());
+        REQUIRE(album.use_count() == 2);
+        REQUIRE(album_copy.use_count() == 2);
+
+        album_copy.reset();
+        REQUIRE(album.use_count() == 1);
+    }
 }

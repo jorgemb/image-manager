@@ -2,8 +2,8 @@
 // compiler for C++.
 //
 
-#ifndef MANAGER_ODB_HXX
-#define MANAGER_ODB_HXX
+#ifndef STORE_ODB_HXX
+#define STORE_ODB_HXX
 
 #include <odb/version.hxx>
 
@@ -13,7 +13,7 @@
 
 #include <odb/pre.hxx>
 
-#include "manager.h"
+#include "store.h"
 
 #include <memory>
 #include <cstddef>
@@ -47,12 +47,12 @@ namespace odb
   {
     public:
     typedef ::imgr::model::Album object_type;
-    typedef ::imgr::model::Album* pointer_type;
+    typedef ::std::shared_ptr< ::imgr::model::Album > pointer_type;
     typedef odb::pointer_traits<pointer_type> pointer_traits;
 
     static const bool polymorphic = false;
 
-    typedef ::uint64_t id_type;
+    typedef ::imgr::model::Album::id_type id_type;
 
     static const bool auto_id = true;
 
@@ -89,12 +89,12 @@ namespace odb
   {
     public:
     typedef ::imgr::model::Photo object_type;
-    typedef ::imgr::model::Photo* pointer_type;
+    typedef ::std::shared_ptr< ::imgr::model::Photo > pointer_type;
     typedef odb::pointer_traits<pointer_type> pointer_traits;
 
     static const bool polymorphic = false;
 
-    typedef ::uint64_t id_type;
+    typedef ::imgr::model::Photo::id_type id_type;
 
     static const bool auto_id = true;
 
@@ -139,7 +139,7 @@ namespace odb
     typedef
     pgsql::query_column<
       pgsql::value_traits<
-        ::uint64_t,
+        ::imgr::model::Album::id_type,
         pgsql::id_bigint >::query_type,
       pgsql::id_bigint >
     id_type_;
@@ -328,7 +328,7 @@ namespace odb
     typedef
     pgsql::query_column<
       pgsql::value_traits<
-        ::uint64_t,
+        ::imgr::model::Photo::id_type,
         pgsql::id_bigint >::query_type,
       pgsql::id_bigint >
     id_type_;
@@ -388,7 +388,7 @@ namespace odb
     typedef
     pgsql::query_column<
       pgsql::value_traits<
-        ::uint64_t,
+        ::imgr::model::Album::id_type,
         pgsql::id_bigint >::query_type,
       pgsql::id_bigint >
     album_type_;
@@ -627,7 +627,7 @@ namespace odb
     typedef
     pgsql::query_column<
       pgsql::value_traits<
-        ::uint64_t,
+        ::imgr::model::Photo::id_type,
         pgsql::id_bigint >::query_type,
       pgsql::id_bigint >
     id_type_;
@@ -687,7 +687,7 @@ namespace odb
     typedef
     pgsql::query_column<
       pgsql::value_traits<
-        ::uint64_t,
+        ::imgr::model::Album::id_type,
         pgsql::id_bigint >::query_type,
       pgsql::id_bigint >
     album_column_type_;
@@ -742,8 +742,8 @@ namespace odb
   album (A::table_name, "\"album\"", 0);
 }
 
-#include "manager-odb.ixx"
+#include "store-odb.ixx"
 
 #include <odb/post.hxx>
 
-#endif // MANAGER_ODB_HXX
+#endif // STORE_ODB_HXX

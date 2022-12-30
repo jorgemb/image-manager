@@ -1,5 +1,5 @@
-#ifndef IMAGE_MANAGER_MANAGER_H
-#define IMAGE_MANAGER_MANAGER_H
+#ifndef IMAGE_MANAGER_STORE_H
+#define IMAGE_MANAGER_STORE_H
 
 #include <memory>
 #include <string>
@@ -8,6 +8,9 @@
 #include <odb/core.hxx>
 
 namespace imgr {
+
+// Set std::shared_ptr as default pointer type
+#pragma db namespace pointer(std::shared_ptr)
 namespace model {
 
 class Photo;
@@ -17,11 +20,13 @@ class Photo;
 
 class Album {
 public:
+    using id_type = uint64_t;
+
     explicit Album(const std::string &absolute_path) : m_absolute_path(absolute_path) {}
 
     /// Getter for ID
     /// \return
-    uint64_t get_id() const { return m_id; }
+    id_type get_id() const { return m_id; }
 
     /// Getter for absolute path
     /// \return
@@ -34,7 +39,7 @@ private:
     friend class odb::access;
 
 #pragma db id auto
-    uint64_t m_id;
+    id_type m_id;
 
     std::string m_absolute_path;
 
@@ -48,6 +53,8 @@ private:
 
 class Photo {
 public:
+    using id_type = uint64_t;
+
     Photo(const std::string &filename, unsigned int width, unsigned int height,
           const std::vector<unsigned char> &thumbnail, const std::shared_ptr<Album> &album) : m_filename(filename),
                                                                                               m_width(width),
@@ -86,7 +93,7 @@ public:
 
     /// Returns the ID of the photo
     /// \return
-    uint64_t get_id() const{
+    id_type get_id() const{
         return m_id;
     }
 
@@ -97,7 +104,7 @@ private:
     friend class odb::access;
 
 #pragma db id auto
-    uint64_t m_id;
+    id_type m_id;
 
     std::string m_filename;
 
@@ -113,4 +120,4 @@ private:
 }
 }
 
-#endif //IMAGE_MANAGER_MANAGER_H
+#endif //IMAGE_MANAGER_STORE_H

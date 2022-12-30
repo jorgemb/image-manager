@@ -4,7 +4,7 @@
 
 #include <odb/pre.hxx>
 
-#include "manager-odb.hxx"
+#include "store-odb.hxx"
 
 #include <cassert>
 #include <cstring>  // std::memcpy
@@ -87,7 +87,7 @@ namespace odb
     id_type id;
     {
       pgsql::value_traits<
-          ::uint64_t,
+          ::imgr::model::Album::id_type,
           pgsql::id_bigint >::set_value (
         id,
         i.id_value,
@@ -107,7 +107,7 @@ namespace odb
     id_type id;
     {
       pgsql::value_traits<
-          ::uint64_t,
+          ::imgr::model::Album::id_type,
           pgsql::id_bigint >::set_value (
         id,
         i.m_id_value,
@@ -230,11 +230,11 @@ namespace odb
     // m_id
     //
     {
-      ::uint64_t& v =
+      ::imgr::model::Album::id_type& v =
         o.m_id;
 
       pgsql::value_traits<
-          ::uint64_t,
+          ::imgr::model::Album::id_type,
           pgsql::id_bigint >::set_value (
         v,
         i.m_id_value,
@@ -263,7 +263,7 @@ namespace odb
     {
       bool is_null (false);
       pgsql::value_traits<
-          ::uint64_t,
+          ::imgr::model::Album::id_type,
           pgsql::id_bigint >::set_image (
         i.id_value, is_null, id);
       i.id_null = is_null;
@@ -778,7 +778,7 @@ namespace odb
     id_type id;
     {
       pgsql::value_traits<
-          ::uint64_t,
+          ::imgr::model::Photo::id_type,
           pgsql::id_bigint >::set_value (
         id,
         i.id_value,
@@ -798,7 +798,7 @@ namespace odb
     id_type id;
     {
       pgsql::value_traits<
-          ::uint64_t,
+          ::imgr::model::Photo::id_type,
           pgsql::id_bigint >::set_value (
         id,
         i.m_id_value,
@@ -1045,11 +1045,11 @@ namespace odb
     // m_id
     //
     {
-      ::uint64_t& v =
+      ::imgr::model::Photo::id_type& v =
         o.m_id;
 
       pgsql::value_traits<
-          ::uint64_t,
+          ::imgr::model::Photo::id_type,
           pgsql::id_bigint >::set_value (
         v,
         i.m_id_value,
@@ -1152,7 +1152,7 @@ namespace odb
     {
       bool is_null (false);
       pgsql::value_traits<
-          ::uint64_t,
+          ::imgr::model::Photo::id_type,
           pgsql::id_bigint >::set_image (
         i.id_value, is_null, id);
       i.id_null = is_null;
