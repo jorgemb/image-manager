@@ -15,13 +15,15 @@
 
 #include <iostream>
 #include <random>
-#include <fstream>
+#include <algorithm>
 #include <memory>
 
 #include <fmt/core.h>
-#include <fmt/format.h>
 
 #include <boost/filesystem.hpp>
+
+#include <OpenImageIO/imageio.h>
+#include <OpenImageIO/imagebufalgo.h>
 
 namespace fs = boost::filesystem;
 
@@ -44,6 +46,24 @@ std::string random_string(std::size_t size) {
 
     return ret;
 }
+
+/// Creates a random image and saves it to the specified
+/// \param path
+/// \param width
+/// \param height
+/// \param channels
+/// \return
+bool create_test_image(const fs::path &path, uint32_t width, uint32_t height) {
+    // Fill buffer with data
+    OIIO::ImageSpec spec(width, height, 3, OIIO::TypeDesc::FLOAT);
+    OIIO::ImageBuf buffer(spec);
+    float dark[3] = {0.1, 0.1, 0.1};
+    float light[3] = {0.8, 0.8, 0.8};
+    OIIO::ImageBufAlgo::checker(buffer, 64, 64, 1, dark, light);
+
+    return buffer.write(path.string());
+}
+
 
 /// Sets up the directory environment for tests
 class EnvironmentSetup : public Catch::EventListenerBase {
@@ -69,6 +89,15 @@ public:
                                  (fs::current_path() / "sandbox").string())
                   << std::endl;
 
+        // Create images
+        fs::path sandbox = temp_root / "sandbox";
+        create_test_image(sandbox / "1.jpg", 512, 512);
+        create_test_image(sandbox / "2.png", 256, 512);
+        create_test_image(sandbox / "3.bmp", 512, 256);
+
+        // Invalid image that should not be loaded
+        std::ofstream not_an_image((sandbox / "not_image.jpg").string());
+        not_an_image << "This is not an image\n";
     }
 
     void testRunEnded(const Catch::TestRunStats &testRunStats) override {
@@ -123,21 +152,57 @@ TEST_CASE("Config file read", "[Config]") {
 
 }
 
-TEST_CASE("Check database connection", "[PhotoStore]"){
+TEST_CASE("Check DatabaseType connection", "[PhotoStore]") {
     imgr::PhotoStore store("admin", "Password0!", "photo", "localhost", 5432);
 
-    // Create the album
+    SECTION("Calculations") {
+        SECTION("Square image") {
+            int width = 1024, height = 1024;
+            std::tie(width, height) = imgr::PhotoStore::calculate_dimensions(width, height, 128);
+
+            REQUIRE(width == 128);
+            REQUIRE(height == 128);
+        }
+
+        SECTION("Vertical image") {
+            int width = 512, height = 1024;
+            std::tie(width, height) = imgr::PhotoStore::calculate_dimensions(width, height, 128);
+            REQUIRE(width == 64);
+            REQUIRE(height == 128);
+        }
+
+        SECTION("Horizontal image") {
+            int width = 1024, height = 256;
+            std::tie(width, height) = imgr::PhotoStore::calculate_dimensions(width, height, 128);
+            REQUIRE(width == 128);
+            REQUIRE(height == 32);
+        }
+    }
+
     fs::path album_path = fs::current_path() / "sandbox";
-    auto album = store.get_or_create_album(album_path);
+    SECTION("Creates the album") {
+        // Album shouldn't exist in the database
+        auto album = store.get_album(album_path);
+        REQUIRE_FALSE(album);
 
-    SECTION("Check query of existing album"){
-        auto album_copy = store.get_or_create_album(album_path);
+        // Create the new album
+        album = store.create_album(album_path);
+        REQUIRE(album);
+    }
 
-        REQUIRE(album->get_id() == album_copy->get_id());
-        REQUIRE(album.use_count() == 2);
-        REQUIRE(album_copy.use_count() == 2);
+    SECTION("Retrieve existing album") {
+        auto album = store.get_album(album_path);
+        REQUIRE(album);
 
-        album_copy.reset();
-        REQUIRE(album.use_count() == 1);
+        // Three photos should be created on startup
+        auto photos = store.get_album_photos(album);
+        REQUIRE(photos.size() == 3);
+
+        // Every photo should have a thumbnail
+        for (auto &p: photos) {
+            auto thumbnail = store.get_photo_thumbnail(p);
+
+            REQUIRE(thumbnail);
+        }
     }
 }

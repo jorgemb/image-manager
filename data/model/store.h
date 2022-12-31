@@ -8,15 +8,12 @@
 #include <odb/core.hxx>
 
 namespace imgr {
-
-// Set std::shared_ptr as default pointer type
-#pragma db namespace pointer(std::shared_ptr)
 namespace model {
 
 class Photo;
 
 /// Represents an album object, modeled as a folder in the filesystem
-#pragma db object
+#pragma db object pointer(std::shared_ptr)
 
 class Album {
 public:
@@ -41,26 +38,21 @@ private:
 #pragma db id auto
     id_type m_id;
 
+#pragma db unique
     std::string m_absolute_path;
-
-//#pragma db value_not_null inverse(m_album)
-//    std::vector<std::weak_ptr<Photo>> m_photos;
 };
 
 /// Represents a single photo object that is part of an album. Captures the relative
 /// filename within the album and the thumbnail.
-#pragma db object
+#pragma db object pointer(std::shared_ptr)
 
 class Photo {
 public:
     using id_type = uint64_t;
 
-    Photo(const std::string &filename, unsigned int width, unsigned int height,
-          const std::vector<unsigned char> &thumbnail, const std::shared_ptr<Album> &album) : m_filename(filename),
-                                                                                              m_width(width),
-                                                                                              m_height(height),
-                                                                                              m_thumbnail(thumbnail),
-                                                                                              m_album(album) {}
+    Photo(const std::string &filename, uint16_t width, uint16_t height, const std::shared_ptr<Album> &album)
+            : m_filename(filename), m_width(width), m_height(height), m_album(album) {
+    }
 
     /// Getter for filename
     const std::string &get_filename() const {
@@ -69,20 +61,14 @@ public:
 
     /// Returns width of the image
     /// \return
-    unsigned int get_width() const {
+    uint16_t get_width() const {
         return m_width;
     }
 
     /// Returns height of the image
     /// \return
-    unsigned int get_height() const {
+    uint16_t get_height() const {
         return m_height;
-    }
-
-    /// Returns thumbnail for the image
-    /// \return
-    const std::vector<unsigned char> &get_thumbnail() const {
-        return m_thumbnail;
     }
 
     /// Returns the Album to which this photo belongs
@@ -93,7 +79,7 @@ public:
 
     /// Returns the ID of the photo
     /// \return
-    id_type get_id() const{
+    id_type get_id() const {
         return m_id;
     }
 
@@ -108,13 +94,82 @@ private:
 
     std::string m_filename;
 
-    unsigned int m_width, m_height;
-
-#pragma db type("BYTEA")
-    std::vector<unsigned char> m_thumbnail;
+    uint16_t m_width, m_height;
 
 #pragma db not_null
     std::shared_ptr<Album> m_album;
+};
+
+#pragma db object pointer(std::shared_ptr)
+
+/// Contains the thumbnail for a photo
+class PhotoThumbnail {
+public:
+    using id_type = uint64_t;
+
+    /// Constructor that copies the buffer
+    /// \param width
+    /// \param height
+    /// \param thumbnail
+    /// \param photo
+    PhotoThumbnail(uint16_t width, uint16_t height, const std::vector<uint8_t> &thumbnail,
+                   const std::shared_ptr<Photo> &photo) : m_width(width), m_height(height), m_thumbnail(thumbnail),
+                                                          m_photo(photo) {
+
+    }
+
+    /// Constructor that allows moving the buffer
+    /// \param width
+    /// \param height
+    /// \param thumbnail
+    /// \param photo
+    PhotoThumbnail(uint16_t width, uint16_t height, std::vector<uint8_t> &&thumbnail,
+                   const std::shared_ptr<Photo> &photo) : m_width(width), m_height(height), m_thumbnail(thumbnail),
+                                                          m_photo(photo) {
+
+    }
+
+    /// Returns the thumbnail vector
+    /// \return
+    const std::vector<uint8_t> &get_thumbnail() const {
+        return m_thumbnail;
+    }
+
+    /// Returns the width of the thumbnail
+    /// \return
+    uint16_t get_width() const {
+        return m_width;
+    }
+
+    /// Returns the height of the thumbnail
+    /// \return
+    uint16_t get_height() const {
+        return m_height;
+    }
+
+    /// Returns the photo associated to the thumbnail
+    /// \return
+    const std::shared_ptr<Photo> &get_photo() const {
+        return m_photo;
+    }
+
+private:
+    /// Private default constructor
+    PhotoThumbnail() {};
+
+    friend class odb::access;
+
+#pragma db id auto
+    /// ID
+    id_type m_id;
+
+    uint16_t m_width, m_height;
+
+#pragma db type("BYTEA")
+    std::vector<uint8_t> m_thumbnail;
+
+#pragma db not_null unique
+    std::shared_ptr<Photo> m_photo;
 };
 
 }

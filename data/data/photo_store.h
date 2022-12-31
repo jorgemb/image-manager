@@ -6,21 +6,27 @@
 #include <odb/pgsql/database.hxx>
 
 #include <model/store.h>
+#include <model/store-odb.hxx>
 
 #include <memory>
 #include <string>
 
 #include <boost/filesystem.hpp>
 
+//#define IMGR_ENABLE_TRACING
+
 namespace imgr {
 namespace filesystem = boost::filesystem;
-using database = odb::pgsql::database;
 
 /// Class for managing access to photos
 class PhotoStore {
 public:
-    using AlbumPtr = std::shared_ptr<model::Album>;
-    using PhotoPtr = std::shared_ptr<model::Photo>;
+    using AlbumPtr = odb::object_traits<model::Album>::pointer_type;
+    using PhotoPtr = odb::object_traits<model::Photo>::pointer_type;
+    using ThumbnailPtr = odb::object_traits<model::PhotoThumbnail>::pointer_type;
+    using DatabaseType = odb::pgsql::database;
+
+    using Dimension = uint16_t;
 
     /// Creates a new PhotoStore and connects to DB
     /// \param user
@@ -31,21 +37,67 @@ public:
     PhotoStore(const std::string &user, const std::string &password, const std::string &db,
                const std::string &host, uint16_t port);
 
-    /// Retrieves an album or creates a new one
+    /// Retrieves an album given an absolute path
     /// \param album_path
     /// \return
-    AlbumPtr get_or_create_album(const filesystem::path &album_path);
+    AlbumPtr get_album(const filesystem::path &album_path);
 
+    /// Creates a new album and, if specified, creates entry for all the photos within
+    /// \param album_path
+    /// \param load_images
+    /// \return
+    AlbumPtr create_album(const filesystem::path &album_path, bool load_images = true);
+
+    /// Returns a list of the photos in the album
+    /// \param album
+    /// \return
+    std::vector<PhotoPtr> get_album_photos(const AlbumPtr &album);
+
+    /// Returns the thumbnail from a photo
+    /// \param photo
+    /// \return
+    ThumbnailPtr get_photo_thumbnail(const PhotoPtr &photo);
+
+    /// Calculates the dimensions that keep the aspect ratio and where the largest one equals target_max
+    /// \param width
+    /// \param height
+    /// \param target_max
+    /// \return pair(Width, Height)
+    static std::pair<Dimension, Dimension>
+    calculate_dimensions(Dimension width, Dimension height, Dimension target_max) {
+        if (width > height) {
+            Dimension new_width = target_max;
+            Dimension new_height = height * new_width / width;
+            return std::make_pair(new_width, new_height);
+        } else {
+            Dimension new_height = target_max;
+            Dimension new_width = width * new_height / height;
+            return std::make_pair(new_width, new_height);
+        }
+    }
 
 private:
-    inline void trace_on_debug(odb::transaction& t){
-#ifdef _DEBUG
+    /// Enable tracing for the current transaction
+    /// \param t
+    inline void do_trace(odb::transaction &t) {
+#ifdef IMGR_ENABLE_TRACING
         t.tracer(odb::stderr_tracer);
 #endif
     }
 
-    std::unique_ptr<database> m_database;
-    std::unique_ptr<odb::session> m_session;
+    DatabaseType m_database;
+
+    odb::session m_session;
+
+    /* CONSTANTS */
+    const Dimension THUMBNAIL_SIZE = 128;
+
+    /* DEFINITIONS */
+    using AlbumQuery = odb::query<imgr::model::Album>;
+    using AlbumResult = odb::result<imgr::model::Album>;
+    using PhotoQuery = odb::query<imgr::model::Photo>;
+    using PhotoResult = odb::result<imgr::model::Photo>;
+    using ThumbnailQuery = odb::query<imgr::model::PhotoThumbnail>;
 };
 
 } // imgr

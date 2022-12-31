@@ -4,6 +4,7 @@ find_package(yaml-cpp CONFIG REQUIRED)
 find_package(fmt CONFIG REQUIRED)
 find_package(odb CONFIG REQUIRED libodb pgsql)
 find_package(Boost REQUIRED COMPONENTS filesystem)
+find_package(OpenImageIO CONFIG REQUIRED)
 
 add_library(data
         data/directory_tree.h
@@ -16,7 +17,7 @@ add_library(data
         data/photo_store.cpp
         data/photo_store.h)
 target_include_directories(data PUBLIC .)
-target_link_libraries(data PUBLIC yaml-cpp Boost::filesystem odb::libodb odb::libodb-pgsql)
+target_link_libraries(data PUBLIC yaml-cpp Boost::filesystem odb::libodb odb::libodb-pgsql OpenImageIO::OpenImageIO)
 
 add_library(imgr::data ALIAS data)
 
