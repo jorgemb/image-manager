@@ -4,25 +4,26 @@
 title Loading images with Gallery
 participant     wxApp as app
 participant     wxGallery as gallery
-participant     wxGalleryImage as image
-participant     PhotoStore as store
-database        Database as db
+participant     AlbumManager as manager
+database        PhotoStore as store
 
 autonumber
 
--> gallery : LoadAlbum(album)
-gallery -> app : get_image_store()
-app --> gallery : ImageStoreRef
-gallery -> store : get_image_list(album)
-store --> gallery : ImageList
+-> gallery : LoadAlbum(album_id)
+gallery -> app : get_album_manager()
+app --> gallery : AlbumManagerRef
+gallery -> manager : get_album_photos(album_id)
+manager -> store : get_album_photos(album_id)
+store --> manager : PhotoList
+manager --> gallery : PhotoList
 
-loop On each Image from the ImageList
-    gallery -> image : LoadImage(image_id, store)
-    image -> store : load_image_thumbnail(image_id)
-    store -> db : load_image_thumbnail(image_id)
-    db --> store : ImageObject
-    store --> image : ImageObject
-    image --> gallery : ok?
+loop On each Image from the PhotoList
+    gallery -> manager : load_photo(photo_id, thumbnail=true)
+    manager -> store : load_photo_thumbnail(photo_id)
+    store --> manager : ImageData
+    manager -> manager : create_gui_image(ImageData)
+    manager --> gallery : wxImage
+    gallery -> gallery: create_gallery_image(wxImage)
 end
 
 @enduml

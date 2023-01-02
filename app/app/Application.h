@@ -7,7 +7,7 @@
 
 #include <view/view.h>
 #include <data/directory_tree.h>
-#include <data/config.h>
+#include "data/config.h"
 
 #include <utility>
 

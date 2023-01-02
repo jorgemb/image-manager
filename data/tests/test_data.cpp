@@ -9,9 +9,8 @@
 #include <catch2/reporters/catch_reporter_registrars.hpp>
 
 #include "data/directory_tree.h"
-#include "data/config.h"
 #include "data/photo_store.h"
-#include "model/store.h"
+#include "data/config.h"
 
 #include <iostream>
 #include <random>
@@ -24,8 +23,12 @@
 
 #include <OpenImageIO/imageio.h>
 #include <OpenImageIO/imagebufalgo.h>
+#include <OpenImageIO/filesystem.h>
 
 namespace fs = boost::filesystem;
+
+// Used to do tests that write to disk
+//#define WRITE_TO_DISK_TESTS
 
 /// Creates a random string for the root file
 /// \param size
@@ -84,9 +87,10 @@ public:
 
         // Create yaml file for testing
         std::ofstream yaml_test("test.yml");
-        yaml_test << fmt::format("# Test files\nsearch_directories:\n - {}\n - {}",
+        yaml_test << fmt::format("# Test files\nsearch_directories:\n - {}\n - {}\n",
                                  fs::current_path().string(),
                                  (fs::current_path() / "sandbox").string())
+                  << fmt::format("database:\n host: localhost\n db: database\n port: 1234\n")
                   << std::endl;
 
         // Create images
@@ -150,6 +154,15 @@ TEST_CASE("Config file read", "[Config]") {
         REQUIRE_THAT(expected_paths, UnorderedEquals(paths));
     }
 
+    SECTION("Connection parameters"){
+        std::map<std::string, std::string> expected_params{
+                {"host", "localhost"},
+                {"db", "database"},
+                {"port", "1234"}
+        };
+
+        REQUIRE(expected_params == config.get_connection_parameters());
+    }
 }
 
 TEST_CASE("Check DatabaseType connection", "[PhotoStore]") {
@@ -195,14 +208,35 @@ TEST_CASE("Check DatabaseType connection", "[PhotoStore]") {
         REQUIRE(album);
 
         // Three photos should be created on startup
-        auto photos = store.get_album_photos(album);
+        auto photos = store.get_album_photos(album->get_id());
         REQUIRE(photos.size() == 3);
 
         // Every photo should have a thumbnail
         for (auto &p: photos) {
-            auto thumbnail = store.get_photo_thumbnail(p);
+            auto thumbnail = store.get_photo_thumbnail(p->get_id());
 
             REQUIRE(thumbnail);
+
+#ifdef WRITE_TO_DISK_TESTS
+            // Try to write the thumbnail to disk
+            fs::path dest = fs::current_path() / "sandbox" / fmt::format(".{}.thumbnail.jpg", p->get_filename());
+
+            // Read the image
+            auto thumbnail_data = OIIO::Filesystem::IOMemReader(thumbnail->get_data());
+            auto reader = OIIO::ImageInput::open(dest.filename().string(), nullptr, &thumbnail_data);
+
+            size_t size = thumbnail->get_width() * thumbnail->get_height() * thumbnail->get_channels();
+            std::vector<uint8_t> pixels(size);
+            reader->read_image(OIIO::TypeDesc::UINT8, pixels.data());
+            reader->close();
+
+            // Write the image
+            auto out = OIIO::ImageOutput::create(dest.string());
+            out->open(dest.string(),
+                      OIIO::ImageSpec{thumbnail->get_width(), thumbnail->get_height(), thumbnail->get_channels()});
+            out->write_image(OIIO::TypeDesc::UINT8, pixels.data());
+            out->close();
+#endif
         }
     }
 }

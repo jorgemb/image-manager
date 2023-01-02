@@ -7,9 +7,9 @@
 
 #include <vector>
 
-#include <yaml-cpp/yaml.h>
+#include "yaml-cpp/yaml.h"
 
-#include <boost/filesystem.hpp>
+#include "boost/filesystem.hpp"
 
 namespace imgr {
 namespace filesystem = boost::filesystem;
@@ -24,6 +24,10 @@ public:
     /// \return Read only view of the search directories
     const std::vector<filesystem::path> &get_search_directories() const;
 
+    /// Returns the connection parameters for the database
+    /// \return
+    const std::map<std::string, std::string> &get_connection_parameters() const;
+
 private:
     // Path to the config file
     const filesystem::path m_config_file;
@@ -33,6 +37,7 @@ private:
 
     // Internal data
     std::vector<filesystem::path> m_search_directories;
+    std::map<std::string, std::string> m_connection_parameters;
 };
 }
 

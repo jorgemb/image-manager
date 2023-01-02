@@ -10,6 +10,9 @@
 namespace imgr {
 namespace model {
 
+/// ID type to use for all items
+using ID_TYPE = uint64_t;
+
 class Photo;
 
 /// Represents an album object, modeled as a folder in the filesystem
@@ -17,7 +20,7 @@ class Photo;
 
 class Album {
 public:
-    using id_type = uint64_t;
+    using id_type = ID_TYPE;
 
     explicit Album(const std::string &absolute_path) : m_absolute_path(absolute_path) {}
 
@@ -48,7 +51,7 @@ private:
 
 class Photo {
 public:
-    using id_type = uint64_t;
+    using id_type = ID_TYPE;
 
     Photo(const std::string &filename, uint16_t width, uint16_t height, const std::shared_ptr<Album> &album)
             : m_filename(filename), m_width(width), m_height(height), m_album(album) {
@@ -105,15 +108,16 @@ private:
 /// Contains the thumbnail for a photo
 class PhotoThumbnail {
 public:
-    using id_type = uint64_t;
+    using id_type = ID_TYPE;
 
     /// Constructor that copies the buffer
     /// \param width
     /// \param height
     /// \param thumbnail
     /// \param photo
-    PhotoThumbnail(uint16_t width, uint16_t height, const std::vector<uint8_t> &thumbnail,
-                   const std::shared_ptr<Photo> &photo) : m_width(width), m_height(height), m_thumbnail(thumbnail),
+    PhotoThumbnail(uint16_t width, uint16_t height, uint8_t channels, const std::vector<uint8_t> &thumbnail,
+                   const std::shared_ptr<Photo> &photo) : m_width(width), m_height(height), m_channels(channels),
+                                                          m_thumbnail(thumbnail),
                                                           m_photo(photo) {
 
     }
@@ -123,15 +127,22 @@ public:
     /// \param height
     /// \param thumbnail
     /// \param photo
-    PhotoThumbnail(uint16_t width, uint16_t height, std::vector<uint8_t> &&thumbnail,
-                   const std::shared_ptr<Photo> &photo) : m_width(width), m_height(height), m_thumbnail(thumbnail),
+    PhotoThumbnail(uint16_t width, uint16_t height, uint8_t channels, std::vector<uint8_t> &&thumbnail,
+                   const std::shared_ptr<Photo> &photo) : m_width(width), m_height(height), m_channels(channels),
+                                                          m_thumbnail(thumbnail),
                                                           m_photo(photo) {
 
     }
 
+    /// Returns the ID of the thumbnail
+    /// \return
+    id_type get_id() const {
+        return m_id;
+    }
+
     /// Returns the thumbnail vector
     /// \return
-    const std::vector<uint8_t> &get_thumbnail() const {
+    const std::vector<uint8_t> &get_data() const {
         return m_thumbnail;
     }
 
@@ -145,6 +156,12 @@ public:
     /// \return
     uint16_t get_height() const {
         return m_height;
+    }
+
+    /// Returns the number of channels of the thumbnail
+    /// \return
+    uint8_t get_channels() const {
+        return m_channels;
     }
 
     /// Returns the photo associated to the thumbnail
@@ -164,6 +181,7 @@ private:
     id_type m_id;
 
     uint16_t m_width, m_height;
+    uint8_t m_channels;
 
 #pragma db type("BYTEA")
     std::vector<uint8_t> m_thumbnail;

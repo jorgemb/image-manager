@@ -8,8 +8,8 @@ find_package(OpenImageIO CONFIG REQUIRED)
 
 add_library(data
         data/directory_tree.h
-        data/config.h
         data/directory_tree.cpp
+        data/config.h
         data/config.cpp
         model/store.h
         model/store-odb.cxx

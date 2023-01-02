@@ -8,41 +8,36 @@ DROP TABLE IF EXISTS "Photo" CASCADE;
 
 DROP TABLE IF EXISTS "Album" CASCADE;
 
-CREATE TABLE "Album"
-(
-    "id"            BIGSERIAL NOT NULL PRIMARY KEY,
-    "absolute_path" TEXT      NOT NULL
-);
+CREATE TABLE "Album" (
+  "id" BIGSERIAL NOT NULL PRIMARY KEY,
+  "absolute_path" TEXT NOT NULL);
 
 CREATE UNIQUE INDEX "Album_absolute_path_i"
-    ON "Album" ("absolute_path");
+  ON "Album" ("absolute_path");
 
-CREATE TABLE "Photo"
-(
-    "id"       BIGSERIAL NOT NULL PRIMARY KEY,
-    "filename" TEXT      NOT NULL,
-    "width"    SMALLINT  NOT NULL,
-    "height"   SMALLINT  NOT NULL,
-    "album"    BIGINT    NOT NULL,
-    CONSTRAINT "album_fk"
-        FOREIGN KEY ("album")
-            REFERENCES "Album" ("id")
-            INITIALLY DEFERRED
-);
+CREATE TABLE "Photo" (
+  "id" BIGSERIAL NOT NULL PRIMARY KEY,
+  "filename" TEXT NOT NULL,
+  "width" SMALLINT NOT NULL,
+  "height" SMALLINT NOT NULL,
+  "album" BIGINT NOT NULL,
+  CONSTRAINT "album_fk"
+    FOREIGN KEY ("album")
+    REFERENCES "Album" ("id")
+    INITIALLY DEFERRED);
 
-CREATE TABLE "PhotoThumbnail"
-(
-    "id"        BIGSERIAL NOT NULL PRIMARY KEY,
-    "width"     SMALLINT  NOT NULL,
-    "height"    SMALLINT  NOT NULL,
-    "thumbnail" BYTEA     NOT NULL,
-    "photo"     BIGINT    NOT NULL,
-    CONSTRAINT "photo_fk"
-        FOREIGN KEY ("photo")
-            REFERENCES "Photo" ("id")
-            INITIALLY DEFERRED
-);
+CREATE TABLE "PhotoThumbnail" (
+  "id" BIGSERIAL NOT NULL PRIMARY KEY,
+  "width" SMALLINT NOT NULL,
+  "height" SMALLINT NOT NULL,
+  "channels" SMALLINT NOT NULL,
+  "thumbnail" BYTEA NOT NULL,
+  "photo" BIGINT NOT NULL,
+  CONSTRAINT "photo_fk"
+    FOREIGN KEY ("photo")
+    REFERENCES "Photo" ("id")
+    INITIALLY DEFERRED);
 
 CREATE UNIQUE INDEX "PhotoThumbnail_photo_i"
-    ON "PhotoThumbnail" ("photo");
+  ON "PhotoThumbnail" ("photo");
 

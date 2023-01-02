@@ -103,33 +103,35 @@ namespace odb
     static id_type
     id (const object_type&);
 
-      typedef
-      no_op_pointer_cache_traits<pointer_type>
-              pointer_cache_traits;
+    typedef
+    no_op_pointer_cache_traits<pointer_type>
+    pointer_cache_traits;
 
-      typedef
-      no_op_reference_cache_traits<object_type>
-              reference_cache_traits;
+    typedef
+    no_op_reference_cache_traits<object_type>
+    reference_cache_traits;
 
-      static void
-      callback(database &, object_type &, callback_event);
+    static void
+    callback (database&, object_type&, callback_event);
 
-      static void
-      callback(database &, const object_type &, callback_event);
+    static void
+    callback (database&, const object_type&, callback_event);
   };
 
-// PhotoThumbnail
-//
-template<>
-struct class_traits<::imgr::model::PhotoThumbnail> {
+  // PhotoThumbnail
+  //
+  template <>
+  struct class_traits< ::imgr::model::PhotoThumbnail >
+  {
     static const class_kind kind = class_object;
-};
+  };
 
-template<>
-class access::object_traits<::imgr::model::PhotoThumbnail> {
-public:
+  template <>
+  class access::object_traits< ::imgr::model::PhotoThumbnail >
+  {
+    public:
     typedef ::imgr::model::PhotoThumbnail object_type;
-    typedef ::std::shared_ptr<::imgr::model::PhotoThumbnail> pointer_type;
+    typedef ::std::shared_ptr< ::imgr::model::PhotoThumbnail > pointer_type;
     typedef odb::pointer_traits<pointer_type> pointer_traits;
 
     static const bool polymorphic = false;
@@ -141,22 +143,22 @@ public:
     static const bool abstract = false;
 
     static id_type
-    id(const object_type &);
+    id (const object_type&);
 
     typedef
     no_op_pointer_cache_traits<pointer_type>
-            pointer_cache_traits;
+    pointer_cache_traits;
 
     typedef
     no_op_reference_cache_traits<object_type>
-            reference_cache_traits;
+    reference_cache_traits;
 
     static void
-    callback(database &, object_type &, callback_event);
+    callback (database&, object_type&, callback_event);
 
     static void
-    callback(database &, const object_type &, callback_event);
-};
+    callback (database&, const object_type&, callback_event);
+  };
 }
 
 #include <odb/details/buffer.hxx>
@@ -391,10 +393,10 @@ namespace odb
     //
     typedef
     pgsql::query_column<
-            pgsql::value_traits<
-                    ::uint16_t,
-                    pgsql::id_smallint>::query_type,
-            pgsql::id_smallint>
+      pgsql::value_traits<
+        ::uint16_t,
+        pgsql::id_smallint >::query_type,
+      pgsql::id_smallint >
     width_type_;
 
     static const width_type_ width;
@@ -403,10 +405,10 @@ namespace odb
     //
     typedef
     pgsql::query_column<
-            pgsql::value_traits<
-                    ::uint16_t,
-                    pgsql::id_smallint>::query_type,
-            pgsql::id_smallint>
+      pgsql::value_traits<
+        ::uint16_t,
+        pgsql::id_smallint >::query_type,
+      pgsql::id_smallint >
     height_type_;
 
     static const height_type_ height;
@@ -475,15 +477,15 @@ namespace odb
       std::size_t m_filename_size;
       bool m_filename_null;
 
-        // m_width
-        //
-        short m_width_value;
-        bool m_width_null;
+      // m_width
+      //
+      short m_width_value;
+      bool m_width_null;
 
-        // m_height
-        //
-        short m_height_value;
-        bool m_height_null;
+      // m_height
+      //
+      short m_height_value;
+      bool m_height_null;
 
       // m_album
       //
@@ -534,8 +536,8 @@ namespace odb
 
     typedef pgsql::query_base query_base_type;
 
-      static const std::size_t column_count = 5UL;
-      static const std::size_t id_column_count = 1UL;
+    static const std::size_t column_count = 5UL;
+    static const std::size_t id_column_count = 1UL;
     static const std::size_t inverse_column_count = 0UL;
     static const std::size_t readonly_column_count = 0UL;
     static const std::size_t managed_optimistic_column_count = 0UL;
@@ -599,28 +601,30 @@ namespace odb
 
     static void
     load_ (statements_type&,
-           object_type &,
+           object_type&,
            bool reload);
   };
 
-template<>
-class access::object_traits_impl<::imgr::model::Photo, id_common> :
-        public access::object_traits_impl<::imgr::model::Photo, id_pgsql> {
-};
+  template <>
+  class access::object_traits_impl< ::imgr::model::Photo, id_common >:
+    public access::object_traits_impl< ::imgr::model::Photo, id_pgsql >
+  {
+  };
 
-// PhotoThumbnail
-//
-template<typename A>
-struct pointer_query_columns<::imgr::model::PhotoThumbnail, id_pgsql, A> {
+  // PhotoThumbnail
+  //
+  template <typename A>
+  struct pointer_query_columns< ::imgr::model::PhotoThumbnail, id_pgsql, A >
+  {
     // id
     //
     typedef
     pgsql::query_column<
-            pgsql::value_traits<
-                    ::imgr::model::PhotoThumbnail::id_type,
-                    pgsql::id_bigint>::query_type,
-            pgsql::id_bigint>
-            id_type_;
+      pgsql::value_traits<
+        ::imgr::model::PhotoThumbnail::id_type,
+        pgsql::id_bigint >::query_type,
+      pgsql::id_bigint >
+    id_type_;
 
     static const id_type_ id;
 
@@ -628,11 +632,11 @@ struct pointer_query_columns<::imgr::model::PhotoThumbnail, id_pgsql, A> {
     //
     typedef
     pgsql::query_column<
-            pgsql::value_traits<
-                    ::uint16_t,
-                    pgsql::id_smallint>::query_type,
-            pgsql::id_smallint>
-            width_type_;
+      pgsql::value_traits<
+        ::uint16_t,
+        pgsql::id_smallint >::query_type,
+      pgsql::id_smallint >
+    width_type_;
 
     static const width_type_ width;
 
@@ -640,23 +644,35 @@ struct pointer_query_columns<::imgr::model::PhotoThumbnail, id_pgsql, A> {
     //
     typedef
     pgsql::query_column<
-            pgsql::value_traits<
-                    ::uint16_t,
-                    pgsql::id_smallint>::query_type,
-            pgsql::id_smallint>
-            height_type_;
+      pgsql::value_traits<
+        ::uint16_t,
+        pgsql::id_smallint >::query_type,
+      pgsql::id_smallint >
+    height_type_;
 
     static const height_type_ height;
+
+    // channels
+    //
+    typedef
+    pgsql::query_column<
+      pgsql::value_traits<
+        ::uint8_t,
+        pgsql::id_smallint >::query_type,
+      pgsql::id_smallint >
+    channels_type_;
+
+    static const channels_type_ channels;
 
     // thumbnail
     //
     typedef
     pgsql::query_column<
-            pgsql::value_traits<
-                    ::std::vector<unsigned char>,
-                    pgsql::id_bytea>::query_type,
-            pgsql::id_bytea>
-            thumbnail_type_;
+      pgsql::value_traits<
+        ::std::vector< unsigned char >,
+        pgsql::id_bytea >::query_type,
+      pgsql::id_bytea >
+    thumbnail_type_;
 
     static const thumbnail_type_ thumbnail;
 
@@ -664,79 +680,92 @@ struct pointer_query_columns<::imgr::model::PhotoThumbnail, id_pgsql, A> {
     //
     typedef
     pgsql::query_column<
-            pgsql::value_traits<
-                    ::imgr::model::Photo::id_type,
-                    pgsql::id_bigint>::query_type,
-            pgsql::id_bigint>
-            photo_type_;
+      pgsql::value_traits<
+        ::imgr::model::Photo::id_type,
+        pgsql::id_bigint >::query_type,
+      pgsql::id_bigint >
+    photo_type_;
 
     static const photo_type_ photo;
-};
+  };
 
-template<typename A>
-const typename pointer_query_columns<::imgr::model::PhotoThumbnail, id_pgsql, A>::id_type_
-        pointer_query_columns<::imgr::model::PhotoThumbnail, id_pgsql, A>::
-        id(A::table_name, "\"id\"", 0);
+  template <typename A>
+  const typename pointer_query_columns< ::imgr::model::PhotoThumbnail, id_pgsql, A >::id_type_
+  pointer_query_columns< ::imgr::model::PhotoThumbnail, id_pgsql, A >::
+  id (A::table_name, "\"id\"", 0);
 
-template<typename A>
-const typename pointer_query_columns<::imgr::model::PhotoThumbnail, id_pgsql, A>::width_type_
-        pointer_query_columns<::imgr::model::PhotoThumbnail, id_pgsql, A>::
-        width(A::table_name, "\"width\"", 0);
+  template <typename A>
+  const typename pointer_query_columns< ::imgr::model::PhotoThumbnail, id_pgsql, A >::width_type_
+  pointer_query_columns< ::imgr::model::PhotoThumbnail, id_pgsql, A >::
+  width (A::table_name, "\"width\"", 0);
 
-template<typename A>
-const typename pointer_query_columns<::imgr::model::PhotoThumbnail, id_pgsql, A>::height_type_
-        pointer_query_columns<::imgr::model::PhotoThumbnail, id_pgsql, A>::
-        height(A::table_name, "\"height\"", 0);
+  template <typename A>
+  const typename pointer_query_columns< ::imgr::model::PhotoThumbnail, id_pgsql, A >::height_type_
+  pointer_query_columns< ::imgr::model::PhotoThumbnail, id_pgsql, A >::
+  height (A::table_name, "\"height\"", 0);
 
-template<typename A>
-const typename pointer_query_columns<::imgr::model::PhotoThumbnail, id_pgsql, A>::thumbnail_type_
-        pointer_query_columns<::imgr::model::PhotoThumbnail, id_pgsql, A>::
-        thumbnail(A::table_name, "\"thumbnail\"", 0);
+  template <typename A>
+  const typename pointer_query_columns< ::imgr::model::PhotoThumbnail, id_pgsql, A >::channels_type_
+  pointer_query_columns< ::imgr::model::PhotoThumbnail, id_pgsql, A >::
+  channels (A::table_name, "\"channels\"", 0);
 
-template<typename A>
-const typename pointer_query_columns<::imgr::model::PhotoThumbnail, id_pgsql, A>::photo_type_
-        pointer_query_columns<::imgr::model::PhotoThumbnail, id_pgsql, A>::
-        photo(A::table_name, "\"photo\"", 0);
+  template <typename A>
+  const typename pointer_query_columns< ::imgr::model::PhotoThumbnail, id_pgsql, A >::thumbnail_type_
+  pointer_query_columns< ::imgr::model::PhotoThumbnail, id_pgsql, A >::
+  thumbnail (A::table_name, "\"thumbnail\"", 0);
 
-template<>
-class access::object_traits_impl<::imgr::model::PhotoThumbnail, id_pgsql> :
-        public access::object_traits<::imgr::model::PhotoThumbnail> {
-public:
-    struct id_image_type {
-        long long id_value;
-        bool id_null;
+  template <typename A>
+  const typename pointer_query_columns< ::imgr::model::PhotoThumbnail, id_pgsql, A >::photo_type_
+  pointer_query_columns< ::imgr::model::PhotoThumbnail, id_pgsql, A >::
+  photo (A::table_name, "\"photo\"", 0);
 
-        std::size_t version;
+  template <>
+  class access::object_traits_impl< ::imgr::model::PhotoThumbnail, id_pgsql >:
+    public access::object_traits< ::imgr::model::PhotoThumbnail >
+  {
+    public:
+    struct id_image_type
+    {
+      long long id_value;
+      bool id_null;
+
+      std::size_t version;
     };
 
-    struct image_type {
-        // m_id
-        //
-        long long m_id_value;
-        bool m_id_null;
+    struct image_type
+    {
+      // m_id
+      //
+      long long m_id_value;
+      bool m_id_null;
 
-        // m_width
-        //
-        short m_width_value;
-        bool m_width_null;
+      // m_width
+      //
+      short m_width_value;
+      bool m_width_null;
 
-        // m_height
-        //
-        short m_height_value;
-        bool m_height_null;
+      // m_height
+      //
+      short m_height_value;
+      bool m_height_null;
 
-        // m_thumbnail
-        //
-        details::buffer m_thumbnail_value;
-        std::size_t m_thumbnail_size;
-        bool m_thumbnail_null;
+      // m_channels
+      //
+      short m_channels_value;
+      bool m_channels_null;
 
-        // m_photo
-        //
-        long long m_photo_value;
-        bool m_photo_null;
+      // m_thumbnail
+      //
+      details::buffer m_thumbnail_value;
+      std::size_t m_thumbnail_size;
+      bool m_thumbnail_null;
 
-        std::size_t version;
+      // m_photo
+      //
+      long long m_photo_value;
+      bool m_photo_null;
+
+      std::size_t version;
     };
 
     struct extra_statement_cache_type;
@@ -746,41 +775,41 @@ public:
     using object_traits<object_type>::id;
 
     static id_type
-    id(const id_image_type &);
+    id (const id_image_type&);
 
     static id_type
-    id(const image_type &);
+    id (const image_type&);
 
     static bool
-    grow(image_type &,
-         bool *);
+    grow (image_type&,
+          bool*);
 
     static void
-    bind(pgsql::bind *,
-         image_type &,
-         pgsql::statement_kind);
+    bind (pgsql::bind*,
+          image_type&,
+          pgsql::statement_kind);
 
     static void
-    bind(pgsql::bind *, id_image_type &);
+    bind (pgsql::bind*, id_image_type&);
 
     static bool
-    init(image_type &,
-         const object_type &,
-         pgsql::statement_kind);
+    init (image_type&,
+          const object_type&,
+          pgsql::statement_kind);
 
     static void
-    init(object_type &,
-         const image_type &,
-         database *);
+    init (object_type&,
+          const image_type&,
+          database*);
 
     static void
-    init(id_image_type &, const id_type &);
+    init (id_image_type&, const id_type&);
 
     typedef pgsql::object_statements<object_type> statements_type;
 
     typedef pgsql::query_base query_base_type;
 
-    static const std::size_t column_count = 5UL;
+    static const std::size_t column_count = 6UL;
     static const std::size_t id_column_count = 1UL;
     static const std::size_t inverse_column_count = 0UL;
     static const std::size_t readonly_column_count = 0UL;
@@ -801,31 +830,31 @@ public:
     static const char table_name[];
 
     static void
-    persist(database &, object_type &);
+    persist (database&, object_type&);
 
     static pointer_type
-    find(database &, const id_type &);
+    find (database&, const id_type&);
 
     static bool
-    find(database &, const id_type &, object_type &);
+    find (database&, const id_type&, object_type&);
 
     static bool
-    reload(database &, object_type &);
+    reload (database&, object_type&);
 
     static void
-    update(database &, const object_type &);
+    update (database&, const object_type&);
 
     static void
-    erase(database &, const id_type &);
+    erase (database&, const id_type&);
 
     static void
-    erase(database &, const object_type &);
+    erase (database&, const object_type&);
 
     static result<object_type>
-    query(database &, const query_base_type &);
+    query (database&, const query_base_type&);
 
     static unsigned long long
-    erase_query(database &, const query_base_type &);
+    erase_query (database&, const query_base_type&);
 
     static const char persist_statement_name[];
     static const char find_statement_name[];
@@ -838,31 +867,32 @@ public:
     static const unsigned int find_statement_types[];
     static const unsigned int update_statement_types[];
 
-public:
+    public:
     static bool
-    find_(statements_type &,
-          const id_type *);
+    find_ (statements_type&,
+           const id_type*);
 
     static void
-    load_(statements_type &,
-          object_type &,
-          bool reload);
-};
+    load_ (statements_type&,
+           object_type&,
+           bool reload);
+  };
 
-template<>
-class access::object_traits_impl<::imgr::model::PhotoThumbnail, id_common> :
-        public access::object_traits_impl<::imgr::model::PhotoThumbnail, id_pgsql> {
-};
+  template <>
+  class access::object_traits_impl< ::imgr::model::PhotoThumbnail, id_common >:
+    public access::object_traits_impl< ::imgr::model::PhotoThumbnail, id_pgsql >
+  {
+  };
 
-// Album
-//
-// Photo
-//
-template<>
-struct alias_traits<
-        ::imgr::model::Album,
-        id_pgsql,
-        access::object_traits_impl<::imgr::model::Photo, id_pgsql>::album_tag>
+  // Album
+  //
+  // Photo
+  //
+  template <>
+  struct alias_traits<
+    ::imgr::model::Album,
+    id_pgsql,
+    access::object_traits_impl< ::imgr::model::Photo, id_pgsql >::album_tag>
   {
     static const char table_name[];
   };
@@ -912,10 +942,10 @@ struct alias_traits<
     //
     typedef
     pgsql::query_column<
-            pgsql::value_traits<
-                    ::uint16_t,
-                    pgsql::id_smallint>::query_type,
-            pgsql::id_smallint>
+      pgsql::value_traits<
+        ::uint16_t,
+        pgsql::id_smallint >::query_type,
+      pgsql::id_smallint >
     width_type_;
 
     static const width_type_ width;
@@ -924,10 +954,10 @@ struct alias_traits<
     //
     typedef
     pgsql::query_column<
-            pgsql::value_traits<
-                    ::uint16_t,
-                    pgsql::id_smallint>::query_type,
-            pgsql::id_smallint>
+      pgsql::value_traits<
+        ::uint16_t,
+        pgsql::id_smallint >::query_type,
+      pgsql::id_smallint >
     height_type_;
 
     static const height_type_ height;
@@ -974,52 +1004,55 @@ struct alias_traits<
   template <typename A>
   const typename query_columns< ::imgr::model::Photo, id_pgsql, A >::width_type_
   query_columns< ::imgr::model::Photo, id_pgsql, A >::
-          width(A::table_name, "\"width\"", 0);
+  width (A::table_name, "\"width\"", 0);
 
-template<typename A>
-const typename query_columns<::imgr::model::Photo, id_pgsql, A>::height_type_
-        query_columns<::imgr::model::Photo, id_pgsql, A>::
-        height(A::table_name, "\"height\"", 0);
+  template <typename A>
+  const typename query_columns< ::imgr::model::Photo, id_pgsql, A >::height_type_
+  query_columns< ::imgr::model::Photo, id_pgsql, A >::
+  height (A::table_name, "\"height\"", 0);
 
-template<typename A>
-const typename query_columns<::imgr::model::Photo, id_pgsql, A>::album_type_
-        query_columns<::imgr::model::Photo, id_pgsql, A>::
-        album(A::table_name, "\"album\"", 0);
+  template <typename A>
+  const typename query_columns< ::imgr::model::Photo, id_pgsql, A >::album_type_
+  query_columns< ::imgr::model::Photo, id_pgsql, A >::
+  album (A::table_name, "\"album\"", 0);
 
-// PhotoThumbnail
-//
-template<>
-struct alias_traits<
-        ::imgr::model::Photo,
-        id_pgsql,
-        access::object_traits_impl<::imgr::model::PhotoThumbnail, id_pgsql>::photo_tag> {
+  // PhotoThumbnail
+  //
+  template <>
+  struct alias_traits<
+    ::imgr::model::Photo,
+    id_pgsql,
+    access::object_traits_impl< ::imgr::model::PhotoThumbnail, id_pgsql >::photo_tag>
+  {
     static const char table_name[];
-};
+  };
 
-template<>
-struct query_columns_base<::imgr::model::PhotoThumbnail, id_pgsql> {
+  template <>
+  struct query_columns_base< ::imgr::model::PhotoThumbnail, id_pgsql >
+  {
     // photo
     //
     typedef
     odb::alias_traits<
-            ::imgr::model::Photo,
-            id_pgsql,
-            access::object_traits_impl<::imgr::model::PhotoThumbnail, id_pgsql>::photo_tag>
-            photo_alias_;
-};
+      ::imgr::model::Photo,
+      id_pgsql,
+      access::object_traits_impl< ::imgr::model::PhotoThumbnail, id_pgsql >::photo_tag>
+    photo_alias_;
+  };
 
-template<typename A>
-struct query_columns<::imgr::model::PhotoThumbnail, id_pgsql, A> :
-        query_columns_base<::imgr::model::PhotoThumbnail, id_pgsql> {
+  template <typename A>
+  struct query_columns< ::imgr::model::PhotoThumbnail, id_pgsql, A >:
+    query_columns_base< ::imgr::model::PhotoThumbnail, id_pgsql >
+  {
     // id
     //
     typedef
     pgsql::query_column<
-            pgsql::value_traits<
-                    ::imgr::model::PhotoThumbnail::id_type,
-                    pgsql::id_bigint>::query_type,
-            pgsql::id_bigint>
-            id_type_;
+      pgsql::value_traits<
+        ::imgr::model::PhotoThumbnail::id_type,
+        pgsql::id_bigint >::query_type,
+      pgsql::id_bigint >
+    id_type_;
 
     static const id_type_ id;
 
@@ -1027,11 +1060,11 @@ struct query_columns<::imgr::model::PhotoThumbnail, id_pgsql, A> :
     //
     typedef
     pgsql::query_column<
-            pgsql::value_traits<
-                    ::uint16_t,
-                    pgsql::id_smallint>::query_type,
-            pgsql::id_smallint>
-            width_type_;
+      pgsql::value_traits<
+        ::uint16_t,
+        pgsql::id_smallint >::query_type,
+      pgsql::id_smallint >
+    width_type_;
 
     static const width_type_ width;
 
@@ -1039,23 +1072,35 @@ struct query_columns<::imgr::model::PhotoThumbnail, id_pgsql, A> :
     //
     typedef
     pgsql::query_column<
-            pgsql::value_traits<
-                    ::uint16_t,
-                    pgsql::id_smallint>::query_type,
-            pgsql::id_smallint>
-            height_type_;
+      pgsql::value_traits<
+        ::uint16_t,
+        pgsql::id_smallint >::query_type,
+      pgsql::id_smallint >
+    height_type_;
 
     static const height_type_ height;
+
+    // channels
+    //
+    typedef
+    pgsql::query_column<
+      pgsql::value_traits<
+        ::uint8_t,
+        pgsql::id_smallint >::query_type,
+      pgsql::id_smallint >
+    channels_type_;
+
+    static const channels_type_ channels;
 
     // thumbnail
     //
     typedef
     pgsql::query_column<
-            pgsql::value_traits<
-                    ::std::vector<unsigned char>,
-                    pgsql::id_bytea>::query_type,
-            pgsql::id_bytea>
-            thumbnail_type_;
+      pgsql::value_traits<
+        ::std::vector< unsigned char >,
+        pgsql::id_bytea >::query_type,
+      pgsql::id_bytea >
+    thumbnail_type_;
 
     static const thumbnail_type_ thumbnail;
 
@@ -1063,53 +1108,60 @@ struct query_columns<::imgr::model::PhotoThumbnail, id_pgsql, A> :
     //
     typedef
     pgsql::query_column<
-            pgsql::value_traits<
-                    ::imgr::model::Photo::id_type,
-                    pgsql::id_bigint>::query_type,
-            pgsql::id_bigint>
-            photo_column_type_;
+      pgsql::value_traits<
+        ::imgr::model::Photo::id_type,
+        pgsql::id_bigint >::query_type,
+      pgsql::id_bigint >
+    photo_column_type_;
 
     typedef
     odb::query_pointer<
-            odb::pointer_query_columns<
-                    ::imgr::model::Photo,
-                    id_pgsql,
-                    photo_alias_> >
-            photo_pointer_type_;
+      odb::pointer_query_columns<
+        ::imgr::model::Photo,
+        id_pgsql,
+        photo_alias_ > >
+    photo_pointer_type_;
 
-    struct photo_type_ : photo_pointer_type_, photo_column_type_ {
-        photo_type_(const char *t, const char *c, const char *conv)
-                : photo_column_type_(t, c, conv) {
-        }
+    struct photo_type_: photo_pointer_type_, photo_column_type_
+    {
+      photo_type_ (const char* t, const char* c, const char* conv)
+        : photo_column_type_ (t, c, conv)
+      {
+      }
     };
 
     static const photo_type_ photo;
-};
+  };
 
-template<typename A>
-const typename query_columns<::imgr::model::PhotoThumbnail, id_pgsql, A>::id_type_
-        query_columns<::imgr::model::PhotoThumbnail, id_pgsql, A>::
-        id(A::table_name, "\"id\"", 0);
+  template <typename A>
+  const typename query_columns< ::imgr::model::PhotoThumbnail, id_pgsql, A >::id_type_
+  query_columns< ::imgr::model::PhotoThumbnail, id_pgsql, A >::
+  id (A::table_name, "\"id\"", 0);
 
-template<typename A>
-const typename query_columns<::imgr::model::PhotoThumbnail, id_pgsql, A>::width_type_
-        query_columns<::imgr::model::PhotoThumbnail, id_pgsql, A>::
-        width(A::table_name, "\"width\"", 0);
+  template <typename A>
+  const typename query_columns< ::imgr::model::PhotoThumbnail, id_pgsql, A >::width_type_
+  query_columns< ::imgr::model::PhotoThumbnail, id_pgsql, A >::
+  width (A::table_name, "\"width\"", 0);
 
-template<typename A>
-const typename query_columns<::imgr::model::PhotoThumbnail, id_pgsql, A>::height_type_
-        query_columns<::imgr::model::PhotoThumbnail, id_pgsql, A>::
-        height(A::table_name, "\"height\"", 0);
+  template <typename A>
+  const typename query_columns< ::imgr::model::PhotoThumbnail, id_pgsql, A >::height_type_
+  query_columns< ::imgr::model::PhotoThumbnail, id_pgsql, A >::
+  height (A::table_name, "\"height\"", 0);
 
-template<typename A>
-const typename query_columns<::imgr::model::PhotoThumbnail, id_pgsql, A>::thumbnail_type_
-        query_columns<::imgr::model::PhotoThumbnail, id_pgsql, A>::
-        thumbnail(A::table_name, "\"thumbnail\"", 0);
+  template <typename A>
+  const typename query_columns< ::imgr::model::PhotoThumbnail, id_pgsql, A >::channels_type_
+  query_columns< ::imgr::model::PhotoThumbnail, id_pgsql, A >::
+  channels (A::table_name, "\"channels\"", 0);
 
-template<typename A>
-const typename query_columns<::imgr::model::PhotoThumbnail, id_pgsql, A>::photo_type_
-        query_columns<::imgr::model::PhotoThumbnail, id_pgsql, A>::
-        photo(A::table_name, "\"photo\"", 0);
+  template <typename A>
+  const typename query_columns< ::imgr::model::PhotoThumbnail, id_pgsql, A >::thumbnail_type_
+  query_columns< ::imgr::model::PhotoThumbnail, id_pgsql, A >::
+  thumbnail (A::table_name, "\"thumbnail\"", 0);
+
+  template <typename A>
+  const typename query_columns< ::imgr::model::PhotoThumbnail, id_pgsql, A >::photo_type_
+  query_columns< ::imgr::model::PhotoThumbnail, id_pgsql, A >::
+  photo (A::table_name, "\"photo\"", 0);
 }
 
 #include "store-odb.ixx"

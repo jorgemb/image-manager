@@ -1,0 +1,42 @@
+@startuml
+'https://plantuml.com/component-diagram
+
+package "gui"{
+    component wxGallery as gallery
+    component wxGalleryImage as image
+}
+
+package "application"{
+    component wxApp as app
+    component AlbumManager as manager
+}
+
+package "data"{
+    component DirectoryTree as tree
+    component PhotoStore as store
+    component Config as config
+}
+
+database "DB"{
+    component Photo as model_photo
+    component Album as model_album
+    component Thumbnail as model_thumbnail
+}
+
+
+
+app --> config
+
+gallery --> image
+gallery --> manager
+image --> manager
+
+manager --> store
+manager --> tree
+manager --> config
+
+store --> model_photo
+store --> model_album
+store --> model_thumbnail
+
+@enduml

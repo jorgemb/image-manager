@@ -21,8 +21,10 @@ namespace filesystem = boost::filesystem;
 /// Class for managing access to photos
 class PhotoStore {
 public:
+    using id_type = model::ID_TYPE;
     using AlbumPtr = odb::object_traits<model::Album>::pointer_type;
     using PhotoPtr = odb::object_traits<model::Photo>::pointer_type;
+    using PhotoList = std::vector<PhotoPtr>;
     using ThumbnailPtr = odb::object_traits<model::PhotoThumbnail>::pointer_type;
     using DatabaseType = odb::pgsql::database;
 
@@ -49,14 +51,14 @@ public:
     AlbumPtr create_album(const filesystem::path &album_path, bool load_images = true);
 
     /// Returns a list of the photos in the album
-    /// \param album
+    /// \param album_id
     /// \return
-    std::vector<PhotoPtr> get_album_photos(const AlbumPtr &album);
+    PhotoList get_album_photos(model::Album::id_type album_id);
 
     /// Returns the thumbnail from a photo
     /// \param photo
     /// \return
-    ThumbnailPtr get_photo_thumbnail(const PhotoPtr &photo);
+    ThumbnailPtr get_photo_thumbnail(model::Photo::id_type photo_id);
 
     /// Calculates the dimensions that keep the aspect ratio and where the largest one equals target_max
     /// \param width
@@ -91,6 +93,7 @@ private:
 
     /* CONSTANTS */
     const Dimension THUMBNAIL_SIZE = 128;
+    const std::string THUMBNAIL_NAME = "thumbnail.jpg";
 
     /* DEFINITIONS */
     using AlbumQuery = odb::query<imgr::model::Album>;

@@ -85,3 +85,5 @@ void ImageManagerWindow::add_directory_root(const filesystem::path &tree_root) {
         return true;
     }
 } // imgr
+
+wxIMPLEMENT_APP(imgr::ImageManagerApp);
