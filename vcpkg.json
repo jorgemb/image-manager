@@ -6,7 +6,7 @@
     "catch2",
     "fmt",
     "libodb",
-    "libodb-pgsql",
+    "libodb-sqlite",
     "openimageio",
     "wxwidgets",
     "yaml-cpp"

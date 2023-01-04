@@ -9,86 +9,48 @@
 #include <cassert>
 #include <cstring>  // std::memcpy
 
+#include <odb/schema-catalog-impl.hxx>
 
-#include <odb/pgsql/traits.hxx>
-#include <odb/pgsql/database.hxx>
-#include <odb/pgsql/transaction.hxx>
-#include <odb/pgsql/connection.hxx>
-#include <odb/pgsql/statement.hxx>
-#include <odb/pgsql/statement-cache.hxx>
-#include <odb/pgsql/simple-object-statements.hxx>
-#include <odb/pgsql/container-statements.hxx>
-#include <odb/pgsql/exceptions.hxx>
-#include <odb/pgsql/simple-object-result.hxx>
+#include <odb/sqlite/traits.hxx>
+#include <odb/sqlite/database.hxx>
+#include <odb/sqlite/transaction.hxx>
+#include <odb/sqlite/connection.hxx>
+#include <odb/sqlite/statement.hxx>
+#include <odb/sqlite/statement-cache.hxx>
+#include <odb/sqlite/simple-object-statements.hxx>
+#include <odb/sqlite/container-statements.hxx>
+#include <odb/sqlite/exceptions.hxx>
+#include <odb/sqlite/simple-object-result.hxx>
 
 namespace odb
 {
   // Album
   //
 
-  const char access::object_traits_impl< ::imgr::model::Album, id_pgsql >::
-  persist_statement_name[] = "persist_imgr_model_Album";
-
-  const char access::object_traits_impl< ::imgr::model::Album, id_pgsql >::
-  find_statement_name[] = "find_imgr_model_Album";
-
-  const char access::object_traits_impl< ::imgr::model::Album, id_pgsql >::
-  update_statement_name[] = "update_imgr_model_Album";
-
-  const char access::object_traits_impl< ::imgr::model::Album, id_pgsql >::
-  erase_statement_name[] = "erase_imgr_model_Album";
-
-  const char access::object_traits_impl< ::imgr::model::Album, id_pgsql >::
-  query_statement_name[] = "query_imgr_model_Album";
-
-  const char access::object_traits_impl< ::imgr::model::Album, id_pgsql >::
-  erase_query_statement_name[] = "erase_query_imgr_model_Album";
-
-  const unsigned int access::object_traits_impl< ::imgr::model::Album, id_pgsql >::
-  persist_statement_types[] =
-  {
-    pgsql::text_oid
-  };
-
-  const unsigned int access::object_traits_impl< ::imgr::model::Album, id_pgsql >::
-  find_statement_types[] =
-  {
-    pgsql::int8_oid
-  };
-
-  const unsigned int access::object_traits_impl< ::imgr::model::Album, id_pgsql >::
-  update_statement_types[] =
-  {
-    pgsql::text_oid,
-    pgsql::int8_oid
-  };
-
-  struct access::object_traits_impl< ::imgr::model::Album, id_pgsql >::extra_statement_cache_type
+  struct access::object_traits_impl< ::imgr::model::Album, id_sqlite >::extra_statement_cache_type
   {
     extra_statement_cache_type (
-      pgsql::connection&,
+      sqlite::connection&,
       image_type&,
       id_image_type&,
-      pgsql::binding&,
-      pgsql::binding&,
-      pgsql::native_binding&,
-      const unsigned int*)
+      sqlite::binding&,
+      sqlite::binding&)
     {
     }
   };
 
-  access::object_traits_impl< ::imgr::model::Album, id_pgsql >::id_type
-  access::object_traits_impl< ::imgr::model::Album, id_pgsql >::
+  access::object_traits_impl< ::imgr::model::Album, id_sqlite >::id_type
+  access::object_traits_impl< ::imgr::model::Album, id_sqlite >::
   id (const id_image_type& i)
   {
-    pgsql::database* db (0);
+    sqlite::database* db (0);
     ODB_POTENTIALLY_UNUSED (db);
 
     id_type id;
     {
-      pgsql::value_traits<
+      sqlite::value_traits<
           ::imgr::model::Album::id_type,
-          pgsql::id_bigint >::set_value (
+          sqlite::id_integer >::set_value (
         id,
         i.id_value,
         i.id_null);
@@ -97,18 +59,18 @@ namespace odb
     return id;
   }
 
-  access::object_traits_impl< ::imgr::model::Album, id_pgsql >::id_type
-  access::object_traits_impl< ::imgr::model::Album, id_pgsql >::
+  access::object_traits_impl< ::imgr::model::Album, id_sqlite >::id_type
+  access::object_traits_impl< ::imgr::model::Album, id_sqlite >::
   id (const image_type& i)
   {
-    pgsql::database* db (0);
+    sqlite::database* db (0);
     ODB_POTENTIALLY_UNUSED (db);
 
     id_type id;
     {
-      pgsql::value_traits<
+      sqlite::value_traits<
           ::imgr::model::Album::id_type,
-          pgsql::id_bigint >::set_value (
+          sqlite::id_integer >::set_value (
         id,
         i.m_id_value,
         i.m_id_null);
@@ -117,7 +79,7 @@ namespace odb
     return id;
   }
 
-  bool access::object_traits_impl< ::imgr::model::Album, id_pgsql >::
+  bool access::object_traits_impl< ::imgr::model::Album, id_sqlite >::
   grow (image_type& i,
         bool* t)
   {
@@ -128,7 +90,7 @@ namespace odb
 
     // m_id
     //
-    t[0UL] = 0;
+    t[0UL] = false;
 
     // m_absolute_path
     //
@@ -141,22 +103,22 @@ namespace odb
     return grew;
   }
 
-  void access::object_traits_impl< ::imgr::model::Album, id_pgsql >::
-  bind (pgsql::bind* b,
+  void access::object_traits_impl< ::imgr::model::Album, id_sqlite >::
+  bind (sqlite::bind* b,
         image_type& i,
-        pgsql::statement_kind sk)
+        sqlite::statement_kind sk)
   {
     ODB_POTENTIALLY_UNUSED (sk);
 
-    using namespace pgsql;
+    using namespace sqlite;
 
     std::size_t n (0);
 
     // m_id
     //
-    if (sk != statement_insert && sk != statement_update)
+    if (sk != statement_update)
     {
-      b[n].type = pgsql::bind::bigint;
+      b[n].type = sqlite::bind::integer;
       b[n].buffer = &i.m_id_value;
       b[n].is_null = &i.m_id_null;
       n++;
@@ -164,35 +126,54 @@ namespace odb
 
     // m_absolute_path
     //
-    b[n].type = pgsql::bind::text;
+    b[n].type = sqlite::image_traits<
+      ::std::string,
+      sqlite::id_text>::bind_value;
     b[n].buffer = i.m_absolute_path_value.data ();
-    b[n].capacity = i.m_absolute_path_value.capacity ();
     b[n].size = &i.m_absolute_path_size;
+    b[n].capacity = i.m_absolute_path_value.capacity ();
     b[n].is_null = &i.m_absolute_path_null;
     n++;
   }
 
-  void access::object_traits_impl< ::imgr::model::Album, id_pgsql >::
-  bind (pgsql::bind* b, id_image_type& i)
+  void access::object_traits_impl< ::imgr::model::Album, id_sqlite >::
+  bind (sqlite::bind* b, id_image_type& i)
   {
     std::size_t n (0);
-    b[n].type = pgsql::bind::bigint;
+    b[n].type = sqlite::bind::integer;
     b[n].buffer = &i.id_value;
     b[n].is_null = &i.id_null;
   }
 
-  bool access::object_traits_impl< ::imgr::model::Album, id_pgsql >::
+  bool access::object_traits_impl< ::imgr::model::Album, id_sqlite >::
   init (image_type& i,
         const object_type& o,
-        pgsql::statement_kind sk)
+        sqlite::statement_kind sk)
   {
     ODB_POTENTIALLY_UNUSED (i);
     ODB_POTENTIALLY_UNUSED (o);
     ODB_POTENTIALLY_UNUSED (sk);
 
-    using namespace pgsql;
+    using namespace sqlite;
 
     bool grew (false);
+
+    // m_id
+    //
+    if (sk == statement_insert)
+    {
+      ::imgr::model::Album::id_type const& v =
+        o.m_id;
+
+      bool is_null (false);
+      sqlite::value_traits<
+          ::imgr::model::Album::id_type,
+          sqlite::id_integer >::set_image (
+        i.m_id_value,
+        is_null,
+        v);
+      i.m_id_null = is_null;
+    }
 
     // m_absolute_path
     //
@@ -201,24 +182,22 @@ namespace odb
         o.m_absolute_path;
 
       bool is_null (false);
-      std::size_t size (0);
       std::size_t cap (i.m_absolute_path_value.capacity ());
-      pgsql::value_traits<
+      sqlite::value_traits<
           ::std::string,
-          pgsql::id_string >::set_image (
+          sqlite::id_text >::set_image (
         i.m_absolute_path_value,
-        size,
+        i.m_absolute_path_size,
         is_null,
         v);
       i.m_absolute_path_null = is_null;
-      i.m_absolute_path_size = size;
       grew = grew || (cap != i.m_absolute_path_value.capacity ());
     }
 
     return grew;
   }
 
-  void access::object_traits_impl< ::imgr::model::Album, id_pgsql >::
+  void access::object_traits_impl< ::imgr::model::Album, id_sqlite >::
   init (object_type& o,
         const image_type& i,
         database* db)
@@ -233,9 +212,9 @@ namespace odb
       ::imgr::model::Album::id_type& v =
         o.m_id;
 
-      pgsql::value_traits<
+      sqlite::value_traits<
           ::imgr::model::Album::id_type,
-          pgsql::id_bigint >::set_value (
+          sqlite::id_integer >::set_value (
         v,
         i.m_id_value,
         i.m_id_null);
@@ -247,9 +226,9 @@ namespace odb
       ::std::string& v =
         o.m_absolute_path;
 
-      pgsql::value_traits<
+      sqlite::value_traits<
           ::std::string,
-          pgsql::id_string >::set_value (
+          sqlite::id_text >::set_value (
         v,
         i.m_absolute_path_value,
         i.m_absolute_path_size,
@@ -257,65 +236,66 @@ namespace odb
     }
   }
 
-  void access::object_traits_impl< ::imgr::model::Album, id_pgsql >::
+  void access::object_traits_impl< ::imgr::model::Album, id_sqlite >::
   init (id_image_type& i, const id_type& id)
   {
     {
       bool is_null (false);
-      pgsql::value_traits<
+      sqlite::value_traits<
           ::imgr::model::Album::id_type,
-          pgsql::id_bigint >::set_image (
-        i.id_value, is_null, id);
+          sqlite::id_integer >::set_image (
+        i.id_value,
+        is_null,
+        id);
       i.id_null = is_null;
     }
   }
 
-  const char access::object_traits_impl< ::imgr::model::Album, id_pgsql >::persist_statement[] =
+  const char access::object_traits_impl< ::imgr::model::Album, id_sqlite >::persist_statement[] =
   "INSERT INTO \"Album\" "
   "(\"id\", "
   "\"absolute_path\") "
   "VALUES "
-  "(DEFAULT, $1) "
-  "RETURNING \"id\"";
+  "(?, ?)";
 
-  const char access::object_traits_impl< ::imgr::model::Album, id_pgsql >::find_statement[] =
+  const char access::object_traits_impl< ::imgr::model::Album, id_sqlite >::find_statement[] =
   "SELECT "
   "\"Album\".\"id\", "
   "\"Album\".\"absolute_path\" "
   "FROM \"Album\" "
-  "WHERE \"Album\".\"id\"=$1";
+  "WHERE \"Album\".\"id\"=?";
 
-  const char access::object_traits_impl< ::imgr::model::Album, id_pgsql >::update_statement[] =
+  const char access::object_traits_impl< ::imgr::model::Album, id_sqlite >::update_statement[] =
   "UPDATE \"Album\" "
   "SET "
-  "\"absolute_path\"=$1 "
-  "WHERE \"id\"=$2";
+  "\"absolute_path\"=? "
+  "WHERE \"id\"=?";
 
-  const char access::object_traits_impl< ::imgr::model::Album, id_pgsql >::erase_statement[] =
+  const char access::object_traits_impl< ::imgr::model::Album, id_sqlite >::erase_statement[] =
   "DELETE FROM \"Album\" "
-  "WHERE \"id\"=$1";
+  "WHERE \"id\"=?";
 
-  const char access::object_traits_impl< ::imgr::model::Album, id_pgsql >::query_statement[] =
+  const char access::object_traits_impl< ::imgr::model::Album, id_sqlite >::query_statement[] =
   "SELECT "
   "\"Album\".\"id\", "
   "\"Album\".\"absolute_path\" "
   "FROM \"Album\"";
 
-  const char access::object_traits_impl< ::imgr::model::Album, id_pgsql >::erase_query_statement[] =
+  const char access::object_traits_impl< ::imgr::model::Album, id_sqlite >::erase_query_statement[] =
   "DELETE FROM \"Album\"";
 
-  const char access::object_traits_impl< ::imgr::model::Album, id_pgsql >::table_name[] =
+  const char access::object_traits_impl< ::imgr::model::Album, id_sqlite >::table_name[] =
   "\"Album\"";
 
-  void access::object_traits_impl< ::imgr::model::Album, id_pgsql >::
+  void access::object_traits_impl< ::imgr::model::Album, id_sqlite >::
   persist (database& db, object_type& obj)
   {
     ODB_POTENTIALLY_UNUSED (db);
 
-    using namespace pgsql;
+    using namespace sqlite;
 
-    pgsql::connection& conn (
-      pgsql::transaction::current ().connection ());
+    sqlite::connection& conn (
+      sqlite::transaction::current ().connection ());
     statements_type& sts (
       conn.statement_cache ().find_object<object_type> ());
 
@@ -328,6 +308,8 @@ namespace odb
 
     if (init (im, obj, statement_insert))
       im.version++;
+
+    im.m_id_null = true;
 
     if (im.version != sts.insert_image_version () ||
         imb.version == 0)
@@ -359,18 +341,18 @@ namespace odb
               callback_event::post_persist);
   }
 
-  void access::object_traits_impl< ::imgr::model::Album, id_pgsql >::
+  void access::object_traits_impl< ::imgr::model::Album, id_sqlite >::
   update (database& db, const object_type& obj)
   {
     ODB_POTENTIALLY_UNUSED (db);
 
-    using namespace pgsql;
-    using pgsql::update_statement;
+    using namespace sqlite;
+    using sqlite::update_statement;
 
     callback (db, obj, callback_event::pre_update);
 
-    pgsql::transaction& tr (pgsql::transaction::current ());
-    pgsql::connection& conn (tr.connection ());
+    sqlite::transaction& tr (sqlite::transaction::current ());
+    sqlite::connection& conn (tr.connection ());
     statements_type& sts (
       conn.statement_cache ().find_object<object_type> ());
 
@@ -420,15 +402,15 @@ namespace odb
     pointer_cache_traits::update (db, obj);
   }
 
-  void access::object_traits_impl< ::imgr::model::Album, id_pgsql >::
+  void access::object_traits_impl< ::imgr::model::Album, id_sqlite >::
   erase (database& db, const id_type& id)
   {
-    using namespace pgsql;
+    using namespace sqlite;
 
     ODB_POTENTIALLY_UNUSED (db);
 
-    pgsql::connection& conn (
-      pgsql::transaction::current ().connection ());
+    sqlite::connection& conn (
+      sqlite::transaction::current ().connection ());
     statements_type& sts (
       conn.statement_cache ().find_object<object_type> ());
 
@@ -449,11 +431,11 @@ namespace odb
     pointer_cache_traits::erase (db, id);
   }
 
-  access::object_traits_impl< ::imgr::model::Album, id_pgsql >::pointer_type
-  access::object_traits_impl< ::imgr::model::Album, id_pgsql >::
+  access::object_traits_impl< ::imgr::model::Album, id_sqlite >::pointer_type
+  access::object_traits_impl< ::imgr::model::Album, id_sqlite >::
   find (database& db, const id_type& id)
   {
-    using namespace pgsql;
+    using namespace sqlite;
 
     {
       pointer_type p (pointer_cache_traits::find (db, id));
@@ -462,8 +444,8 @@ namespace odb
         return p;
     }
 
-    pgsql::connection& conn (
-      pgsql::transaction::current ().connection ());
+    sqlite::connection& conn (
+      sqlite::transaction::current ().connection ());
     statements_type& sts (
       conn.statement_cache ().find_object<object_type> ());
 
@@ -505,13 +487,13 @@ namespace odb
     return p;
   }
 
-  bool access::object_traits_impl< ::imgr::model::Album, id_pgsql >::
+  bool access::object_traits_impl< ::imgr::model::Album, id_sqlite >::
   find (database& db, const id_type& id, object_type& obj)
   {
-    using namespace pgsql;
+    using namespace sqlite;
 
-    pgsql::connection& conn (
-      pgsql::transaction::current ().connection ());
+    sqlite::connection& conn (
+      sqlite::transaction::current ().connection ());
     statements_type& sts (
       conn.statement_cache ().find_object<object_type> ());
 
@@ -538,13 +520,13 @@ namespace odb
     return true;
   }
 
-  bool access::object_traits_impl< ::imgr::model::Album, id_pgsql >::
+  bool access::object_traits_impl< ::imgr::model::Album, id_sqlite >::
   reload (database& db, object_type& obj)
   {
-    using namespace pgsql;
+    using namespace sqlite;
 
-    pgsql::connection& conn (
-      pgsql::transaction::current ().connection ());
+    sqlite::connection& conn (
+      sqlite::transaction::current ().connection ());
     statements_type& sts (
       conn.statement_cache ().find_object<object_type> ());
 
@@ -568,11 +550,11 @@ namespace odb
     return true;
   }
 
-  bool access::object_traits_impl< ::imgr::model::Album, id_pgsql >::
+  bool access::object_traits_impl< ::imgr::model::Album, id_sqlite >::
   find_ (statements_type& sts,
          const id_type* id)
   {
-    using namespace pgsql;
+    using namespace sqlite;
 
     id_image_type& i (sts.id_image ());
     init (i, *id);
@@ -619,16 +601,16 @@ namespace odb
     return r != select_statement::no_data;
   }
 
-  result< access::object_traits_impl< ::imgr::model::Album, id_pgsql >::object_type >
-  access::object_traits_impl< ::imgr::model::Album, id_pgsql >::
+  result< access::object_traits_impl< ::imgr::model::Album, id_sqlite >::object_type >
+  access::object_traits_impl< ::imgr::model::Album, id_sqlite >::
   query (database&, const query_base_type& q)
   {
-    using namespace pgsql;
+    using namespace sqlite;
     using odb::details::shared;
     using odb::details::shared_ptr;
 
-    pgsql::connection& conn (
-      pgsql::transaction::current ().connection ());
+    sqlite::connection& conn (
+      sqlite::transaction::current ().connection ());
 
     statements_type& sts (
       conn.statement_cache ().find_object<object_type> ());
@@ -654,33 +636,29 @@ namespace odb
     q.init_parameters ();
     shared_ptr<select_statement> st (
       new (shared) select_statement (
-        sts.connection (),
-        query_statement_name,
+        conn,
         text,
         false,
         true,
-        q.parameter_types (),
-        q.parameter_count (),
         q.parameters_binding (),
         imb));
 
     st->execute ();
-    st->deallocate ();
 
     shared_ptr< odb::object_result_impl<object_type> > r (
-      new (shared) pgsql::object_result_impl<object_type> (
+      new (shared) sqlite::object_result_impl<object_type> (
         q, st, sts, 0));
 
     return result<object_type> (r);
   }
 
-  unsigned long long access::object_traits_impl< ::imgr::model::Album, id_pgsql >::
+  unsigned long long access::object_traits_impl< ::imgr::model::Album, id_sqlite >::
   erase_query (database&, const query_base_type& q)
   {
-    using namespace pgsql;
+    using namespace sqlite;
 
-    pgsql::connection& conn (
-      pgsql::transaction::current ().connection ());
+    sqlite::connection& conn (
+      sqlite::transaction::current ().connection ());
 
     std::string text (erase_query_statement);
     if (!q.empty ())
@@ -692,10 +670,7 @@ namespace odb
     q.init_parameters ();
     delete_statement st (
       conn,
-      erase_query_statement_name,
       text,
-      q.parameter_types (),
-      q.parameter_count (),
       q.parameters_binding ());
 
     return st.execute ();
@@ -704,80 +679,35 @@ namespace odb
   // Photo
   //
 
-  const char access::object_traits_impl< ::imgr::model::Photo, id_pgsql >::
-  persist_statement_name[] = "persist_imgr_model_Photo";
-
-  const char access::object_traits_impl< ::imgr::model::Photo, id_pgsql >::
-  find_statement_name[] = "find_imgr_model_Photo";
-
-  const char access::object_traits_impl< ::imgr::model::Photo, id_pgsql >::
-  update_statement_name[] = "update_imgr_model_Photo";
-
-  const char access::object_traits_impl< ::imgr::model::Photo, id_pgsql >::
-  erase_statement_name[] = "erase_imgr_model_Photo";
-
-  const char access::object_traits_impl< ::imgr::model::Photo, id_pgsql >::
-  query_statement_name[] = "query_imgr_model_Photo";
-
-  const char access::object_traits_impl< ::imgr::model::Photo, id_pgsql >::
-  erase_query_statement_name[] = "erase_query_imgr_model_Photo";
-
-  const unsigned int access::object_traits_impl< ::imgr::model::Photo, id_pgsql >::
-  persist_statement_types[] =
-  {
-    pgsql::text_oid,
-    pgsql::int2_oid,
-    pgsql::int2_oid,
-    pgsql::int8_oid
-  };
-
-  const unsigned int access::object_traits_impl< ::imgr::model::Photo, id_pgsql >::
-  find_statement_types[] =
-  {
-    pgsql::int8_oid
-  };
-
-  const unsigned int access::object_traits_impl< ::imgr::model::Photo, id_pgsql >::
-  update_statement_types[] =
-  {
-    pgsql::text_oid,
-    pgsql::int2_oid,
-    pgsql::int2_oid,
-    pgsql::int8_oid,
-    pgsql::int8_oid
-  };
-
   const char alias_traits<  ::imgr::model::Album,
-    id_pgsql,
-    access::object_traits_impl< ::imgr::model::Photo, id_pgsql >::album_tag>::
+    id_sqlite,
+    access::object_traits_impl< ::imgr::model::Photo, id_sqlite >::album_tag>::
   table_name[] = "\"album\"";
 
-  struct access::object_traits_impl< ::imgr::model::Photo, id_pgsql >::extra_statement_cache_type
+  struct access::object_traits_impl< ::imgr::model::Photo, id_sqlite >::extra_statement_cache_type
   {
     extra_statement_cache_type (
-      pgsql::connection&,
+      sqlite::connection&,
       image_type&,
       id_image_type&,
-      pgsql::binding&,
-      pgsql::binding&,
-      pgsql::native_binding&,
-      const unsigned int*)
+      sqlite::binding&,
+      sqlite::binding&)
     {
     }
   };
 
-  access::object_traits_impl< ::imgr::model::Photo, id_pgsql >::id_type
-  access::object_traits_impl< ::imgr::model::Photo, id_pgsql >::
+  access::object_traits_impl< ::imgr::model::Photo, id_sqlite >::id_type
+  access::object_traits_impl< ::imgr::model::Photo, id_sqlite >::
   id (const id_image_type& i)
   {
-    pgsql::database* db (0);
+    sqlite::database* db (0);
     ODB_POTENTIALLY_UNUSED (db);
 
     id_type id;
     {
-      pgsql::value_traits<
+      sqlite::value_traits<
           ::imgr::model::Photo::id_type,
-          pgsql::id_bigint >::set_value (
+          sqlite::id_integer >::set_value (
         id,
         i.id_value,
         i.id_null);
@@ -786,18 +716,18 @@ namespace odb
     return id;
   }
 
-  access::object_traits_impl< ::imgr::model::Photo, id_pgsql >::id_type
-  access::object_traits_impl< ::imgr::model::Photo, id_pgsql >::
+  access::object_traits_impl< ::imgr::model::Photo, id_sqlite >::id_type
+  access::object_traits_impl< ::imgr::model::Photo, id_sqlite >::
   id (const image_type& i)
   {
-    pgsql::database* db (0);
+    sqlite::database* db (0);
     ODB_POTENTIALLY_UNUSED (db);
 
     id_type id;
     {
-      pgsql::value_traits<
+      sqlite::value_traits<
           ::imgr::model::Photo::id_type,
-          pgsql::id_bigint >::set_value (
+          sqlite::id_integer >::set_value (
         id,
         i.m_id_value,
         i.m_id_null);
@@ -806,7 +736,7 @@ namespace odb
     return id;
   }
 
-  bool access::object_traits_impl< ::imgr::model::Photo, id_pgsql >::
+  bool access::object_traits_impl< ::imgr::model::Photo, id_sqlite >::
   grow (image_type& i,
         bool* t)
   {
@@ -817,7 +747,7 @@ namespace odb
 
     // m_id
     //
-    t[0UL] = 0;
+    t[0UL] = false;
 
     // m_filename
     //
@@ -829,35 +759,35 @@ namespace odb
 
     // m_width
     //
-    t[2UL] = 0;
+    t[2UL] = false;
 
     // m_height
     //
-    t[3UL] = 0;
+    t[3UL] = false;
 
     // m_album
     //
-    t[4UL] = 0;
+    t[4UL] = false;
 
     return grew;
   }
 
-  void access::object_traits_impl< ::imgr::model::Photo, id_pgsql >::
-  bind (pgsql::bind* b,
+  void access::object_traits_impl< ::imgr::model::Photo, id_sqlite >::
+  bind (sqlite::bind* b,
         image_type& i,
-        pgsql::statement_kind sk)
+        sqlite::statement_kind sk)
   {
     ODB_POTENTIALLY_UNUSED (sk);
 
-    using namespace pgsql;
+    using namespace sqlite;
 
     std::size_t n (0);
 
     // m_id
     //
-    if (sk != statement_insert && sk != statement_update)
+    if (sk != statement_update)
     {
-      b[n].type = pgsql::bind::bigint;
+      b[n].type = sqlite::bind::integer;
       b[n].buffer = &i.m_id_value;
       b[n].is_null = &i.m_id_null;
       n++;
@@ -865,56 +795,75 @@ namespace odb
 
     // m_filename
     //
-    b[n].type = pgsql::bind::text;
+    b[n].type = sqlite::image_traits<
+      ::std::string,
+      sqlite::id_text>::bind_value;
     b[n].buffer = i.m_filename_value.data ();
-    b[n].capacity = i.m_filename_value.capacity ();
     b[n].size = &i.m_filename_size;
+    b[n].capacity = i.m_filename_value.capacity ();
     b[n].is_null = &i.m_filename_null;
     n++;
 
     // m_width
     //
-    b[n].type = pgsql::bind::smallint;
+    b[n].type = sqlite::bind::integer;
     b[n].buffer = &i.m_width_value;
     b[n].is_null = &i.m_width_null;
     n++;
 
     // m_height
     //
-    b[n].type = pgsql::bind::smallint;
+    b[n].type = sqlite::bind::integer;
     b[n].buffer = &i.m_height_value;
     b[n].is_null = &i.m_height_null;
     n++;
 
     // m_album
     //
-    b[n].type = pgsql::bind::bigint;
+    b[n].type = sqlite::bind::integer;
     b[n].buffer = &i.m_album_value;
     b[n].is_null = &i.m_album_null;
     n++;
   }
 
-  void access::object_traits_impl< ::imgr::model::Photo, id_pgsql >::
-  bind (pgsql::bind* b, id_image_type& i)
+  void access::object_traits_impl< ::imgr::model::Photo, id_sqlite >::
+  bind (sqlite::bind* b, id_image_type& i)
   {
     std::size_t n (0);
-    b[n].type = pgsql::bind::bigint;
+    b[n].type = sqlite::bind::integer;
     b[n].buffer = &i.id_value;
     b[n].is_null = &i.id_null;
   }
 
-  bool access::object_traits_impl< ::imgr::model::Photo, id_pgsql >::
+  bool access::object_traits_impl< ::imgr::model::Photo, id_sqlite >::
   init (image_type& i,
         const object_type& o,
-        pgsql::statement_kind sk)
+        sqlite::statement_kind sk)
   {
     ODB_POTENTIALLY_UNUSED (i);
     ODB_POTENTIALLY_UNUSED (o);
     ODB_POTENTIALLY_UNUSED (sk);
 
-    using namespace pgsql;
+    using namespace sqlite;
 
     bool grew (false);
+
+    // m_id
+    //
+    if (sk == statement_insert)
+    {
+      ::imgr::model::Photo::id_type const& v =
+        o.m_id;
+
+      bool is_null (false);
+      sqlite::value_traits<
+          ::imgr::model::Photo::id_type,
+          sqlite::id_integer >::set_image (
+        i.m_id_value,
+        is_null,
+        v);
+      i.m_id_null = is_null;
+    }
 
     // m_filename
     //
@@ -923,17 +872,15 @@ namespace odb
         o.m_filename;
 
       bool is_null (false);
-      std::size_t size (0);
       std::size_t cap (i.m_filename_value.capacity ());
-      pgsql::value_traits<
+      sqlite::value_traits<
           ::std::string,
-          pgsql::id_string >::set_image (
+          sqlite::id_text >::set_image (
         i.m_filename_value,
-        size,
+        i.m_filename_size,
         is_null,
         v);
       i.m_filename_null = is_null;
-      i.m_filename_size = size;
       grew = grew || (cap != i.m_filename_value.capacity ());
     }
 
@@ -944,10 +891,12 @@ namespace odb
         o.m_width;
 
       bool is_null (false);
-      pgsql::value_traits<
+      sqlite::value_traits<
           ::uint16_t,
-          pgsql::id_smallint >::set_image (
-        i.m_width_value, is_null, v);
+          sqlite::id_integer >::set_image (
+        i.m_width_value,
+        is_null,
+        v);
       i.m_width_null = is_null;
     }
 
@@ -958,10 +907,12 @@ namespace odb
         o.m_height;
 
       bool is_null (false);
-      pgsql::value_traits<
+      sqlite::value_traits<
           ::uint16_t,
-          pgsql::id_smallint >::set_image (
-        i.m_height_value, is_null, v);
+          sqlite::id_integer >::set_image (
+        i.m_height_value,
+        is_null,
+        v);
       i.m_height_null = is_null;
     }
 
@@ -980,10 +931,12 @@ namespace odb
         const obj_traits::id_type& id (
           obj_traits::id (ptr_traits::get_ref (v)));
 
-        pgsql::value_traits<
+        sqlite::value_traits<
             obj_traits::id_type,
-            pgsql::id_bigint >::set_image (
-          i.m_album_value, is_null, id);
+            sqlite::id_integer >::set_image (
+          i.m_album_value,
+          is_null,
+          id);
         i.m_album_null = is_null;
       }
       else
@@ -993,7 +946,7 @@ namespace odb
     return grew;
   }
 
-  void access::object_traits_impl< ::imgr::model::Photo, id_pgsql >::
+  void access::object_traits_impl< ::imgr::model::Photo, id_sqlite >::
   init (object_type& o,
         const image_type& i,
         database* db)
@@ -1008,9 +961,9 @@ namespace odb
       ::imgr::model::Photo::id_type& v =
         o.m_id;
 
-      pgsql::value_traits<
+      sqlite::value_traits<
           ::imgr::model::Photo::id_type,
-          pgsql::id_bigint >::set_value (
+          sqlite::id_integer >::set_value (
         v,
         i.m_id_value,
         i.m_id_null);
@@ -1022,9 +975,9 @@ namespace odb
       ::std::string& v =
         o.m_filename;
 
-      pgsql::value_traits<
+      sqlite::value_traits<
           ::std::string,
-          pgsql::id_string >::set_value (
+          sqlite::id_text >::set_value (
         v,
         i.m_filename_value,
         i.m_filename_size,
@@ -1037,9 +990,9 @@ namespace odb
       ::uint16_t& v =
         o.m_width;
 
-      pgsql::value_traits<
+      sqlite::value_traits<
           ::uint16_t,
-          pgsql::id_smallint >::set_value (
+          sqlite::id_integer >::set_value (
         v,
         i.m_width_value,
         i.m_width_null);
@@ -1051,9 +1004,9 @@ namespace odb
       ::uint16_t& v =
         o.m_height;
 
-      pgsql::value_traits<
+      sqlite::value_traits<
           ::uint16_t,
-          pgsql::id_smallint >::set_value (
+          sqlite::id_integer >::set_value (
         v,
         i.m_height_value,
         i.m_height_null);
@@ -1073,9 +1026,9 @@ namespace odb
       else
       {
         obj_traits::id_type id;
-        pgsql::value_traits<
+        sqlite::value_traits<
             obj_traits::id_type,
-            pgsql::id_bigint >::set_value (
+            sqlite::id_integer >::set_value (
           id,
           i.m_album_value,
           i.m_album_null);
@@ -1085,26 +1038,28 @@ namespace odb
         // cannot be initialized from an object pointer.
         //
         v = ptr_traits::pointer_type (
-          static_cast<pgsql::database*> (db)->load<
+          static_cast<sqlite::database*> (db)->load<
             obj_traits::object_type > (id));
       }
     }
   }
 
-  void access::object_traits_impl< ::imgr::model::Photo, id_pgsql >::
+  void access::object_traits_impl< ::imgr::model::Photo, id_sqlite >::
   init (id_image_type& i, const id_type& id)
   {
     {
       bool is_null (false);
-      pgsql::value_traits<
+      sqlite::value_traits<
           ::imgr::model::Photo::id_type,
-          pgsql::id_bigint >::set_image (
-        i.id_value, is_null, id);
+          sqlite::id_integer >::set_image (
+        i.id_value,
+        is_null,
+        id);
       i.id_null = is_null;
     }
   }
 
-  const char access::object_traits_impl< ::imgr::model::Photo, id_pgsql >::persist_statement[] =
+  const char access::object_traits_impl< ::imgr::model::Photo, id_sqlite >::persist_statement[] =
   "INSERT INTO \"Photo\" "
   "(\"id\", "
   "\"filename\", "
@@ -1112,10 +1067,9 @@ namespace odb
   "\"height\", "
   "\"album\") "
   "VALUES "
-  "(DEFAULT, $1, $2, $3, $4) "
-  "RETURNING \"id\"";
+  "(?, ?, ?, ?, ?)";
 
-  const char access::object_traits_impl< ::imgr::model::Photo, id_pgsql >::find_statement[] =
+  const char access::object_traits_impl< ::imgr::model::Photo, id_sqlite >::find_statement[] =
   "SELECT "
   "\"Photo\".\"id\", "
   "\"Photo\".\"filename\", "
@@ -1123,22 +1077,22 @@ namespace odb
   "\"Photo\".\"height\", "
   "\"Photo\".\"album\" "
   "FROM \"Photo\" "
-  "WHERE \"Photo\".\"id\"=$1";
+  "WHERE \"Photo\".\"id\"=?";
 
-  const char access::object_traits_impl< ::imgr::model::Photo, id_pgsql >::update_statement[] =
+  const char access::object_traits_impl< ::imgr::model::Photo, id_sqlite >::update_statement[] =
   "UPDATE \"Photo\" "
   "SET "
-  "\"filename\"=$1, "
-  "\"width\"=$2, "
-  "\"height\"=$3, "
-  "\"album\"=$4 "
-  "WHERE \"id\"=$5";
+  "\"filename\"=?, "
+  "\"width\"=?, "
+  "\"height\"=?, "
+  "\"album\"=? "
+  "WHERE \"id\"=?";
 
-  const char access::object_traits_impl< ::imgr::model::Photo, id_pgsql >::erase_statement[] =
+  const char access::object_traits_impl< ::imgr::model::Photo, id_sqlite >::erase_statement[] =
   "DELETE FROM \"Photo\" "
-  "WHERE \"id\"=$1";
+  "WHERE \"id\"=?";
 
-  const char access::object_traits_impl< ::imgr::model::Photo, id_pgsql >::query_statement[] =
+  const char access::object_traits_impl< ::imgr::model::Photo, id_sqlite >::query_statement[] =
   "SELECT\n"
   "\"Photo\".\"id\",\n"
   "\"Photo\".\"filename\",\n"
@@ -1148,21 +1102,21 @@ namespace odb
   "FROM \"Photo\"\n"
   "LEFT JOIN \"Album\" AS \"album\" ON \"album\".\"id\"=\"Photo\".\"album\"";
 
-  const char access::object_traits_impl< ::imgr::model::Photo, id_pgsql >::erase_query_statement[] =
+  const char access::object_traits_impl< ::imgr::model::Photo, id_sqlite >::erase_query_statement[] =
   "DELETE FROM \"Photo\"";
 
-  const char access::object_traits_impl< ::imgr::model::Photo, id_pgsql >::table_name[] =
+  const char access::object_traits_impl< ::imgr::model::Photo, id_sqlite >::table_name[] =
   "\"Photo\"";
 
-  void access::object_traits_impl< ::imgr::model::Photo, id_pgsql >::
+  void access::object_traits_impl< ::imgr::model::Photo, id_sqlite >::
   persist (database& db, object_type& obj)
   {
     ODB_POTENTIALLY_UNUSED (db);
 
-    using namespace pgsql;
+    using namespace sqlite;
 
-    pgsql::connection& conn (
-      pgsql::transaction::current ().connection ());
+    sqlite::connection& conn (
+      sqlite::transaction::current ().connection ());
     statements_type& sts (
       conn.statement_cache ().find_object<object_type> ());
 
@@ -1175,6 +1129,8 @@ namespace odb
 
     if (init (im, obj, statement_insert))
       im.version++;
+
+    im.m_id_null = true;
 
     if (im.version != sts.insert_image_version () ||
         imb.version == 0)
@@ -1206,18 +1162,18 @@ namespace odb
               callback_event::post_persist);
   }
 
-  void access::object_traits_impl< ::imgr::model::Photo, id_pgsql >::
+  void access::object_traits_impl< ::imgr::model::Photo, id_sqlite >::
   update (database& db, const object_type& obj)
   {
     ODB_POTENTIALLY_UNUSED (db);
 
-    using namespace pgsql;
-    using pgsql::update_statement;
+    using namespace sqlite;
+    using sqlite::update_statement;
 
     callback (db, obj, callback_event::pre_update);
 
-    pgsql::transaction& tr (pgsql::transaction::current ());
-    pgsql::connection& conn (tr.connection ());
+    sqlite::transaction& tr (sqlite::transaction::current ());
+    sqlite::connection& conn (tr.connection ());
     statements_type& sts (
       conn.statement_cache ().find_object<object_type> ());
 
@@ -1267,15 +1223,15 @@ namespace odb
     pointer_cache_traits::update (db, obj);
   }
 
-  void access::object_traits_impl< ::imgr::model::Photo, id_pgsql >::
+  void access::object_traits_impl< ::imgr::model::Photo, id_sqlite >::
   erase (database& db, const id_type& id)
   {
-    using namespace pgsql;
+    using namespace sqlite;
 
     ODB_POTENTIALLY_UNUSED (db);
 
-    pgsql::connection& conn (
-      pgsql::transaction::current ().connection ());
+    sqlite::connection& conn (
+      sqlite::transaction::current ().connection ());
     statements_type& sts (
       conn.statement_cache ().find_object<object_type> ());
 
@@ -1296,11 +1252,11 @@ namespace odb
     pointer_cache_traits::erase (db, id);
   }
 
-  access::object_traits_impl< ::imgr::model::Photo, id_pgsql >::pointer_type
-  access::object_traits_impl< ::imgr::model::Photo, id_pgsql >::
+  access::object_traits_impl< ::imgr::model::Photo, id_sqlite >::pointer_type
+  access::object_traits_impl< ::imgr::model::Photo, id_sqlite >::
   find (database& db, const id_type& id)
   {
-    using namespace pgsql;
+    using namespace sqlite;
 
     {
       pointer_type p (pointer_cache_traits::find (db, id));
@@ -1309,8 +1265,8 @@ namespace odb
         return p;
     }
 
-    pgsql::connection& conn (
-      pgsql::transaction::current ().connection ());
+    sqlite::connection& conn (
+      sqlite::transaction::current ().connection ());
     statements_type& sts (
       conn.statement_cache ().find_object<object_type> ());
 
@@ -1352,13 +1308,13 @@ namespace odb
     return p;
   }
 
-  bool access::object_traits_impl< ::imgr::model::Photo, id_pgsql >::
+  bool access::object_traits_impl< ::imgr::model::Photo, id_sqlite >::
   find (database& db, const id_type& id, object_type& obj)
   {
-    using namespace pgsql;
+    using namespace sqlite;
 
-    pgsql::connection& conn (
-      pgsql::transaction::current ().connection ());
+    sqlite::connection& conn (
+      sqlite::transaction::current ().connection ());
     statements_type& sts (
       conn.statement_cache ().find_object<object_type> ());
 
@@ -1385,13 +1341,13 @@ namespace odb
     return true;
   }
 
-  bool access::object_traits_impl< ::imgr::model::Photo, id_pgsql >::
+  bool access::object_traits_impl< ::imgr::model::Photo, id_sqlite >::
   reload (database& db, object_type& obj)
   {
-    using namespace pgsql;
+    using namespace sqlite;
 
-    pgsql::connection& conn (
-      pgsql::transaction::current ().connection ());
+    sqlite::connection& conn (
+      sqlite::transaction::current ().connection ());
     statements_type& sts (
       conn.statement_cache ().find_object<object_type> ());
 
@@ -1415,11 +1371,11 @@ namespace odb
     return true;
   }
 
-  bool access::object_traits_impl< ::imgr::model::Photo, id_pgsql >::
+  bool access::object_traits_impl< ::imgr::model::Photo, id_sqlite >::
   find_ (statements_type& sts,
          const id_type* id)
   {
-    using namespace pgsql;
+    using namespace sqlite;
 
     id_image_type& i (sts.id_image ());
     init (i, *id);
@@ -1466,16 +1422,16 @@ namespace odb
     return r != select_statement::no_data;
   }
 
-  result< access::object_traits_impl< ::imgr::model::Photo, id_pgsql >::object_type >
-  access::object_traits_impl< ::imgr::model::Photo, id_pgsql >::
+  result< access::object_traits_impl< ::imgr::model::Photo, id_sqlite >::object_type >
+  access::object_traits_impl< ::imgr::model::Photo, id_sqlite >::
   query (database&, const query_base_type& q)
   {
-    using namespace pgsql;
+    using namespace sqlite;
     using odb::details::shared;
     using odb::details::shared_ptr;
 
-    pgsql::connection& conn (
-      pgsql::transaction::current ().connection ());
+    sqlite::connection& conn (
+      sqlite::transaction::current ().connection ());
 
     statements_type& sts (
       conn.statement_cache ().find_object<object_type> ());
@@ -1501,33 +1457,29 @@ namespace odb
     q.init_parameters ();
     shared_ptr<select_statement> st (
       new (shared) select_statement (
-        sts.connection (),
-        query_statement_name,
+        conn,
         text,
         true,
         true,
-        q.parameter_types (),
-        q.parameter_count (),
         q.parameters_binding (),
         imb));
 
     st->execute ();
-    st->deallocate ();
 
     shared_ptr< odb::object_result_impl<object_type> > r (
-      new (shared) pgsql::object_result_impl<object_type> (
+      new (shared) sqlite::object_result_impl<object_type> (
         q, st, sts, 0));
 
     return result<object_type> (r);
   }
 
-  unsigned long long access::object_traits_impl< ::imgr::model::Photo, id_pgsql >::
+  unsigned long long access::object_traits_impl< ::imgr::model::Photo, id_sqlite >::
   erase_query (database&, const query_base_type& q)
   {
-    using namespace pgsql;
+    using namespace sqlite;
 
-    pgsql::connection& conn (
-      pgsql::transaction::current ().connection ());
+    sqlite::connection& conn (
+      sqlite::transaction::current ().connection ());
 
     std::string text (erase_query_statement);
     if (!q.empty ())
@@ -1539,10 +1491,7 @@ namespace odb
     q.init_parameters ();
     delete_statement st (
       conn,
-      erase_query_statement_name,
       text,
-      q.parameter_types (),
-      q.parameter_count (),
       q.parameters_binding ());
 
     return st.execute ();
@@ -1551,82 +1500,35 @@ namespace odb
   // PhotoThumbnail
   //
 
-  const char access::object_traits_impl< ::imgr::model::PhotoThumbnail, id_pgsql >::
-  persist_statement_name[] = "persist_imgr_model_PhotoThumbnail";
-
-  const char access::object_traits_impl< ::imgr::model::PhotoThumbnail, id_pgsql >::
-  find_statement_name[] = "find_imgr_model_PhotoThumbnail";
-
-  const char access::object_traits_impl< ::imgr::model::PhotoThumbnail, id_pgsql >::
-  update_statement_name[] = "update_imgr_model_PhotoThumbnail";
-
-  const char access::object_traits_impl< ::imgr::model::PhotoThumbnail, id_pgsql >::
-  erase_statement_name[] = "erase_imgr_model_PhotoThumbnail";
-
-  const char access::object_traits_impl< ::imgr::model::PhotoThumbnail, id_pgsql >::
-  query_statement_name[] = "query_imgr_model_PhotoThumbnail";
-
-  const char access::object_traits_impl< ::imgr::model::PhotoThumbnail, id_pgsql >::
-  erase_query_statement_name[] = "erase_query_imgr_model_PhotoThumbnail";
-
-  const unsigned int access::object_traits_impl< ::imgr::model::PhotoThumbnail, id_pgsql >::
-  persist_statement_types[] =
-  {
-    pgsql::int2_oid,
-    pgsql::int2_oid,
-    pgsql::int2_oid,
-    pgsql::bytea_oid,
-    pgsql::int8_oid
-  };
-
-  const unsigned int access::object_traits_impl< ::imgr::model::PhotoThumbnail, id_pgsql >::
-  find_statement_types[] =
-  {
-    pgsql::int8_oid
-  };
-
-  const unsigned int access::object_traits_impl< ::imgr::model::PhotoThumbnail, id_pgsql >::
-  update_statement_types[] =
-  {
-    pgsql::int2_oid,
-    pgsql::int2_oid,
-    pgsql::int2_oid,
-    pgsql::bytea_oid,
-    pgsql::int8_oid,
-    pgsql::int8_oid
-  };
-
   const char alias_traits<  ::imgr::model::Photo,
-    id_pgsql,
-    access::object_traits_impl< ::imgr::model::PhotoThumbnail, id_pgsql >::photo_tag>::
+    id_sqlite,
+    access::object_traits_impl< ::imgr::model::PhotoThumbnail, id_sqlite >::photo_tag>::
   table_name[] = "\"photo\"";
 
-  struct access::object_traits_impl< ::imgr::model::PhotoThumbnail, id_pgsql >::extra_statement_cache_type
+  struct access::object_traits_impl< ::imgr::model::PhotoThumbnail, id_sqlite >::extra_statement_cache_type
   {
     extra_statement_cache_type (
-      pgsql::connection&,
+      sqlite::connection&,
       image_type&,
       id_image_type&,
-      pgsql::binding&,
-      pgsql::binding&,
-      pgsql::native_binding&,
-      const unsigned int*)
+      sqlite::binding&,
+      sqlite::binding&)
     {
     }
   };
 
-  access::object_traits_impl< ::imgr::model::PhotoThumbnail, id_pgsql >::id_type
-  access::object_traits_impl< ::imgr::model::PhotoThumbnail, id_pgsql >::
+  access::object_traits_impl< ::imgr::model::PhotoThumbnail, id_sqlite >::id_type
+  access::object_traits_impl< ::imgr::model::PhotoThumbnail, id_sqlite >::
   id (const id_image_type& i)
   {
-    pgsql::database* db (0);
+    sqlite::database* db (0);
     ODB_POTENTIALLY_UNUSED (db);
 
     id_type id;
     {
-      pgsql::value_traits<
+      sqlite::value_traits<
           ::imgr::model::PhotoThumbnail::id_type,
-          pgsql::id_bigint >::set_value (
+          sqlite::id_integer >::set_value (
         id,
         i.id_value,
         i.id_null);
@@ -1635,18 +1537,18 @@ namespace odb
     return id;
   }
 
-  access::object_traits_impl< ::imgr::model::PhotoThumbnail, id_pgsql >::id_type
-  access::object_traits_impl< ::imgr::model::PhotoThumbnail, id_pgsql >::
+  access::object_traits_impl< ::imgr::model::PhotoThumbnail, id_sqlite >::id_type
+  access::object_traits_impl< ::imgr::model::PhotoThumbnail, id_sqlite >::
   id (const image_type& i)
   {
-    pgsql::database* db (0);
+    sqlite::database* db (0);
     ODB_POTENTIALLY_UNUSED (db);
 
     id_type id;
     {
-      pgsql::value_traits<
+      sqlite::value_traits<
           ::imgr::model::PhotoThumbnail::id_type,
-          pgsql::id_bigint >::set_value (
+          sqlite::id_integer >::set_value (
         id,
         i.m_id_value,
         i.m_id_null);
@@ -1655,7 +1557,7 @@ namespace odb
     return id;
   }
 
-  bool access::object_traits_impl< ::imgr::model::PhotoThumbnail, id_pgsql >::
+  bool access::object_traits_impl< ::imgr::model::PhotoThumbnail, id_sqlite >::
   grow (image_type& i,
         bool* t)
   {
@@ -1666,19 +1568,19 @@ namespace odb
 
     // m_id
     //
-    t[0UL] = 0;
+    t[0UL] = false;
 
     // m_width
     //
-    t[1UL] = 0;
+    t[1UL] = false;
 
     // m_height
     //
-    t[2UL] = 0;
+    t[2UL] = false;
 
     // m_channels
     //
-    t[3UL] = 0;
+    t[3UL] = false;
 
     // m_thumbnail
     //
@@ -1690,27 +1592,27 @@ namespace odb
 
     // m_photo
     //
-    t[5UL] = 0;
+    t[5UL] = false;
 
     return grew;
   }
 
-  void access::object_traits_impl< ::imgr::model::PhotoThumbnail, id_pgsql >::
-  bind (pgsql::bind* b,
+  void access::object_traits_impl< ::imgr::model::PhotoThumbnail, id_sqlite >::
+  bind (sqlite::bind* b,
         image_type& i,
-        pgsql::statement_kind sk)
+        sqlite::statement_kind sk)
   {
     ODB_POTENTIALLY_UNUSED (sk);
 
-    using namespace pgsql;
+    using namespace sqlite;
 
     std::size_t n (0);
 
     // m_id
     //
-    if (sk != statement_insert && sk != statement_update)
+    if (sk != statement_update)
     {
-      b[n].type = pgsql::bind::bigint;
+      b[n].type = sqlite::bind::integer;
       b[n].buffer = &i.m_id_value;
       b[n].is_null = &i.m_id_null;
       n++;
@@ -1718,63 +1620,80 @@ namespace odb
 
     // m_width
     //
-    b[n].type = pgsql::bind::smallint;
+    b[n].type = sqlite::bind::integer;
     b[n].buffer = &i.m_width_value;
     b[n].is_null = &i.m_width_null;
     n++;
 
     // m_height
     //
-    b[n].type = pgsql::bind::smallint;
+    b[n].type = sqlite::bind::integer;
     b[n].buffer = &i.m_height_value;
     b[n].is_null = &i.m_height_null;
     n++;
 
     // m_channels
     //
-    b[n].type = pgsql::bind::smallint;
+    b[n].type = sqlite::bind::integer;
     b[n].buffer = &i.m_channels_value;
     b[n].is_null = &i.m_channels_null;
     n++;
 
     // m_thumbnail
     //
-    b[n].type = pgsql::bind::bytea;
+    b[n].type = sqlite::bind::blob;
     b[n].buffer = i.m_thumbnail_value.data ();
-    b[n].capacity = i.m_thumbnail_value.capacity ();
     b[n].size = &i.m_thumbnail_size;
+    b[n].capacity = i.m_thumbnail_value.capacity ();
     b[n].is_null = &i.m_thumbnail_null;
     n++;
 
     // m_photo
     //
-    b[n].type = pgsql::bind::bigint;
+    b[n].type = sqlite::bind::integer;
     b[n].buffer = &i.m_photo_value;
     b[n].is_null = &i.m_photo_null;
     n++;
   }
 
-  void access::object_traits_impl< ::imgr::model::PhotoThumbnail, id_pgsql >::
-  bind (pgsql::bind* b, id_image_type& i)
+  void access::object_traits_impl< ::imgr::model::PhotoThumbnail, id_sqlite >::
+  bind (sqlite::bind* b, id_image_type& i)
   {
     std::size_t n (0);
-    b[n].type = pgsql::bind::bigint;
+    b[n].type = sqlite::bind::integer;
     b[n].buffer = &i.id_value;
     b[n].is_null = &i.id_null;
   }
 
-  bool access::object_traits_impl< ::imgr::model::PhotoThumbnail, id_pgsql >::
+  bool access::object_traits_impl< ::imgr::model::PhotoThumbnail, id_sqlite >::
   init (image_type& i,
         const object_type& o,
-        pgsql::statement_kind sk)
+        sqlite::statement_kind sk)
   {
     ODB_POTENTIALLY_UNUSED (i);
     ODB_POTENTIALLY_UNUSED (o);
     ODB_POTENTIALLY_UNUSED (sk);
 
-    using namespace pgsql;
+    using namespace sqlite;
 
     bool grew (false);
+
+    // m_id
+    //
+    if (sk == statement_insert)
+    {
+      ::imgr::model::PhotoThumbnail::id_type const& v =
+        o.m_id;
+
+      bool is_null (false);
+      sqlite::value_traits<
+          ::imgr::model::PhotoThumbnail::id_type,
+          sqlite::id_integer >::set_image (
+        i.m_id_value,
+        is_null,
+        v);
+      i.m_id_null = is_null;
+    }
 
     // m_width
     //
@@ -1783,10 +1702,12 @@ namespace odb
         o.m_width;
 
       bool is_null (false);
-      pgsql::value_traits<
+      sqlite::value_traits<
           ::uint16_t,
-          pgsql::id_smallint >::set_image (
-        i.m_width_value, is_null, v);
+          sqlite::id_integer >::set_image (
+        i.m_width_value,
+        is_null,
+        v);
       i.m_width_null = is_null;
     }
 
@@ -1797,10 +1718,12 @@ namespace odb
         o.m_height;
 
       bool is_null (false);
-      pgsql::value_traits<
+      sqlite::value_traits<
           ::uint16_t,
-          pgsql::id_smallint >::set_image (
-        i.m_height_value, is_null, v);
+          sqlite::id_integer >::set_image (
+        i.m_height_value,
+        is_null,
+        v);
       i.m_height_null = is_null;
     }
 
@@ -1811,31 +1734,31 @@ namespace odb
         o.m_channels;
 
       bool is_null (false);
-      pgsql::value_traits<
+      sqlite::value_traits<
           ::uint8_t,
-          pgsql::id_smallint >::set_image (
-        i.m_channels_value, is_null, v);
+          sqlite::id_integer >::set_image (
+        i.m_channels_value,
+        is_null,
+        v);
       i.m_channels_null = is_null;
     }
 
     // m_thumbnail
     //
     {
-      ::std::vector< unsigned char > const& v =
+      ::imgr::model::RawData const& v =
         o.m_thumbnail;
 
       bool is_null (false);
-      std::size_t size (0);
       std::size_t cap (i.m_thumbnail_value.capacity ());
-      pgsql::value_traits<
-          ::std::vector< unsigned char >,
-          pgsql::id_bytea >::set_image (
+      sqlite::value_traits<
+          ::imgr::model::RawData,
+          sqlite::id_blob >::set_image (
         i.m_thumbnail_value,
-        size,
+        i.m_thumbnail_size,
         is_null,
         v);
       i.m_thumbnail_null = is_null;
-      i.m_thumbnail_size = size;
       grew = grew || (cap != i.m_thumbnail_value.capacity ());
     }
 
@@ -1854,10 +1777,12 @@ namespace odb
         const obj_traits::id_type& id (
           obj_traits::id (ptr_traits::get_ref (v)));
 
-        pgsql::value_traits<
+        sqlite::value_traits<
             obj_traits::id_type,
-            pgsql::id_bigint >::set_image (
-          i.m_photo_value, is_null, id);
+            sqlite::id_integer >::set_image (
+          i.m_photo_value,
+          is_null,
+          id);
         i.m_photo_null = is_null;
       }
       else
@@ -1867,7 +1792,7 @@ namespace odb
     return grew;
   }
 
-  void access::object_traits_impl< ::imgr::model::PhotoThumbnail, id_pgsql >::
+  void access::object_traits_impl< ::imgr::model::PhotoThumbnail, id_sqlite >::
   init (object_type& o,
         const image_type& i,
         database* db)
@@ -1882,9 +1807,9 @@ namespace odb
       ::imgr::model::PhotoThumbnail::id_type& v =
         o.m_id;
 
-      pgsql::value_traits<
+      sqlite::value_traits<
           ::imgr::model::PhotoThumbnail::id_type,
-          pgsql::id_bigint >::set_value (
+          sqlite::id_integer >::set_value (
         v,
         i.m_id_value,
         i.m_id_null);
@@ -1896,9 +1821,9 @@ namespace odb
       ::uint16_t& v =
         o.m_width;
 
-      pgsql::value_traits<
+      sqlite::value_traits<
           ::uint16_t,
-          pgsql::id_smallint >::set_value (
+          sqlite::id_integer >::set_value (
         v,
         i.m_width_value,
         i.m_width_null);
@@ -1910,9 +1835,9 @@ namespace odb
       ::uint16_t& v =
         o.m_height;
 
-      pgsql::value_traits<
+      sqlite::value_traits<
           ::uint16_t,
-          pgsql::id_smallint >::set_value (
+          sqlite::id_integer >::set_value (
         v,
         i.m_height_value,
         i.m_height_null);
@@ -1924,9 +1849,9 @@ namespace odb
       ::uint8_t& v =
         o.m_channels;
 
-      pgsql::value_traits<
+      sqlite::value_traits<
           ::uint8_t,
-          pgsql::id_smallint >::set_value (
+          sqlite::id_integer >::set_value (
         v,
         i.m_channels_value,
         i.m_channels_null);
@@ -1935,12 +1860,12 @@ namespace odb
     // m_thumbnail
     //
     {
-      ::std::vector< unsigned char >& v =
+      ::imgr::model::RawData& v =
         o.m_thumbnail;
 
-      pgsql::value_traits<
-          ::std::vector< unsigned char >,
-          pgsql::id_bytea >::set_value (
+      sqlite::value_traits<
+          ::imgr::model::RawData,
+          sqlite::id_blob >::set_value (
         v,
         i.m_thumbnail_value,
         i.m_thumbnail_size,
@@ -1961,9 +1886,9 @@ namespace odb
       else
       {
         obj_traits::id_type id;
-        pgsql::value_traits<
+        sqlite::value_traits<
             obj_traits::id_type,
-            pgsql::id_bigint >::set_value (
+            sqlite::id_integer >::set_value (
           id,
           i.m_photo_value,
           i.m_photo_null);
@@ -1973,26 +1898,28 @@ namespace odb
         // cannot be initialized from an object pointer.
         //
         v = ptr_traits::pointer_type (
-          static_cast<pgsql::database*> (db)->load<
+          static_cast<sqlite::database*> (db)->load<
             obj_traits::object_type > (id));
       }
     }
   }
 
-  void access::object_traits_impl< ::imgr::model::PhotoThumbnail, id_pgsql >::
+  void access::object_traits_impl< ::imgr::model::PhotoThumbnail, id_sqlite >::
   init (id_image_type& i, const id_type& id)
   {
     {
       bool is_null (false);
-      pgsql::value_traits<
+      sqlite::value_traits<
           ::imgr::model::PhotoThumbnail::id_type,
-          pgsql::id_bigint >::set_image (
-        i.id_value, is_null, id);
+          sqlite::id_integer >::set_image (
+        i.id_value,
+        is_null,
+        id);
       i.id_null = is_null;
     }
   }
 
-  const char access::object_traits_impl< ::imgr::model::PhotoThumbnail, id_pgsql >::persist_statement[] =
+  const char access::object_traits_impl< ::imgr::model::PhotoThumbnail, id_sqlite >::persist_statement[] =
   "INSERT INTO \"PhotoThumbnail\" "
   "(\"id\", "
   "\"width\", "
@@ -2001,10 +1928,9 @@ namespace odb
   "\"thumbnail\", "
   "\"photo\") "
   "VALUES "
-  "(DEFAULT, $1, $2, $3, $4, $5) "
-  "RETURNING \"id\"";
+  "(?, ?, ?, ?, ?, ?)";
 
-  const char access::object_traits_impl< ::imgr::model::PhotoThumbnail, id_pgsql >::find_statement[] =
+  const char access::object_traits_impl< ::imgr::model::PhotoThumbnail, id_sqlite >::find_statement[] =
   "SELECT "
   "\"PhotoThumbnail\".\"id\", "
   "\"PhotoThumbnail\".\"width\", "
@@ -2013,23 +1939,23 @@ namespace odb
   "\"PhotoThumbnail\".\"thumbnail\", "
   "\"PhotoThumbnail\".\"photo\" "
   "FROM \"PhotoThumbnail\" "
-  "WHERE \"PhotoThumbnail\".\"id\"=$1";
+  "WHERE \"PhotoThumbnail\".\"id\"=?";
 
-  const char access::object_traits_impl< ::imgr::model::PhotoThumbnail, id_pgsql >::update_statement[] =
+  const char access::object_traits_impl< ::imgr::model::PhotoThumbnail, id_sqlite >::update_statement[] =
   "UPDATE \"PhotoThumbnail\" "
   "SET "
-  "\"width\"=$1, "
-  "\"height\"=$2, "
-  "\"channels\"=$3, "
-  "\"thumbnail\"=$4, "
-  "\"photo\"=$5 "
-  "WHERE \"id\"=$6";
+  "\"width\"=?, "
+  "\"height\"=?, "
+  "\"channels\"=?, "
+  "\"thumbnail\"=?, "
+  "\"photo\"=? "
+  "WHERE \"id\"=?";
 
-  const char access::object_traits_impl< ::imgr::model::PhotoThumbnail, id_pgsql >::erase_statement[] =
+  const char access::object_traits_impl< ::imgr::model::PhotoThumbnail, id_sqlite >::erase_statement[] =
   "DELETE FROM \"PhotoThumbnail\" "
-  "WHERE \"id\"=$1";
+  "WHERE \"id\"=?";
 
-  const char access::object_traits_impl< ::imgr::model::PhotoThumbnail, id_pgsql >::query_statement[] =
+  const char access::object_traits_impl< ::imgr::model::PhotoThumbnail, id_sqlite >::query_statement[] =
   "SELECT\n"
   "\"PhotoThumbnail\".\"id\",\n"
   "\"PhotoThumbnail\".\"width\",\n"
@@ -2040,21 +1966,21 @@ namespace odb
   "FROM \"PhotoThumbnail\"\n"
   "LEFT JOIN \"Photo\" AS \"photo\" ON \"photo\".\"id\"=\"PhotoThumbnail\".\"photo\"";
 
-  const char access::object_traits_impl< ::imgr::model::PhotoThumbnail, id_pgsql >::erase_query_statement[] =
+  const char access::object_traits_impl< ::imgr::model::PhotoThumbnail, id_sqlite >::erase_query_statement[] =
   "DELETE FROM \"PhotoThumbnail\"";
 
-  const char access::object_traits_impl< ::imgr::model::PhotoThumbnail, id_pgsql >::table_name[] =
+  const char access::object_traits_impl< ::imgr::model::PhotoThumbnail, id_sqlite >::table_name[] =
   "\"PhotoThumbnail\"";
 
-  void access::object_traits_impl< ::imgr::model::PhotoThumbnail, id_pgsql >::
+  void access::object_traits_impl< ::imgr::model::PhotoThumbnail, id_sqlite >::
   persist (database& db, object_type& obj)
   {
     ODB_POTENTIALLY_UNUSED (db);
 
-    using namespace pgsql;
+    using namespace sqlite;
 
-    pgsql::connection& conn (
-      pgsql::transaction::current ().connection ());
+    sqlite::connection& conn (
+      sqlite::transaction::current ().connection ());
     statements_type& sts (
       conn.statement_cache ().find_object<object_type> ());
 
@@ -2067,6 +1993,8 @@ namespace odb
 
     if (init (im, obj, statement_insert))
       im.version++;
+
+    im.m_id_null = true;
 
     if (im.version != sts.insert_image_version () ||
         imb.version == 0)
@@ -2098,18 +2026,18 @@ namespace odb
               callback_event::post_persist);
   }
 
-  void access::object_traits_impl< ::imgr::model::PhotoThumbnail, id_pgsql >::
+  void access::object_traits_impl< ::imgr::model::PhotoThumbnail, id_sqlite >::
   update (database& db, const object_type& obj)
   {
     ODB_POTENTIALLY_UNUSED (db);
 
-    using namespace pgsql;
-    using pgsql::update_statement;
+    using namespace sqlite;
+    using sqlite::update_statement;
 
     callback (db, obj, callback_event::pre_update);
 
-    pgsql::transaction& tr (pgsql::transaction::current ());
-    pgsql::connection& conn (tr.connection ());
+    sqlite::transaction& tr (sqlite::transaction::current ());
+    sqlite::connection& conn (tr.connection ());
     statements_type& sts (
       conn.statement_cache ().find_object<object_type> ());
 
@@ -2159,15 +2087,15 @@ namespace odb
     pointer_cache_traits::update (db, obj);
   }
 
-  void access::object_traits_impl< ::imgr::model::PhotoThumbnail, id_pgsql >::
+  void access::object_traits_impl< ::imgr::model::PhotoThumbnail, id_sqlite >::
   erase (database& db, const id_type& id)
   {
-    using namespace pgsql;
+    using namespace sqlite;
 
     ODB_POTENTIALLY_UNUSED (db);
 
-    pgsql::connection& conn (
-      pgsql::transaction::current ().connection ());
+    sqlite::connection& conn (
+      sqlite::transaction::current ().connection ());
     statements_type& sts (
       conn.statement_cache ().find_object<object_type> ());
 
@@ -2188,11 +2116,11 @@ namespace odb
     pointer_cache_traits::erase (db, id);
   }
 
-  access::object_traits_impl< ::imgr::model::PhotoThumbnail, id_pgsql >::pointer_type
-  access::object_traits_impl< ::imgr::model::PhotoThumbnail, id_pgsql >::
+  access::object_traits_impl< ::imgr::model::PhotoThumbnail, id_sqlite >::pointer_type
+  access::object_traits_impl< ::imgr::model::PhotoThumbnail, id_sqlite >::
   find (database& db, const id_type& id)
   {
-    using namespace pgsql;
+    using namespace sqlite;
 
     {
       pointer_type p (pointer_cache_traits::find (db, id));
@@ -2201,8 +2129,8 @@ namespace odb
         return p;
     }
 
-    pgsql::connection& conn (
-      pgsql::transaction::current ().connection ());
+    sqlite::connection& conn (
+      sqlite::transaction::current ().connection ());
     statements_type& sts (
       conn.statement_cache ().find_object<object_type> ());
 
@@ -2244,13 +2172,13 @@ namespace odb
     return p;
   }
 
-  bool access::object_traits_impl< ::imgr::model::PhotoThumbnail, id_pgsql >::
+  bool access::object_traits_impl< ::imgr::model::PhotoThumbnail, id_sqlite >::
   find (database& db, const id_type& id, object_type& obj)
   {
-    using namespace pgsql;
+    using namespace sqlite;
 
-    pgsql::connection& conn (
-      pgsql::transaction::current ().connection ());
+    sqlite::connection& conn (
+      sqlite::transaction::current ().connection ());
     statements_type& sts (
       conn.statement_cache ().find_object<object_type> ());
 
@@ -2277,13 +2205,13 @@ namespace odb
     return true;
   }
 
-  bool access::object_traits_impl< ::imgr::model::PhotoThumbnail, id_pgsql >::
+  bool access::object_traits_impl< ::imgr::model::PhotoThumbnail, id_sqlite >::
   reload (database& db, object_type& obj)
   {
-    using namespace pgsql;
+    using namespace sqlite;
 
-    pgsql::connection& conn (
-      pgsql::transaction::current ().connection ());
+    sqlite::connection& conn (
+      sqlite::transaction::current ().connection ());
     statements_type& sts (
       conn.statement_cache ().find_object<object_type> ());
 
@@ -2307,11 +2235,11 @@ namespace odb
     return true;
   }
 
-  bool access::object_traits_impl< ::imgr::model::PhotoThumbnail, id_pgsql >::
+  bool access::object_traits_impl< ::imgr::model::PhotoThumbnail, id_sqlite >::
   find_ (statements_type& sts,
          const id_type* id)
   {
-    using namespace pgsql;
+    using namespace sqlite;
 
     id_image_type& i (sts.id_image ());
     init (i, *id);
@@ -2358,16 +2286,16 @@ namespace odb
     return r != select_statement::no_data;
   }
 
-  result< access::object_traits_impl< ::imgr::model::PhotoThumbnail, id_pgsql >::object_type >
-  access::object_traits_impl< ::imgr::model::PhotoThumbnail, id_pgsql >::
+  result< access::object_traits_impl< ::imgr::model::PhotoThumbnail, id_sqlite >::object_type >
+  access::object_traits_impl< ::imgr::model::PhotoThumbnail, id_sqlite >::
   query (database&, const query_base_type& q)
   {
-    using namespace pgsql;
+    using namespace sqlite;
     using odb::details::shared;
     using odb::details::shared_ptr;
 
-    pgsql::connection& conn (
-      pgsql::transaction::current ().connection ());
+    sqlite::connection& conn (
+      sqlite::transaction::current ().connection ());
 
     statements_type& sts (
       conn.statement_cache ().find_object<object_type> ());
@@ -2393,33 +2321,29 @@ namespace odb
     q.init_parameters ();
     shared_ptr<select_statement> st (
       new (shared) select_statement (
-        sts.connection (),
-        query_statement_name,
+        conn,
         text,
         true,
         true,
-        q.parameter_types (),
-        q.parameter_count (),
         q.parameters_binding (),
         imb));
 
     st->execute ();
-    st->deallocate ();
 
     shared_ptr< odb::object_result_impl<object_type> > r (
-      new (shared) pgsql::object_result_impl<object_type> (
+      new (shared) sqlite::object_result_impl<object_type> (
         q, st, sts, 0));
 
     return result<object_type> (r);
   }
 
-  unsigned long long access::object_traits_impl< ::imgr::model::PhotoThumbnail, id_pgsql >::
+  unsigned long long access::object_traits_impl< ::imgr::model::PhotoThumbnail, id_sqlite >::
   erase_query (database&, const query_base_type& q)
   {
-    using namespace pgsql;
+    using namespace sqlite;
 
-    pgsql::connection& conn (
-      pgsql::transaction::current ().connection ());
+    sqlite::connection& conn (
+      sqlite::transaction::current ().connection ());
 
     std::string text (erase_query_statement);
     if (!q.empty ())
@@ -2431,14 +2355,86 @@ namespace odb
     q.init_parameters ();
     delete_statement st (
       conn,
-      erase_query_statement_name,
       text,
-      q.parameter_types (),
-      q.parameter_count (),
       q.parameters_binding ());
 
     return st.execute ();
   }
+}
+
+namespace odb
+{
+  static bool
+  create_schema (database& db, unsigned short pass, bool drop)
+  {
+    ODB_POTENTIALLY_UNUSED (db);
+    ODB_POTENTIALLY_UNUSED (pass);
+    ODB_POTENTIALLY_UNUSED (drop);
+
+    if (drop)
+    {
+      switch (pass)
+      {
+        case 1:
+        {
+          return true;
+        }
+        case 2:
+        {
+          db.execute ("DROP TABLE IF EXISTS \"PhotoThumbnail\"");
+          db.execute ("DROP TABLE IF EXISTS \"Photo\"");
+          db.execute ("DROP TABLE IF EXISTS \"Album\"");
+          return false;
+        }
+      }
+    }
+    else
+    {
+      switch (pass)
+      {
+        case 1:
+        {
+          db.execute ("CREATE TABLE \"Album\" (\n"
+                      "  \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n"
+                      "  \"absolute_path\" TEXT NOT NULL)");
+          db.execute ("CREATE UNIQUE INDEX \"Album_absolute_path_i\"\n"
+                      "  ON \"Album\" (\"absolute_path\")");
+          db.execute ("CREATE TABLE \"Photo\" (\n"
+                      "  \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n"
+                      "  \"filename\" TEXT NOT NULL,\n"
+                      "  \"width\" INTEGER NOT NULL,\n"
+                      "  \"height\" INTEGER NOT NULL,\n"
+                      "  \"album\" INTEGER NOT NULL,\n"
+                      "  CONSTRAINT \"album_fk\"\n"
+                      "    FOREIGN KEY (\"album\")\n"
+                      "    REFERENCES \"Album\" (\"id\")\n"
+                      "    DEFERRABLE INITIALLY DEFERRED)");
+          db.execute ("CREATE TABLE \"PhotoThumbnail\" (\n"
+                      "  \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n"
+                      "  \"width\" INTEGER NOT NULL,\n"
+                      "  \"height\" INTEGER NOT NULL,\n"
+                      "  \"channels\" INTEGER NOT NULL,\n"
+                      "  \"thumbnail\" BLOB NOT NULL,\n"
+                      "  \"photo\" INTEGER NOT NULL,\n"
+                      "  CONSTRAINT \"photo_fk\"\n"
+                      "    FOREIGN KEY (\"photo\")\n"
+                      "    REFERENCES \"Photo\" (\"id\")\n"
+                      "    DEFERRABLE INITIALLY DEFERRED)");
+          db.execute ("CREATE UNIQUE INDEX \"PhotoThumbnail_photo_i\"\n"
+                      "  ON \"PhotoThumbnail\" (\"photo\")");
+          return false;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  static const schema_catalog_create_entry
+  create_schema_entry_ (
+    id_sqlite,
+    "",
+    &create_schema);
 }
 
 #include <odb/post.hxx>

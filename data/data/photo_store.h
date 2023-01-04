@@ -3,7 +3,7 @@
 
 #include <odb/database.hxx>
 #include <odb/session.hxx>
-#include <odb/pgsql/database.hxx>
+#include <odb/sqlite/database.hxx>
 
 #include <model/store.h>
 #include <model/store-odb.hxx>
@@ -26,18 +26,14 @@ public:
     using PhotoPtr = odb::object_traits<model::Photo>::pointer_type;
     using PhotoList = std::vector<PhotoPtr>;
     using ThumbnailPtr = odb::object_traits<model::PhotoThumbnail>::pointer_type;
-    using DatabaseType = odb::pgsql::database;
+    using DatabaseType = odb::sqlite::database;
 
     using Dimension = uint16_t;
 
     /// Creates a new PhotoStore and connects to DB
-    /// \param user
-    /// \param password
-    /// \param db
-    /// \param host
-    /// \param port
-    PhotoStore(const std::string &user, const std::string &password, const std::string &db,
-               const std::string &host, uint16_t port);
+    /// \param db_path Path to where to store the database
+    /// \param recreate True to delete the database and create anew
+    explicit PhotoStore(const filesystem::path& db_path, bool recreate = false);
 
     /// Retrieves an album given an absolute path
     /// \param album_path

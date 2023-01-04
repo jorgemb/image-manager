@@ -17,20 +17,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED on)
 
 # Add external libraries
 
-## WXWIDGETS
-#set(wxBUILD_MONOLITHIC OFF)
-#set(wxBUILD_SHARED OFF)
-##set(wxBUILD_SAMPLES ALL)
-#add_subdirectory(third_party/wxWidgets)
-
-find_package(wxWidgets CONFIG REQUIRED)
-
-# OpenImageIO
-#find_package(OpenImageIO CONFIG REQUIRED)
-
-# LibODB
-find_package(odb CONFIG REQUIRED COMPONENTS libodb pgsql)
-
 # Catch2
 find_package(Catch2 3 REQUIRED)
 set_property(GLOBAL PROPERTY CTEST_TARGETS_ADDED 1)

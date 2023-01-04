@@ -28,7 +28,7 @@
 namespace fs = boost::filesystem;
 
 // Used to do tests that write to disk
-//#define WRITE_TO_DISK_TESTS
+#define WRITE_TO_DISK_TESTS
 
 /// Creates a random string for the root file
 /// \param size
@@ -154,10 +154,10 @@ TEST_CASE("Config file read", "[Config]") {
         REQUIRE_THAT(expected_paths, UnorderedEquals(paths));
     }
 
-    SECTION("Connection parameters"){
+    SECTION("Connection parameters") {
         std::map<std::string, std::string> expected_params{
                 {"host", "localhost"},
-                {"db", "database"},
+                {"db",   "database"},
                 {"port", "1234"}
         };
 
@@ -165,32 +165,32 @@ TEST_CASE("Config file read", "[Config]") {
     }
 }
 
-TEST_CASE("Check DatabaseType connection", "[PhotoStore]") {
-    imgr::PhotoStore store("admin", "Password0!", "photo", "localhost", 5432);
+TEST_CASE("Check photo store calculations", "[PhotoStore]") {
+    SECTION("Square image") {
+        int width = 1024, height = 1024;
+        std::tie(width, height) = imgr::PhotoStore::calculate_dimensions(width, height, 128);
 
-    SECTION("Calculations") {
-        SECTION("Square image") {
-            int width = 1024, height = 1024;
-            std::tie(width, height) = imgr::PhotoStore::calculate_dimensions(width, height, 128);
-
-            REQUIRE(width == 128);
-            REQUIRE(height == 128);
-        }
-
-        SECTION("Vertical image") {
-            int width = 512, height = 1024;
-            std::tie(width, height) = imgr::PhotoStore::calculate_dimensions(width, height, 128);
-            REQUIRE(width == 64);
-            REQUIRE(height == 128);
-        }
-
-        SECTION("Horizontal image") {
-            int width = 1024, height = 256;
-            std::tie(width, height) = imgr::PhotoStore::calculate_dimensions(width, height, 128);
-            REQUIRE(width == 128);
-            REQUIRE(height == 32);
-        }
+        REQUIRE(width == 128);
+        REQUIRE(height == 128);
     }
+
+    SECTION("Vertical image") {
+        int width = 512, height = 1024;
+        std::tie(width, height) = imgr::PhotoStore::calculate_dimensions(width, height, 128);
+        REQUIRE(width == 64);
+        REQUIRE(height == 128);
+    }
+
+    SECTION("Horizontal image") {
+        int width = 1024, height = 256;
+        std::tie(width, height) = imgr::PhotoStore::calculate_dimensions(width, height, 128);
+        REQUIRE(width == 128);
+        REQUIRE(height == 32);
+    }
+}
+
+TEST_CASE("Check database connection", "[PhotoStore]") {
+    imgr::PhotoStore store(fs::current_path() / "test.db");
 
     fs::path album_path = fs::current_path() / "sandbox";
     SECTION("Creates the album") {
@@ -219,7 +219,9 @@ TEST_CASE("Check DatabaseType connection", "[PhotoStore]") {
 
 #ifdef WRITE_TO_DISK_TESTS
             // Try to write the thumbnail to disk
-            fs::path dest = fs::current_path() / "sandbox" / fmt::format(".{}.thumbnail.jpg", p->get_filename());
+            fs::path filename(p->get_filename());
+            fs::path dest =
+                    fs::current_path() / "sandbox" / fmt::format(".thumbnail.{}.jpg", filename.stem().string());
 
             // Read the image
             auto thumbnail_data = OIIO::Filesystem::IOMemReader(thumbnail->get_data());

@@ -13,6 +13,10 @@ namespace model {
 /// ID type to use for all items
 using ID_TYPE = uint64_t;
 
+/// Type to be used when storing raw data
+using RawData = std::vector<uint8_t>;
+#pragma db value(RawData) type("BLOB")
+
 class Photo;
 
 /// Represents an album object, modeled as a folder in the filesystem
@@ -115,7 +119,7 @@ public:
     /// \param height
     /// \param thumbnail
     /// \param photo
-    PhotoThumbnail(uint16_t width, uint16_t height, uint8_t channels, const std::vector<uint8_t> &thumbnail,
+    PhotoThumbnail(uint16_t width, uint16_t height, uint8_t channels, const RawData &thumbnail,
                    const std::shared_ptr<Photo> &photo) : m_width(width), m_height(height), m_channels(channels),
                                                           m_thumbnail(thumbnail),
                                                           m_photo(photo) {
@@ -127,7 +131,7 @@ public:
     /// \param height
     /// \param thumbnail
     /// \param photo
-    PhotoThumbnail(uint16_t width, uint16_t height, uint8_t channels, std::vector<uint8_t> &&thumbnail,
+    PhotoThumbnail(uint16_t width, uint16_t height, uint8_t channels, RawData &&thumbnail,
                    const std::shared_ptr<Photo> &photo) : m_width(width), m_height(height), m_channels(channels),
                                                           m_thumbnail(thumbnail),
                                                           m_photo(photo) {
@@ -142,7 +146,7 @@ public:
 
     /// Returns the thumbnail vector
     /// \return
-    const std::vector<uint8_t> &get_data() const {
+    const RawData &get_data() const {
         return m_thumbnail;
     }
 
@@ -183,8 +187,7 @@ private:
     uint16_t m_width, m_height;
     uint8_t m_channels;
 
-#pragma db type("BYTEA")
-    std::vector<uint8_t> m_thumbnail;
+    RawData m_thumbnail;
 
 #pragma db not_null unique
     std::shared_ptr<Photo> m_photo;

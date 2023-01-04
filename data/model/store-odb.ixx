@@ -98,7 +98,7 @@ namespace odb
   //
 
   inline
-  void access::object_traits_impl< ::imgr::model::Album, id_pgsql >::
+  void access::object_traits_impl< ::imgr::model::Album, id_sqlite >::
   erase (database& db, const object_type& obj)
   {
     callback (db, obj, callback_event::pre_erase);
@@ -107,7 +107,7 @@ namespace odb
   }
 
   inline
-  void access::object_traits_impl< ::imgr::model::Album, id_pgsql >::
+  void access::object_traits_impl< ::imgr::model::Album, id_sqlite >::
   load_ (statements_type& sts,
          object_type& obj,
          bool)
@@ -120,7 +120,7 @@ namespace odb
   //
 
   inline
-  void access::object_traits_impl< ::imgr::model::Photo, id_pgsql >::
+  void access::object_traits_impl< ::imgr::model::Photo, id_sqlite >::
   erase (database& db, const object_type& obj)
   {
     callback (db, obj, callback_event::pre_erase);
@@ -129,7 +129,7 @@ namespace odb
   }
 
   inline
-  void access::object_traits_impl< ::imgr::model::Photo, id_pgsql >::
+  void access::object_traits_impl< ::imgr::model::Photo, id_sqlite >::
   load_ (statements_type& sts,
          object_type& obj,
          bool)
@@ -142,7 +142,7 @@ namespace odb
   //
 
   inline
-  void access::object_traits_impl< ::imgr::model::PhotoThumbnail, id_pgsql >::
+  void access::object_traits_impl< ::imgr::model::PhotoThumbnail, id_sqlite >::
   erase (database& db, const object_type& obj)
   {
     callback (db, obj, callback_event::pre_erase);
@@ -151,7 +151,7 @@ namespace odb
   }
 
   inline
-  void access::object_traits_impl< ::imgr::model::PhotoThumbnail, id_pgsql >::
+  void access::object_traits_impl< ::imgr::model::PhotoThumbnail, id_sqlite >::
   load_ (statements_type& sts,
          object_type& obj,
          bool)

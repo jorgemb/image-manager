@@ -163,27 +163,27 @@ namespace odb
 
 #include <odb/details/buffer.hxx>
 
-#include <odb/pgsql/version.hxx>
-#include <odb/pgsql/forward.hxx>
-#include <odb/pgsql/binding.hxx>
-#include <odb/pgsql/pgsql-types.hxx>
-#include <odb/pgsql/query.hxx>
+#include <odb/sqlite/version.hxx>
+#include <odb/sqlite/forward.hxx>
+#include <odb/sqlite/binding.hxx>
+#include <odb/sqlite/sqlite-types.hxx>
+#include <odb/sqlite/query.hxx>
 
 namespace odb
 {
   // Album
   //
   template <typename A>
-  struct query_columns< ::imgr::model::Album, id_pgsql, A >
+  struct query_columns< ::imgr::model::Album, id_sqlite, A >
   {
     // id
     //
     typedef
-    pgsql::query_column<
-      pgsql::value_traits<
+    sqlite::query_column<
+      sqlite::value_traits<
         ::imgr::model::Album::id_type,
-        pgsql::id_bigint >::query_type,
-      pgsql::id_bigint >
+        sqlite::id_integer >::query_type,
+      sqlite::id_integer >
     id_type_;
 
     static const id_type_ id;
@@ -191,34 +191,34 @@ namespace odb
     // absolute_path
     //
     typedef
-    pgsql::query_column<
-      pgsql::value_traits<
+    sqlite::query_column<
+      sqlite::value_traits<
         ::std::string,
-        pgsql::id_string >::query_type,
-      pgsql::id_string >
+        sqlite::id_text >::query_type,
+      sqlite::id_text >
     absolute_path_type_;
 
     static const absolute_path_type_ absolute_path;
   };
 
   template <typename A>
-  const typename query_columns< ::imgr::model::Album, id_pgsql, A >::id_type_
-  query_columns< ::imgr::model::Album, id_pgsql, A >::
+  const typename query_columns< ::imgr::model::Album, id_sqlite, A >::id_type_
+  query_columns< ::imgr::model::Album, id_sqlite, A >::
   id (A::table_name, "\"id\"", 0);
 
   template <typename A>
-  const typename query_columns< ::imgr::model::Album, id_pgsql, A >::absolute_path_type_
-  query_columns< ::imgr::model::Album, id_pgsql, A >::
+  const typename query_columns< ::imgr::model::Album, id_sqlite, A >::absolute_path_type_
+  query_columns< ::imgr::model::Album, id_sqlite, A >::
   absolute_path (A::table_name, "\"absolute_path\"", 0);
 
   template <typename A>
-  struct pointer_query_columns< ::imgr::model::Album, id_pgsql, A >:
-    query_columns< ::imgr::model::Album, id_pgsql, A >
+  struct pointer_query_columns< ::imgr::model::Album, id_sqlite, A >:
+    query_columns< ::imgr::model::Album, id_sqlite, A >
   {
   };
 
   template <>
-  class access::object_traits_impl< ::imgr::model::Album, id_pgsql >:
+  class access::object_traits_impl< ::imgr::model::Album, id_sqlite >:
     public access::object_traits< ::imgr::model::Album >
   {
     public:
@@ -261,17 +261,17 @@ namespace odb
           bool*);
 
     static void
-    bind (pgsql::bind*,
+    bind (sqlite::bind*,
           image_type&,
-          pgsql::statement_kind);
+          sqlite::statement_kind);
 
     static void
-    bind (pgsql::bind*, id_image_type&);
+    bind (sqlite::bind*, id_image_type&);
 
     static bool
     init (image_type&,
           const object_type&,
-          pgsql::statement_kind);
+          sqlite::statement_kind);
 
     static void
     init (object_type&,
@@ -281,9 +281,9 @@ namespace odb
     static void
     init (id_image_type&, const id_type&);
 
-    typedef pgsql::object_statements<object_type> statements_type;
+    typedef sqlite::object_statements<object_type> statements_type;
 
-    typedef pgsql::query_base query_base_type;
+    typedef sqlite::query_base query_base_type;
 
     static const std::size_t column_count = 2UL;
     static const std::size_t id_column_count = 1UL;
@@ -332,17 +332,6 @@ namespace odb
     static unsigned long long
     erase_query (database&, const query_base_type&);
 
-    static const char persist_statement_name[];
-    static const char find_statement_name[];
-    static const char update_statement_name[];
-    static const char erase_statement_name[];
-    static const char query_statement_name[];
-    static const char erase_query_statement_name[];
-
-    static const unsigned int persist_statement_types[];
-    static const unsigned int find_statement_types[];
-    static const unsigned int update_statement_types[];
-
     public:
     static bool
     find_ (statements_type&,
@@ -356,23 +345,23 @@ namespace odb
 
   template <>
   class access::object_traits_impl< ::imgr::model::Album, id_common >:
-    public access::object_traits_impl< ::imgr::model::Album, id_pgsql >
+    public access::object_traits_impl< ::imgr::model::Album, id_sqlite >
   {
   };
 
   // Photo
   //
   template <typename A>
-  struct pointer_query_columns< ::imgr::model::Photo, id_pgsql, A >
+  struct pointer_query_columns< ::imgr::model::Photo, id_sqlite, A >
   {
     // id
     //
     typedef
-    pgsql::query_column<
-      pgsql::value_traits<
+    sqlite::query_column<
+      sqlite::value_traits<
         ::imgr::model::Photo::id_type,
-        pgsql::id_bigint >::query_type,
-      pgsql::id_bigint >
+        sqlite::id_integer >::query_type,
+      sqlite::id_integer >
     id_type_;
 
     static const id_type_ id;
@@ -380,11 +369,11 @@ namespace odb
     // filename
     //
     typedef
-    pgsql::query_column<
-      pgsql::value_traits<
+    sqlite::query_column<
+      sqlite::value_traits<
         ::std::string,
-        pgsql::id_string >::query_type,
-      pgsql::id_string >
+        sqlite::id_text >::query_type,
+      sqlite::id_text >
     filename_type_;
 
     static const filename_type_ filename;
@@ -392,11 +381,11 @@ namespace odb
     // width
     //
     typedef
-    pgsql::query_column<
-      pgsql::value_traits<
+    sqlite::query_column<
+      sqlite::value_traits<
         ::uint16_t,
-        pgsql::id_smallint >::query_type,
-      pgsql::id_smallint >
+        sqlite::id_integer >::query_type,
+      sqlite::id_integer >
     width_type_;
 
     static const width_type_ width;
@@ -404,11 +393,11 @@ namespace odb
     // height
     //
     typedef
-    pgsql::query_column<
-      pgsql::value_traits<
+    sqlite::query_column<
+      sqlite::value_traits<
         ::uint16_t,
-        pgsql::id_smallint >::query_type,
-      pgsql::id_smallint >
+        sqlite::id_integer >::query_type,
+      sqlite::id_integer >
     height_type_;
 
     static const height_type_ height;
@@ -416,43 +405,43 @@ namespace odb
     // album
     //
     typedef
-    pgsql::query_column<
-      pgsql::value_traits<
+    sqlite::query_column<
+      sqlite::value_traits<
         ::imgr::model::Album::id_type,
-        pgsql::id_bigint >::query_type,
-      pgsql::id_bigint >
+        sqlite::id_integer >::query_type,
+      sqlite::id_integer >
     album_type_;
 
     static const album_type_ album;
   };
 
   template <typename A>
-  const typename pointer_query_columns< ::imgr::model::Photo, id_pgsql, A >::id_type_
-  pointer_query_columns< ::imgr::model::Photo, id_pgsql, A >::
+  const typename pointer_query_columns< ::imgr::model::Photo, id_sqlite, A >::id_type_
+  pointer_query_columns< ::imgr::model::Photo, id_sqlite, A >::
   id (A::table_name, "\"id\"", 0);
 
   template <typename A>
-  const typename pointer_query_columns< ::imgr::model::Photo, id_pgsql, A >::filename_type_
-  pointer_query_columns< ::imgr::model::Photo, id_pgsql, A >::
+  const typename pointer_query_columns< ::imgr::model::Photo, id_sqlite, A >::filename_type_
+  pointer_query_columns< ::imgr::model::Photo, id_sqlite, A >::
   filename (A::table_name, "\"filename\"", 0);
 
   template <typename A>
-  const typename pointer_query_columns< ::imgr::model::Photo, id_pgsql, A >::width_type_
-  pointer_query_columns< ::imgr::model::Photo, id_pgsql, A >::
+  const typename pointer_query_columns< ::imgr::model::Photo, id_sqlite, A >::width_type_
+  pointer_query_columns< ::imgr::model::Photo, id_sqlite, A >::
   width (A::table_name, "\"width\"", 0);
 
   template <typename A>
-  const typename pointer_query_columns< ::imgr::model::Photo, id_pgsql, A >::height_type_
-  pointer_query_columns< ::imgr::model::Photo, id_pgsql, A >::
+  const typename pointer_query_columns< ::imgr::model::Photo, id_sqlite, A >::height_type_
+  pointer_query_columns< ::imgr::model::Photo, id_sqlite, A >::
   height (A::table_name, "\"height\"", 0);
 
   template <typename A>
-  const typename pointer_query_columns< ::imgr::model::Photo, id_pgsql, A >::album_type_
-  pointer_query_columns< ::imgr::model::Photo, id_pgsql, A >::
+  const typename pointer_query_columns< ::imgr::model::Photo, id_sqlite, A >::album_type_
+  pointer_query_columns< ::imgr::model::Photo, id_sqlite, A >::
   album (A::table_name, "\"album\"", 0);
 
   template <>
-  class access::object_traits_impl< ::imgr::model::Photo, id_pgsql >:
+  class access::object_traits_impl< ::imgr::model::Photo, id_sqlite >:
     public access::object_traits< ::imgr::model::Photo >
   {
     public:
@@ -479,12 +468,12 @@ namespace odb
 
       // m_width
       //
-      short m_width_value;
+      long long m_width_value;
       bool m_width_null;
 
       // m_height
       //
-      short m_height_value;
+      long long m_height_value;
       bool m_height_null;
 
       // m_album
@@ -512,17 +501,17 @@ namespace odb
           bool*);
 
     static void
-    bind (pgsql::bind*,
+    bind (sqlite::bind*,
           image_type&,
-          pgsql::statement_kind);
+          sqlite::statement_kind);
 
     static void
-    bind (pgsql::bind*, id_image_type&);
+    bind (sqlite::bind*, id_image_type&);
 
     static bool
     init (image_type&,
           const object_type&,
-          pgsql::statement_kind);
+          sqlite::statement_kind);
 
     static void
     init (object_type&,
@@ -532,9 +521,9 @@ namespace odb
     static void
     init (id_image_type&, const id_type&);
 
-    typedef pgsql::object_statements<object_type> statements_type;
+    typedef sqlite::object_statements<object_type> statements_type;
 
-    typedef pgsql::query_base query_base_type;
+    typedef sqlite::query_base query_base_type;
 
     static const std::size_t column_count = 5UL;
     static const std::size_t id_column_count = 1UL;
@@ -583,17 +572,6 @@ namespace odb
     static unsigned long long
     erase_query (database&, const query_base_type&);
 
-    static const char persist_statement_name[];
-    static const char find_statement_name[];
-    static const char update_statement_name[];
-    static const char erase_statement_name[];
-    static const char query_statement_name[];
-    static const char erase_query_statement_name[];
-
-    static const unsigned int persist_statement_types[];
-    static const unsigned int find_statement_types[];
-    static const unsigned int update_statement_types[];
-
     public:
     static bool
     find_ (statements_type&,
@@ -607,23 +585,23 @@ namespace odb
 
   template <>
   class access::object_traits_impl< ::imgr::model::Photo, id_common >:
-    public access::object_traits_impl< ::imgr::model::Photo, id_pgsql >
+    public access::object_traits_impl< ::imgr::model::Photo, id_sqlite >
   {
   };
 
   // PhotoThumbnail
   //
   template <typename A>
-  struct pointer_query_columns< ::imgr::model::PhotoThumbnail, id_pgsql, A >
+  struct pointer_query_columns< ::imgr::model::PhotoThumbnail, id_sqlite, A >
   {
     // id
     //
     typedef
-    pgsql::query_column<
-      pgsql::value_traits<
+    sqlite::query_column<
+      sqlite::value_traits<
         ::imgr::model::PhotoThumbnail::id_type,
-        pgsql::id_bigint >::query_type,
-      pgsql::id_bigint >
+        sqlite::id_integer >::query_type,
+      sqlite::id_integer >
     id_type_;
 
     static const id_type_ id;
@@ -631,11 +609,11 @@ namespace odb
     // width
     //
     typedef
-    pgsql::query_column<
-      pgsql::value_traits<
+    sqlite::query_column<
+      sqlite::value_traits<
         ::uint16_t,
-        pgsql::id_smallint >::query_type,
-      pgsql::id_smallint >
+        sqlite::id_integer >::query_type,
+      sqlite::id_integer >
     width_type_;
 
     static const width_type_ width;
@@ -643,11 +621,11 @@ namespace odb
     // height
     //
     typedef
-    pgsql::query_column<
-      pgsql::value_traits<
+    sqlite::query_column<
+      sqlite::value_traits<
         ::uint16_t,
-        pgsql::id_smallint >::query_type,
-      pgsql::id_smallint >
+        sqlite::id_integer >::query_type,
+      sqlite::id_integer >
     height_type_;
 
     static const height_type_ height;
@@ -655,11 +633,11 @@ namespace odb
     // channels
     //
     typedef
-    pgsql::query_column<
-      pgsql::value_traits<
+    sqlite::query_column<
+      sqlite::value_traits<
         ::uint8_t,
-        pgsql::id_smallint >::query_type,
-      pgsql::id_smallint >
+        sqlite::id_integer >::query_type,
+      sqlite::id_integer >
     channels_type_;
 
     static const channels_type_ channels;
@@ -667,11 +645,11 @@ namespace odb
     // thumbnail
     //
     typedef
-    pgsql::query_column<
-      pgsql::value_traits<
-        ::std::vector< unsigned char >,
-        pgsql::id_bytea >::query_type,
-      pgsql::id_bytea >
+    sqlite::query_column<
+      sqlite::value_traits<
+        ::imgr::model::RawData,
+        sqlite::id_blob >::query_type,
+      sqlite::id_blob >
     thumbnail_type_;
 
     static const thumbnail_type_ thumbnail;
@@ -679,48 +657,48 @@ namespace odb
     // photo
     //
     typedef
-    pgsql::query_column<
-      pgsql::value_traits<
+    sqlite::query_column<
+      sqlite::value_traits<
         ::imgr::model::Photo::id_type,
-        pgsql::id_bigint >::query_type,
-      pgsql::id_bigint >
+        sqlite::id_integer >::query_type,
+      sqlite::id_integer >
     photo_type_;
 
     static const photo_type_ photo;
   };
 
   template <typename A>
-  const typename pointer_query_columns< ::imgr::model::PhotoThumbnail, id_pgsql, A >::id_type_
-  pointer_query_columns< ::imgr::model::PhotoThumbnail, id_pgsql, A >::
+  const typename pointer_query_columns< ::imgr::model::PhotoThumbnail, id_sqlite, A >::id_type_
+  pointer_query_columns< ::imgr::model::PhotoThumbnail, id_sqlite, A >::
   id (A::table_name, "\"id\"", 0);
 
   template <typename A>
-  const typename pointer_query_columns< ::imgr::model::PhotoThumbnail, id_pgsql, A >::width_type_
-  pointer_query_columns< ::imgr::model::PhotoThumbnail, id_pgsql, A >::
+  const typename pointer_query_columns< ::imgr::model::PhotoThumbnail, id_sqlite, A >::width_type_
+  pointer_query_columns< ::imgr::model::PhotoThumbnail, id_sqlite, A >::
   width (A::table_name, "\"width\"", 0);
 
   template <typename A>
-  const typename pointer_query_columns< ::imgr::model::PhotoThumbnail, id_pgsql, A >::height_type_
-  pointer_query_columns< ::imgr::model::PhotoThumbnail, id_pgsql, A >::
+  const typename pointer_query_columns< ::imgr::model::PhotoThumbnail, id_sqlite, A >::height_type_
+  pointer_query_columns< ::imgr::model::PhotoThumbnail, id_sqlite, A >::
   height (A::table_name, "\"height\"", 0);
 
   template <typename A>
-  const typename pointer_query_columns< ::imgr::model::PhotoThumbnail, id_pgsql, A >::channels_type_
-  pointer_query_columns< ::imgr::model::PhotoThumbnail, id_pgsql, A >::
+  const typename pointer_query_columns< ::imgr::model::PhotoThumbnail, id_sqlite, A >::channels_type_
+  pointer_query_columns< ::imgr::model::PhotoThumbnail, id_sqlite, A >::
   channels (A::table_name, "\"channels\"", 0);
 
   template <typename A>
-  const typename pointer_query_columns< ::imgr::model::PhotoThumbnail, id_pgsql, A >::thumbnail_type_
-  pointer_query_columns< ::imgr::model::PhotoThumbnail, id_pgsql, A >::
+  const typename pointer_query_columns< ::imgr::model::PhotoThumbnail, id_sqlite, A >::thumbnail_type_
+  pointer_query_columns< ::imgr::model::PhotoThumbnail, id_sqlite, A >::
   thumbnail (A::table_name, "\"thumbnail\"", 0);
 
   template <typename A>
-  const typename pointer_query_columns< ::imgr::model::PhotoThumbnail, id_pgsql, A >::photo_type_
-  pointer_query_columns< ::imgr::model::PhotoThumbnail, id_pgsql, A >::
+  const typename pointer_query_columns< ::imgr::model::PhotoThumbnail, id_sqlite, A >::photo_type_
+  pointer_query_columns< ::imgr::model::PhotoThumbnail, id_sqlite, A >::
   photo (A::table_name, "\"photo\"", 0);
 
   template <>
-  class access::object_traits_impl< ::imgr::model::PhotoThumbnail, id_pgsql >:
+  class access::object_traits_impl< ::imgr::model::PhotoThumbnail, id_sqlite >:
     public access::object_traits< ::imgr::model::PhotoThumbnail >
   {
     public:
@@ -741,17 +719,17 @@ namespace odb
 
       // m_width
       //
-      short m_width_value;
+      long long m_width_value;
       bool m_width_null;
 
       // m_height
       //
-      short m_height_value;
+      long long m_height_value;
       bool m_height_null;
 
       // m_channels
       //
-      short m_channels_value;
+      long long m_channels_value;
       bool m_channels_null;
 
       // m_thumbnail
@@ -785,17 +763,17 @@ namespace odb
           bool*);
 
     static void
-    bind (pgsql::bind*,
+    bind (sqlite::bind*,
           image_type&,
-          pgsql::statement_kind);
+          sqlite::statement_kind);
 
     static void
-    bind (pgsql::bind*, id_image_type&);
+    bind (sqlite::bind*, id_image_type&);
 
     static bool
     init (image_type&,
           const object_type&,
-          pgsql::statement_kind);
+          sqlite::statement_kind);
 
     static void
     init (object_type&,
@@ -805,9 +783,9 @@ namespace odb
     static void
     init (id_image_type&, const id_type&);
 
-    typedef pgsql::object_statements<object_type> statements_type;
+    typedef sqlite::object_statements<object_type> statements_type;
 
-    typedef pgsql::query_base query_base_type;
+    typedef sqlite::query_base query_base_type;
 
     static const std::size_t column_count = 6UL;
     static const std::size_t id_column_count = 1UL;
@@ -856,17 +834,6 @@ namespace odb
     static unsigned long long
     erase_query (database&, const query_base_type&);
 
-    static const char persist_statement_name[];
-    static const char find_statement_name[];
-    static const char update_statement_name[];
-    static const char erase_statement_name[];
-    static const char query_statement_name[];
-    static const char erase_query_statement_name[];
-
-    static const unsigned int persist_statement_types[];
-    static const unsigned int find_statement_types[];
-    static const unsigned int update_statement_types[];
-
     public:
     static bool
     find_ (statements_type&,
@@ -880,7 +847,7 @@ namespace odb
 
   template <>
   class access::object_traits_impl< ::imgr::model::PhotoThumbnail, id_common >:
-    public access::object_traits_impl< ::imgr::model::PhotoThumbnail, id_pgsql >
+    public access::object_traits_impl< ::imgr::model::PhotoThumbnail, id_sqlite >
   {
   };
 
@@ -891,37 +858,37 @@ namespace odb
   template <>
   struct alias_traits<
     ::imgr::model::Album,
-    id_pgsql,
-    access::object_traits_impl< ::imgr::model::Photo, id_pgsql >::album_tag>
+    id_sqlite,
+    access::object_traits_impl< ::imgr::model::Photo, id_sqlite >::album_tag>
   {
     static const char table_name[];
   };
 
   template <>
-  struct query_columns_base< ::imgr::model::Photo, id_pgsql >
+  struct query_columns_base< ::imgr::model::Photo, id_sqlite >
   {
     // album
     //
     typedef
     odb::alias_traits<
       ::imgr::model::Album,
-      id_pgsql,
-      access::object_traits_impl< ::imgr::model::Photo, id_pgsql >::album_tag>
+      id_sqlite,
+      access::object_traits_impl< ::imgr::model::Photo, id_sqlite >::album_tag>
     album_alias_;
   };
 
   template <typename A>
-  struct query_columns< ::imgr::model::Photo, id_pgsql, A >:
-    query_columns_base< ::imgr::model::Photo, id_pgsql >
+  struct query_columns< ::imgr::model::Photo, id_sqlite, A >:
+    query_columns_base< ::imgr::model::Photo, id_sqlite >
   {
     // id
     //
     typedef
-    pgsql::query_column<
-      pgsql::value_traits<
+    sqlite::query_column<
+      sqlite::value_traits<
         ::imgr::model::Photo::id_type,
-        pgsql::id_bigint >::query_type,
-      pgsql::id_bigint >
+        sqlite::id_integer >::query_type,
+      sqlite::id_integer >
     id_type_;
 
     static const id_type_ id;
@@ -929,11 +896,11 @@ namespace odb
     // filename
     //
     typedef
-    pgsql::query_column<
-      pgsql::value_traits<
+    sqlite::query_column<
+      sqlite::value_traits<
         ::std::string,
-        pgsql::id_string >::query_type,
-      pgsql::id_string >
+        sqlite::id_text >::query_type,
+      sqlite::id_text >
     filename_type_;
 
     static const filename_type_ filename;
@@ -941,11 +908,11 @@ namespace odb
     // width
     //
     typedef
-    pgsql::query_column<
-      pgsql::value_traits<
+    sqlite::query_column<
+      sqlite::value_traits<
         ::uint16_t,
-        pgsql::id_smallint >::query_type,
-      pgsql::id_smallint >
+        sqlite::id_integer >::query_type,
+      sqlite::id_integer >
     width_type_;
 
     static const width_type_ width;
@@ -953,11 +920,11 @@ namespace odb
     // height
     //
     typedef
-    pgsql::query_column<
-      pgsql::value_traits<
+    sqlite::query_column<
+      sqlite::value_traits<
         ::uint16_t,
-        pgsql::id_smallint >::query_type,
-      pgsql::id_smallint >
+        sqlite::id_integer >::query_type,
+      sqlite::id_integer >
     height_type_;
 
     static const height_type_ height;
@@ -965,18 +932,18 @@ namespace odb
     // album
     //
     typedef
-    pgsql::query_column<
-      pgsql::value_traits<
+    sqlite::query_column<
+      sqlite::value_traits<
         ::imgr::model::Album::id_type,
-        pgsql::id_bigint >::query_type,
-      pgsql::id_bigint >
+        sqlite::id_integer >::query_type,
+      sqlite::id_integer >
     album_column_type_;
 
     typedef
     odb::query_pointer<
       odb::pointer_query_columns<
         ::imgr::model::Album,
-        id_pgsql,
+        id_sqlite,
         album_alias_ > >
     album_pointer_type_;
 
@@ -992,28 +959,28 @@ namespace odb
   };
 
   template <typename A>
-  const typename query_columns< ::imgr::model::Photo, id_pgsql, A >::id_type_
-  query_columns< ::imgr::model::Photo, id_pgsql, A >::
+  const typename query_columns< ::imgr::model::Photo, id_sqlite, A >::id_type_
+  query_columns< ::imgr::model::Photo, id_sqlite, A >::
   id (A::table_name, "\"id\"", 0);
 
   template <typename A>
-  const typename query_columns< ::imgr::model::Photo, id_pgsql, A >::filename_type_
-  query_columns< ::imgr::model::Photo, id_pgsql, A >::
+  const typename query_columns< ::imgr::model::Photo, id_sqlite, A >::filename_type_
+  query_columns< ::imgr::model::Photo, id_sqlite, A >::
   filename (A::table_name, "\"filename\"", 0);
 
   template <typename A>
-  const typename query_columns< ::imgr::model::Photo, id_pgsql, A >::width_type_
-  query_columns< ::imgr::model::Photo, id_pgsql, A >::
+  const typename query_columns< ::imgr::model::Photo, id_sqlite, A >::width_type_
+  query_columns< ::imgr::model::Photo, id_sqlite, A >::
   width (A::table_name, "\"width\"", 0);
 
   template <typename A>
-  const typename query_columns< ::imgr::model::Photo, id_pgsql, A >::height_type_
-  query_columns< ::imgr::model::Photo, id_pgsql, A >::
+  const typename query_columns< ::imgr::model::Photo, id_sqlite, A >::height_type_
+  query_columns< ::imgr::model::Photo, id_sqlite, A >::
   height (A::table_name, "\"height\"", 0);
 
   template <typename A>
-  const typename query_columns< ::imgr::model::Photo, id_pgsql, A >::album_type_
-  query_columns< ::imgr::model::Photo, id_pgsql, A >::
+  const typename query_columns< ::imgr::model::Photo, id_sqlite, A >::album_type_
+  query_columns< ::imgr::model::Photo, id_sqlite, A >::
   album (A::table_name, "\"album\"", 0);
 
   // PhotoThumbnail
@@ -1021,37 +988,37 @@ namespace odb
   template <>
   struct alias_traits<
     ::imgr::model::Photo,
-    id_pgsql,
-    access::object_traits_impl< ::imgr::model::PhotoThumbnail, id_pgsql >::photo_tag>
+    id_sqlite,
+    access::object_traits_impl< ::imgr::model::PhotoThumbnail, id_sqlite >::photo_tag>
   {
     static const char table_name[];
   };
 
   template <>
-  struct query_columns_base< ::imgr::model::PhotoThumbnail, id_pgsql >
+  struct query_columns_base< ::imgr::model::PhotoThumbnail, id_sqlite >
   {
     // photo
     //
     typedef
     odb::alias_traits<
       ::imgr::model::Photo,
-      id_pgsql,
-      access::object_traits_impl< ::imgr::model::PhotoThumbnail, id_pgsql >::photo_tag>
+      id_sqlite,
+      access::object_traits_impl< ::imgr::model::PhotoThumbnail, id_sqlite >::photo_tag>
     photo_alias_;
   };
 
   template <typename A>
-  struct query_columns< ::imgr::model::PhotoThumbnail, id_pgsql, A >:
-    query_columns_base< ::imgr::model::PhotoThumbnail, id_pgsql >
+  struct query_columns< ::imgr::model::PhotoThumbnail, id_sqlite, A >:
+    query_columns_base< ::imgr::model::PhotoThumbnail, id_sqlite >
   {
     // id
     //
     typedef
-    pgsql::query_column<
-      pgsql::value_traits<
+    sqlite::query_column<
+      sqlite::value_traits<
         ::imgr::model::PhotoThumbnail::id_type,
-        pgsql::id_bigint >::query_type,
-      pgsql::id_bigint >
+        sqlite::id_integer >::query_type,
+      sqlite::id_integer >
     id_type_;
 
     static const id_type_ id;
@@ -1059,11 +1026,11 @@ namespace odb
     // width
     //
     typedef
-    pgsql::query_column<
-      pgsql::value_traits<
+    sqlite::query_column<
+      sqlite::value_traits<
         ::uint16_t,
-        pgsql::id_smallint >::query_type,
-      pgsql::id_smallint >
+        sqlite::id_integer >::query_type,
+      sqlite::id_integer >
     width_type_;
 
     static const width_type_ width;
@@ -1071,11 +1038,11 @@ namespace odb
     // height
     //
     typedef
-    pgsql::query_column<
-      pgsql::value_traits<
+    sqlite::query_column<
+      sqlite::value_traits<
         ::uint16_t,
-        pgsql::id_smallint >::query_type,
-      pgsql::id_smallint >
+        sqlite::id_integer >::query_type,
+      sqlite::id_integer >
     height_type_;
 
     static const height_type_ height;
@@ -1083,11 +1050,11 @@ namespace odb
     // channels
     //
     typedef
-    pgsql::query_column<
-      pgsql::value_traits<
+    sqlite::query_column<
+      sqlite::value_traits<
         ::uint8_t,
-        pgsql::id_smallint >::query_type,
-      pgsql::id_smallint >
+        sqlite::id_integer >::query_type,
+      sqlite::id_integer >
     channels_type_;
 
     static const channels_type_ channels;
@@ -1095,11 +1062,11 @@ namespace odb
     // thumbnail
     //
     typedef
-    pgsql::query_column<
-      pgsql::value_traits<
-        ::std::vector< unsigned char >,
-        pgsql::id_bytea >::query_type,
-      pgsql::id_bytea >
+    sqlite::query_column<
+      sqlite::value_traits<
+        ::imgr::model::RawData,
+        sqlite::id_blob >::query_type,
+      sqlite::id_blob >
     thumbnail_type_;
 
     static const thumbnail_type_ thumbnail;
@@ -1107,18 +1074,18 @@ namespace odb
     // photo
     //
     typedef
-    pgsql::query_column<
-      pgsql::value_traits<
+    sqlite::query_column<
+      sqlite::value_traits<
         ::imgr::model::Photo::id_type,
-        pgsql::id_bigint >::query_type,
-      pgsql::id_bigint >
+        sqlite::id_integer >::query_type,
+      sqlite::id_integer >
     photo_column_type_;
 
     typedef
     odb::query_pointer<
       odb::pointer_query_columns<
         ::imgr::model::Photo,
-        id_pgsql,
+        id_sqlite,
         photo_alias_ > >
     photo_pointer_type_;
 
@@ -1134,33 +1101,33 @@ namespace odb
   };
 
   template <typename A>
-  const typename query_columns< ::imgr::model::PhotoThumbnail, id_pgsql, A >::id_type_
-  query_columns< ::imgr::model::PhotoThumbnail, id_pgsql, A >::
+  const typename query_columns< ::imgr::model::PhotoThumbnail, id_sqlite, A >::id_type_
+  query_columns< ::imgr::model::PhotoThumbnail, id_sqlite, A >::
   id (A::table_name, "\"id\"", 0);
 
   template <typename A>
-  const typename query_columns< ::imgr::model::PhotoThumbnail, id_pgsql, A >::width_type_
-  query_columns< ::imgr::model::PhotoThumbnail, id_pgsql, A >::
+  const typename query_columns< ::imgr::model::PhotoThumbnail, id_sqlite, A >::width_type_
+  query_columns< ::imgr::model::PhotoThumbnail, id_sqlite, A >::
   width (A::table_name, "\"width\"", 0);
 
   template <typename A>
-  const typename query_columns< ::imgr::model::PhotoThumbnail, id_pgsql, A >::height_type_
-  query_columns< ::imgr::model::PhotoThumbnail, id_pgsql, A >::
+  const typename query_columns< ::imgr::model::PhotoThumbnail, id_sqlite, A >::height_type_
+  query_columns< ::imgr::model::PhotoThumbnail, id_sqlite, A >::
   height (A::table_name, "\"height\"", 0);
 
   template <typename A>
-  const typename query_columns< ::imgr::model::PhotoThumbnail, id_pgsql, A >::channels_type_
-  query_columns< ::imgr::model::PhotoThumbnail, id_pgsql, A >::
+  const typename query_columns< ::imgr::model::PhotoThumbnail, id_sqlite, A >::channels_type_
+  query_columns< ::imgr::model::PhotoThumbnail, id_sqlite, A >::
   channels (A::table_name, "\"channels\"", 0);
 
   template <typename A>
-  const typename query_columns< ::imgr::model::PhotoThumbnail, id_pgsql, A >::thumbnail_type_
-  query_columns< ::imgr::model::PhotoThumbnail, id_pgsql, A >::
+  const typename query_columns< ::imgr::model::PhotoThumbnail, id_sqlite, A >::thumbnail_type_
+  query_columns< ::imgr::model::PhotoThumbnail, id_sqlite, A >::
   thumbnail (A::table_name, "\"thumbnail\"", 0);
 
   template <typename A>
-  const typename query_columns< ::imgr::model::PhotoThumbnail, id_pgsql, A >::photo_type_
-  query_columns< ::imgr::model::PhotoThumbnail, id_pgsql, A >::
+  const typename query_columns< ::imgr::model::PhotoThumbnail, id_sqlite, A >::photo_type_
+  query_columns< ::imgr::model::PhotoThumbnail, id_sqlite, A >::
   photo (A::table_name, "\"photo\"", 0);
 }
 

@@ -5,6 +5,8 @@
 #include <data/photo_store.h>
 
 #include <odb/query.hxx>
+#include <odb/schema-catalog.hxx>
+#include <odb/sqlite/database.hxx>
 
 #include <OpenImageIO/imageio.h>
 #include <OpenImageIO/imagebuf.h>
@@ -28,9 +30,14 @@ private:
 };
 
 
-PhotoStore::PhotoStore(const std::string &user, const std::string &password, const std::string &db,
-                       const std::string &host, uint16_t port) :
-        m_database(user, password, db, host, port), m_session(true) {
+PhotoStore::PhotoStore(const filesystem::path &db_path, bool recreate)
+        : m_database(db_path.string(), SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE) {
+
+    if(!filesystem::exists(db_path) || recreate) {
+        odb::transaction t(m_database.begin());
+        odb::schema_catalog::create_schema(m_database, "", recreate);
+        t.commit();
+    }
 }
 
 PhotoStore::AlbumPtr PhotoStore::get_album(const filesystem::path &album_path) {
@@ -101,7 +108,7 @@ PhotoStore::AlbumPtr PhotoStore::create_album(const filesystem::path &album_path
     return album;
 }
 
-PhotoStore::PhotoList PhotoStore::get_album_photos(model::Album::id_type album_id){
+PhotoStore::PhotoList PhotoStore::get_album_photos(model::Album::id_type album_id) {
     QueryTransaction t(m_database.begin());
 
     // Retrieve all the photos
@@ -123,4 +130,5 @@ PhotoStore::ThumbnailPtr PhotoStore::get_photo_thumbnail(model::Photo::id_type p
 
     return thumbnail;
 }
+
 } // imgr
