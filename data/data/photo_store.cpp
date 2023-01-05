@@ -33,7 +33,7 @@ private:
 PhotoStore::PhotoStore(const filesystem::path &db_path, bool recreate)
         : m_database(db_path.string(), SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE) {
 
-    if(!filesystem::exists(db_path) || recreate) {
+    if (!filesystem::exists(db_path) || recreate) {
         odb::transaction t(m_database.begin());
         odb::schema_catalog::create_schema(m_database, "", recreate);
         t.commit();
@@ -49,12 +49,45 @@ PhotoStore::AlbumPtr PhotoStore::get_album(const filesystem::path &album_path) {
     return album;
 }
 
-PhotoStore::AlbumPtr PhotoStore::create_album(const filesystem::path &album_path, bool load_images) {
+PhotoStore::AlbumPtr PhotoStore::get_album(model::Album::id_type album_id) {
+    // Search for the album in the database
+    QueryTransaction t(m_database.begin());
+    do_trace(t.get_transaction());
+
+    AlbumPtr album = m_database.query_one<model::Album>(AlbumQuery::id == album_id);
+    return album;
+}
+
+PhotoStore::AlbumList PhotoStore::get_root_albums(){
+    QueryTransaction t(m_database.begin());
+
+    auto result = m_database.query<model::Album>(AlbumQuery::parent_album.is_null());
+    AlbumList root_albums;
+    for(auto iter = result.begin(); iter != result.end(); ++iter){
+        root_albums.emplace_back(iter.load());
+    }
+
+    return root_albums;
+}
+
+PhotoStore::AlbumList PhotoStore::get_children_albums(model::Album::id_type album_id){
+    QueryTransaction t(m_database.begin());
+
+    auto result = m_database.query<model::Album>(AlbumQuery::parent_album->id == album_id);
+    AlbumList children_albums;
+    for(auto iter = result.begin(); iter != result.end(); ++iter){
+        children_albums.emplace_back(iter.load());
+    }
+
+    return children_albums;
+}
+
+PhotoStore::AlbumPtr PhotoStore::create_album(const filesystem::path &album_path, bool load_images, AlbumPtr parent) {
     odb::transaction t(m_database.begin());
     do_trace(t);
 
     // Create the new album
-    AlbumPtr album = std::make_shared<model::Album>(album_path.string());
+    AlbumPtr album = std::make_shared<model::Album>(album_path.string(), album_path.filename().string(), parent);
     m_database.persist(album);
 
     // Handle image creation

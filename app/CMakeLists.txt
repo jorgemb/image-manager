@@ -2,7 +2,6 @@ cmake_minimum_required (VERSION 3.16)
 
 find_package(Boost REQUIRED COMPONENTS filesystem)
 find_package(fmt CONFIG REQUIRED)
-find_package(Catch2 3 REQUIRED)
 
 set(APPLICATION_SRC
         app/album_manager.cpp
@@ -22,8 +21,12 @@ target_link_libraries(image_manager PUBLIC imgr::gui imgr::data Boost::filesyste
 
 
 # Tests
-include(Catch)
+if(IMGR_ENABLE_TESTING)
+    find_package(Catch2 3 REQUIRED)
+    include(Catch)
 
-add_executable(test_app ${APPLICATION_SRC})
-target_include_directories(test_app PRIVATE Catch2::Catch2WithMain fmt::fmt)
-catch_discover_tests(test_app)
+    add_executable(test_app ${APPLICATION_SRC} tests/test_app.cpp)
+    target_include_directories(test_app PRIVATE .)
+    target_link_libraries(test_app PRIVATE Catch2::Catch2WithMain fmt::fmt imgr::test_helper imgr::data imgr::gui)
+    catch_discover_tests(test_app)
+endif()

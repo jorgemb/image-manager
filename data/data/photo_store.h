@@ -25,6 +25,7 @@ public:
     using AlbumPtr = odb::object_traits<model::Album>::pointer_type;
     using PhotoPtr = odb::object_traits<model::Photo>::pointer_type;
     using PhotoList = std::vector<PhotoPtr>;
+    using AlbumList = std::vector<AlbumPtr>;
     using ThumbnailPtr = odb::object_traits<model::PhotoThumbnail>::pointer_type;
     using DatabaseType = odb::sqlite::database;
 
@@ -40,11 +41,25 @@ public:
     /// \return
     AlbumPtr get_album(const filesystem::path &album_path);
 
+    /// Retrieves an album given an id
+    /// \param album_id
+    /// \return
+    AlbumPtr get_album(model::Album::id_type album_id);
+
+    /// Retrieves all the root albums (the ones that have no parent)
+    /// \return
+    AlbumList get_root_albums();
+
+    /// Retrieves all the children albums of the current album
+    /// \param album_id
+    /// \return
+    AlbumList get_children_albums(model::Album::id_type album_id);
+
     /// Creates a new album and, if specified, creates entry for all the photos within
     /// \param album_path
     /// \param load_images
     /// \return
-    AlbumPtr create_album(const filesystem::path &album_path, bool load_images = true);
+    AlbumPtr create_album(const filesystem::path &album_path, bool load_images = true, AlbumPtr parent = nullptr);
 
     /// Returns a list of the photos in the album
     /// \param album_id

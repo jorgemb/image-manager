@@ -26,7 +26,8 @@ class Album {
 public:
     using id_type = ID_TYPE;
 
-    explicit Album(const std::string &absolute_path) : m_absolute_path(absolute_path) {}
+    Album(const std::string &absolute_path, const std::string &name, std::shared_ptr<Album> parent_album = nullptr)
+            : m_absolute_path(absolute_path), m_name(name), m_parent_album(std::move(parent_album)) {}
 
     /// Getter for ID
     /// \return
@@ -36,17 +37,36 @@ public:
     /// \return
     const std::string &get_absolute_path() const { return m_absolute_path; }
 
+    /// Getter for album name
+    /// \return
+    const std::string &get_name() const {
+        return m_name;
+    }
+
+    /// Getter for album parent
+    const std::shared_ptr<Album> &get_parent_album() const {
+        return m_parent_album;
+    }
+
 private:
     // Default constructor
-    Album() {}
+    Album() = default;
 
     friend class odb::access;
 
+    /// ID of the album
 #pragma db id auto
     id_type m_id;
 
+    /// Absolute path in the disk
 #pragma db unique
     std::string m_absolute_path;
+
+    /// Name of the album (normally the same as the directory name)
+    std::string m_name;
+
+    /// Pointer to parent, if available
+    std::shared_ptr<Album> m_parent_album;
 };
 
 /// Represents a single photo object that is part of an album. Captures the relative
@@ -92,7 +112,7 @@ public:
 
 private:
     /// Private default constructor
-    Photo() {}
+    Photo() = default;
 
     friend class odb::access;
 
@@ -176,7 +196,7 @@ public:
 
 private:
     /// Private default constructor
-    PhotoThumbnail() {};
+    PhotoThumbnail() = default;;
 
     friend class odb::access;
 

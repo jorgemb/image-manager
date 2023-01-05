@@ -27,6 +27,11 @@ namespace odb
   // Album
   //
 
+  const char alias_traits<  ::imgr::model::Album,
+    id_sqlite,
+    access::object_traits_impl< ::imgr::model::Album, id_sqlite >::parent_album_tag>::
+  table_name[] = "\"parent_album\"";
+
   struct access::object_traits_impl< ::imgr::model::Album, id_sqlite >::extra_statement_cache_type
   {
     extra_statement_cache_type (
@@ -100,6 +105,18 @@ namespace odb
       grew = true;
     }
 
+    // m_name
+    //
+    if (t[2UL])
+    {
+      i.m_name_value.capacity (i.m_name_size);
+      grew = true;
+    }
+
+    // m_parent_album
+    //
+    t[3UL] = false;
+
     return grew;
   }
 
@@ -133,6 +150,24 @@ namespace odb
     b[n].size = &i.m_absolute_path_size;
     b[n].capacity = i.m_absolute_path_value.capacity ();
     b[n].is_null = &i.m_absolute_path_null;
+    n++;
+
+    // m_name
+    //
+    b[n].type = sqlite::image_traits<
+      ::std::string,
+      sqlite::id_text>::bind_value;
+    b[n].buffer = i.m_name_value.data ();
+    b[n].size = &i.m_name_size;
+    b[n].capacity = i.m_name_value.capacity ();
+    b[n].is_null = &i.m_name_null;
+    n++;
+
+    // m_parent_album
+    //
+    b[n].type = sqlite::bind::integer;
+    b[n].buffer = &i.m_parent_album_value;
+    b[n].is_null = &i.m_parent_album_null;
     n++;
   }
 
@@ -194,6 +229,52 @@ namespace odb
       grew = grew || (cap != i.m_absolute_path_value.capacity ());
     }
 
+    // m_name
+    //
+    {
+      ::std::string const& v =
+        o.m_name;
+
+      bool is_null (false);
+      std::size_t cap (i.m_name_value.capacity ());
+      sqlite::value_traits<
+          ::std::string,
+          sqlite::id_text >::set_image (
+        i.m_name_value,
+        i.m_name_size,
+        is_null,
+        v);
+      i.m_name_null = is_null;
+      grew = grew || (cap != i.m_name_value.capacity ());
+    }
+
+    // m_parent_album
+    //
+    {
+      ::std::shared_ptr< ::imgr::model::Album > const& v =
+        o.m_parent_album;
+
+      typedef object_traits< ::imgr::model::Album > obj_traits;
+      typedef odb::pointer_traits< ::std::shared_ptr< ::imgr::model::Album > > ptr_traits;
+
+      bool is_null (ptr_traits::null_ptr (v));
+      if (!is_null)
+      {
+        const obj_traits::id_type& id (
+          obj_traits::id (ptr_traits::get_ref (v)));
+
+        sqlite::value_traits<
+            obj_traits::id_type,
+            sqlite::id_integer >::set_image (
+          i.m_parent_album_value,
+          is_null,
+          id);
+        i.m_parent_album_null = is_null;
+      }
+      else
+        i.m_parent_album_null = true;
+    }
+
     return grew;
   }
 
@@ -234,6 +315,52 @@ namespace odb
         i.m_absolute_path_size,
         i.m_absolute_path_null);
     }
+
+    // m_name
+    //
+    {
+      ::std::string& v =
+        o.m_name;
+
+      sqlite::value_traits<
+          ::std::string,
+          sqlite::id_text >::set_value (
+        v,
+        i.m_name_value,
+        i.m_name_size,
+        i.m_name_null);
+    }
+
+    // m_parent_album
+    //
+    {
+      ::std::shared_ptr< ::imgr::model::Album >& v =
+        o.m_parent_album;
+
+      typedef object_traits< ::imgr::model::Album > obj_traits;
+      typedef odb::pointer_traits< ::std::shared_ptr< ::imgr::model::Album > > ptr_traits;
+
+      if (i.m_parent_album_null)
+        v = ptr_traits::pointer_type ();
+      else
+      {
+        obj_traits::id_type id;
+        sqlite::value_traits<
+            obj_traits::id_type,
+            sqlite::id_integer >::set_value (
+          id,
+          i.m_parent_album_value,
+          i.m_parent_album_null);
+
+        // If a compiler error points to the line below, then
+        // it most likely means that a pointer used in a member
+        // cannot be initialized from an object pointer.
+        //
+        v = ptr_traits::pointer_type (
+          static_cast<sqlite::database*> (db)->load<
+            obj_traits::object_type > (id));
+      }
+    }
   }
 
   void access::object_traits_impl< ::imgr::model::Album, id_sqlite >::
@@ -254,21 +381,27 @@ namespace odb
   const char access::object_traits_impl< ::imgr::model::Album, id_sqlite >::persist_statement[] =
   "INSERT INTO \"Album\" "
   "(\"id\", "
-  "\"absolute_path\") "
+  "\"absolute_path\", "
+  "\"name\", "
+  "\"parent_album\") "
   "VALUES "
-  "(?, ?)";
+  "(?, ?, ?, ?)";
 
   const char access::object_traits_impl< ::imgr::model::Album, id_sqlite >::find_statement[] =
   "SELECT "
   "\"Album\".\"id\", "
-  "\"Album\".\"absolute_path\" "
+  "\"Album\".\"absolute_path\", "
+  "\"Album\".\"name\", "
+  "\"Album\".\"parent_album\" "
   "FROM \"Album\" "
   "WHERE \"Album\".\"id\"=?";
 
   const char access::object_traits_impl< ::imgr::model::Album, id_sqlite >::update_statement[] =
   "UPDATE \"Album\" "
   "SET "
-  "\"absolute_path\"=? "
+  "\"absolute_path\"=?, "
+  "\"name\"=?, "
+  "\"parent_album\"=? "
   "WHERE \"id\"=?";
 
   const char access::object_traits_impl< ::imgr::model::Album, id_sqlite >::erase_statement[] =
@@ -276,10 +409,13 @@ namespace odb
   "WHERE \"id\"=?";
 
   const char access::object_traits_impl< ::imgr::model::Album, id_sqlite >::query_statement[] =
-  "SELECT "
-  "\"Album\".\"id\", "
-  "\"Album\".\"absolute_path\" "
-  "FROM \"Album\"";
+  "SELECT\n"
+  "\"Album\".\"id\",\n"
+  "\"Album\".\"absolute_path\",\n"
+  "\"Album\".\"name\",\n"
+  "\"Album\".\"parent_album\"\n"
+  "FROM \"Album\"\n"
+  "LEFT JOIN \"Album\" AS \"parent_album\" ON \"parent_album\".\"id\"=\"Album\".\"parent_album\"";
 
   const char access::object_traits_impl< ::imgr::model::Album, id_sqlite >::erase_query_statement[] =
   "DELETE FROM \"Album\"";
@@ -629,7 +765,7 @@ namespace odb
     std::string text (query_statement);
     if (!q.empty ())
     {
-      text += " ";
+      text += "\n";
       text += q.clause ();
     }
 
@@ -638,7 +774,7 @@ namespace odb
       new (shared) select_statement (
         conn,
         text,
-        false,
+        true,
         true,
         q.parameters_binding (),
         imb));
@@ -2396,7 +2532,13 @@ namespace odb
         {
           db.execute ("CREATE TABLE \"Album\" (\n"
                       "  \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n"
-                      "  \"absolute_path\" TEXT NOT NULL)");
+                      "  \"absolute_path\" TEXT NOT NULL,\n"
+                      "  \"name\" TEXT NOT NULL,\n"
+                      "  \"parent_album\" INTEGER NULL,\n"
+                      "  CONSTRAINT \"parent_album_fk\"\n"
+                      "    FOREIGN KEY (\"parent_album\")\n"
+                      "    REFERENCES \"Album\" (\"id\")\n"
+                      "    DEFERRABLE INITIALLY DEFERRED)");
           db.execute ("CREATE UNIQUE INDEX \"Album_absolute_path_i\"\n"
                       "  ON \"Album\" (\"absolute_path\")");
           db.execute ("CREATE TABLE \"Photo\" (\n"

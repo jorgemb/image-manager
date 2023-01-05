@@ -15,13 +15,22 @@ project("image-manager" VERSION 0.1)
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED on)
 
+# Parameters
+set(IMGR_ENABLE_TESTING on CACHE BOOL "Enable building of tests")
+message("IMGR_ENABLE_TESTING: " ${IMGR_ENABLE_TESTING})
+
 # Add external libraries
 
 # Catch2
-find_package(Catch2 3 REQUIRED)
-set_property(GLOBAL PROPERTY CTEST_TARGETS_ADDED 1)
-enable_testing()
-include(Catch)
+if(IMGR_ENABLE_TESTING)
+    find_package(Catch2 3 REQUIRED)
+    set_property(GLOBAL PROPERTY CTEST_TARGETS_ADDED 1)
+    enable_testing()
+    include(Catch)
+
+    # Subdirectory with tests library
+    add_subdirectory(test_helper/)
+endif()
 
 # Add subprojects
 add_subdirectory(gui/)

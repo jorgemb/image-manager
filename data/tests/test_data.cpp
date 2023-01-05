@@ -1,7 +1,3 @@
-//
-// Created by jorge on 15/12/2022.
-//
-
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/matchers/catch_matchers_all.hpp>
 
@@ -12,61 +8,19 @@
 #include "data/photo_store.h"
 #include "data/config.h"
 
-#include <iostream>
-#include <random>
-#include <algorithm>
-#include <memory>
+#include <test_helper/helper.h>
 
-#include <fmt/core.h>
+#include <iostream>
+#include <memory>
 
 #include <boost/filesystem.hpp>
 
-#include <OpenImageIO/imageio.h>
-#include <OpenImageIO/imagebufalgo.h>
 #include <OpenImageIO/filesystem.h>
 
 namespace fs = boost::filesystem;
 
 // Used to do tests that write to disk
-#define WRITE_TO_DISK_TESTS
-
-/// Creates a random string for the root file
-/// \param size
-/// \return
-std::string random_string(std::size_t size) {
-    const std::string characters("abcdefghijklmnopqrstuvwxyz0123456789_");
-
-    // Random parameters
-    std::random_device device;
-    std::default_random_engine generator(device());
-    std::uniform_int_distribution<std::size_t> distribution(0, characters.size() - 1);
-
-    // Return string
-    std::string ret(size, '-');
-    std::transform(ret.begin(), ret.end(), ret.begin(), [&](auto &val) {
-        return characters[distribution(generator)];
-    });
-
-    return ret;
-}
-
-/// Creates a random image and saves it to the specified
-/// \param path
-/// \param width
-/// \param height
-/// \param channels
-/// \return
-bool create_test_image(const fs::path &path, uint32_t width, uint32_t height) {
-    // Fill buffer with data
-    OIIO::ImageSpec spec(width, height, 3, OIIO::TypeDesc::FLOAT);
-    OIIO::ImageBuf buffer(spec);
-    float dark[3] = {0.1, 0.1, 0.1};
-    float light[3] = {0.8, 0.8, 0.8};
-    OIIO::ImageBufAlgo::checker(buffer, 64, 64, 1, dark, light);
-
-    return buffer.write(path.string());
-}
-
+//#define WRITE_TO_DISK_TESTS
 
 /// Sets up the directory environment for tests
 class EnvironmentSetup : public Catch::EventListenerBase {
@@ -75,7 +29,7 @@ public:
 
     void testRunStarting(const Catch::TestRunInfo &testRunInfo) override {
         // Create temp root directory
-        temp_root = fs::temp_directory_path() / random_string(20);
+        temp_root = fs::temp_directory_path() / imgr::random_string(20);
         fs::create_directories(temp_root);
         fs::current_path(temp_root);
 
@@ -95,9 +49,9 @@ public:
 
         // Create images
         fs::path sandbox = temp_root / "sandbox";
-        create_test_image(sandbox / "1.jpg", 512, 512);
-        create_test_image(sandbox / "2.png", 256, 512);
-        create_test_image(sandbox / "3.bmp", 512, 256);
+        imgr::create_test_image(sandbox / "1.jpg", 512, 512);
+        imgr::create_test_image(sandbox / "2.png", 256, 512);
+        imgr::create_test_image(sandbox / "3.bmp", 512, 256);
 
         // Invalid image that should not be loaded
         std::ofstream not_an_image((sandbox / "not_image.jpg").string());
@@ -118,23 +72,25 @@ CATCH_REGISTER_LISTENER(EnvironmentSetup)
 
 TEST_CASE("File tree", "[DirectoryTree]") {
     using namespace Catch::Matchers;
+    using imgr::DirectoryTree;
 
     // Initial tree
     fs::path root_directory = fs::current_path() / "sandbox";
     std::cout << "Using directory: " << root_directory;
-    imgr::DirectoryTree tree(root_directory);
+    DirectoryTree tree(root_directory);
 
-    SECTION("Basic tests") {
-        REQUIRE(tree.get_root() == root_directory);
+    REQUIRE(tree.get_path() == root_directory);
 
-        // Compare trees
-        std::string expected_tree = "sandbox\n-1\n--1\n--2\n-2\n--1\n--2";
-        REQUIRE(tree.str() == expected_tree);
+    // Check that we have the expected subdirectories
+    std::vector<DirectoryTree> subdirs{
+        DirectoryTree(root_directory / "1"),
+        DirectoryTree(root_directory / "2")
+    };
+    REQUIRE_THAT(tree.get_subdirectories(), UnorderedEquals(subdirs));
 
-        // Get single children
-        std::vector<fs::path> expected_children = {root_directory / "1", root_directory / "2"};
-        REQUIRE(tree.children_of(root_directory) == expected_children);
-    }
+    // Get files
+    auto files = tree.get_files();
+    REQUIRE_THAT(files, Contains(root_directory / "not_image.jpg"));
 }
 
 TEST_CASE("Config file read", "[Config]") {

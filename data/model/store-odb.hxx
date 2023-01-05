@@ -174,7 +174,7 @@ namespace odb
   // Album
   //
   template <typename A>
-  struct query_columns< ::imgr::model::Album, id_sqlite, A >
+  struct pointer_query_columns< ::imgr::model::Album, id_sqlite, A >
   {
     // id
     //
@@ -199,23 +199,51 @@ namespace odb
     absolute_path_type_;
 
     static const absolute_path_type_ absolute_path;
+
+    // name
+    //
+    typedef
+    sqlite::query_column<
+      sqlite::value_traits<
+        ::std::string,
+        sqlite::id_text >::query_type,
+      sqlite::id_text >
+    name_type_;
+
+    static const name_type_ name;
+
+    // parent_album
+    //
+    typedef
+    sqlite::query_column<
+      sqlite::value_traits<
+        ::imgr::model::Album::id_type,
+        sqlite::id_integer >::query_type,
+      sqlite::id_integer >
+    parent_album_type_;
+
+    static const parent_album_type_ parent_album;
   };
 
   template <typename A>
-  const typename query_columns< ::imgr::model::Album, id_sqlite, A >::id_type_
-  query_columns< ::imgr::model::Album, id_sqlite, A >::
+  const typename pointer_query_columns< ::imgr::model::Album, id_sqlite, A >::id_type_
+  pointer_query_columns< ::imgr::model::Album, id_sqlite, A >::
   id (A::table_name, "\"id\"", 0);
 
   template <typename A>
-  const typename query_columns< ::imgr::model::Album, id_sqlite, A >::absolute_path_type_
-  query_columns< ::imgr::model::Album, id_sqlite, A >::
+  const typename pointer_query_columns< ::imgr::model::Album, id_sqlite, A >::absolute_path_type_
+  pointer_query_columns< ::imgr::model::Album, id_sqlite, A >::
   absolute_path (A::table_name, "\"absolute_path\"", 0);
 
   template <typename A>
-  struct pointer_query_columns< ::imgr::model::Album, id_sqlite, A >:
-    query_columns< ::imgr::model::Album, id_sqlite, A >
-  {
-  };
+  const typename pointer_query_columns< ::imgr::model::Album, id_sqlite, A >::name_type_
+  pointer_query_columns< ::imgr::model::Album, id_sqlite, A >::
+  name (A::table_name, "\"name\"", 0);
+
+  template <typename A>
+  const typename pointer_query_columns< ::imgr::model::Album, id_sqlite, A >::parent_album_type_
+  pointer_query_columns< ::imgr::model::Album, id_sqlite, A >::
+  parent_album (A::table_name, "\"parent_album\"", 0);
 
   template <>
   class access::object_traits_impl< ::imgr::model::Album, id_sqlite >:
@@ -243,10 +271,23 @@ namespace odb
       std::size_t m_absolute_path_size;
       bool m_absolute_path_null;
 
+      // m_name
+      //
+      details::buffer m_name_value;
+      std::size_t m_name_size;
+      bool m_name_null;
+
+      // m_parent_album
+      //
+      long long m_parent_album_value;
+      bool m_parent_album_null;
+
       std::size_t version;
     };
 
     struct extra_statement_cache_type;
+
+    struct parent_album_tag;
 
     using object_traits<object_type>::id;
 
@@ -285,7 +326,7 @@ namespace odb
 
     typedef sqlite::query_base query_base_type;
 
-    static const std::size_t column_count = 2UL;
+    static const std::size_t column_count = 4UL;
     static const std::size_t id_column_count = 1UL;
     static const std::size_t inverse_column_count = 0UL;
     static const std::size_t readonly_column_count = 0UL;
@@ -853,6 +894,117 @@ namespace odb
 
   // Album
   //
+  template <>
+  struct alias_traits<
+    ::imgr::model::Album,
+    id_sqlite,
+    access::object_traits_impl< ::imgr::model::Album, id_sqlite >::parent_album_tag>
+  {
+    static const char table_name[];
+  };
+
+  template <>
+  struct query_columns_base< ::imgr::model::Album, id_sqlite >
+  {
+    // parent_album
+    //
+    typedef
+    odb::alias_traits<
+      ::imgr::model::Album,
+      id_sqlite,
+      access::object_traits_impl< ::imgr::model::Album, id_sqlite >::parent_album_tag>
+    parent_album_alias_;
+  };
+
+  template <typename A>
+  struct query_columns< ::imgr::model::Album, id_sqlite, A >:
+    query_columns_base< ::imgr::model::Album, id_sqlite >
+  {
+    // id
+    //
+    typedef
+    sqlite::query_column<
+      sqlite::value_traits<
+        ::imgr::model::Album::id_type,
+        sqlite::id_integer >::query_type,
+      sqlite::id_integer >
+    id_type_;
+
+    static const id_type_ id;
+
+    // absolute_path
+    //
+    typedef
+    sqlite::query_column<
+      sqlite::value_traits<
+        ::std::string,
+        sqlite::id_text >::query_type,
+      sqlite::id_text >
+    absolute_path_type_;
+
+    static const absolute_path_type_ absolute_path;
+
+    // name
+    //
+    typedef
+    sqlite::query_column<
+      sqlite::value_traits<
+        ::std::string,
+        sqlite::id_text >::query_type,
+      sqlite::id_text >
+    name_type_;
+
+    static const name_type_ name;
+
+    // parent_album
+    //
+    typedef
+    sqlite::query_column<
+      sqlite::value_traits<
+        ::imgr::model::Album::id_type,
+        sqlite::id_integer >::query_type,
+      sqlite::id_integer >
+    parent_album_column_type_;
+
+    typedef
+    odb::query_pointer<
+      odb::pointer_query_columns<
+        ::imgr::model::Album,
+        id_sqlite,
+        parent_album_alias_ > >
+    parent_album_pointer_type_;
+
+    struct parent_album_type_: parent_album_pointer_type_, parent_album_column_type_
+    {
+      parent_album_type_ (const char* t, const char* c, const char* conv)
+        : parent_album_column_type_ (t, c, conv)
+      {
+      }
+    };
+
+    static const parent_album_type_ parent_album;
+  };
+
+  template <typename A>
+  const typename query_columns< ::imgr::model::Album, id_sqlite, A >::id_type_
+  query_columns< ::imgr::model::Album, id_sqlite, A >::
+  id (A::table_name, "\"id\"", 0);
+
+  template <typename A>
+  const typename query_columns< ::imgr::model::Album, id_sqlite, A >::absolute_path_type_
+  query_columns< ::imgr::model::Album, id_sqlite, A >::
+  absolute_path (A::table_name, "\"absolute_path\"", 0);
+
+  template <typename A>
+  const typename query_columns< ::imgr::model::Album, id_sqlite, A >::name_type_
+  query_columns< ::imgr::model::Album, id_sqlite, A >::
+  name (A::table_name, "\"name\"", 0);
+
+  template <typename A>
+  const typename query_columns< ::imgr::model::Album, id_sqlite, A >::parent_album_type_
+  query_columns< ::imgr::model::Album, id_sqlite, A >::
+  parent_album (A::table_name, "\"parent_album\"", 0);
+
   // Photo
   //
   template <>

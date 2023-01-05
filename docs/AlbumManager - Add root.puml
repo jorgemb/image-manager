@@ -1,0 +1,21 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+autonumber
+participant AlbumManager as manager
+entity DirectoryTree as tree
+database PhotoStore as store
+
+-> manager : add_root_album(absolute_path)
+
+manager -> tree: <<create>> (absolute_path)
+tree --> manager: DirectoryTree
+
+loop for Directory in DirectoryTree
+    manager -> store: create_album(path, parent)
+    manager <-- store: Album
+end
+
+<-- manager : ok?
+
+@enduml

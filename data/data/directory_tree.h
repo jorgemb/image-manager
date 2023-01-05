@@ -11,50 +11,48 @@
 #include <vector>
 
 #include <boost/filesystem.hpp>
+#include <ostream>
 
 namespace imgr {
 namespace filesystem = boost::filesystem;
 
-class DirectoryTree {
-private:
-    // Definitions
-    using file_map = std::multimap<filesystem::path, filesystem::path>;
+/// Represents a directory tree in the filesystem
+class DirectoryTree{
 public:
-    using const_iterator = file_map::const_iterator;
+    /// Creates a new directory tree
+    /// \param path
+    explicit DirectoryTree(filesystem::path path);
 
-    /// Creates a new DirectoryTree from the given root path
-    /// \param root
-    DirectoryTree(filesystem::path root);
+    /// Returns the path of the tree
+    /// \return
+    const filesystem::path &get_path() const;
 
-        /// Returns a string representation of the tree
-        /// \return
-        std::string str() const;
+    /// Returns the name of the directory
+    /// \return
+    std::string get_name() const;
 
-        /// Refreshes the internal representation of the tree
-        void refresh();
+    /// Returns a list of sub-directories
+    /// \return
+    std::vector<DirectoryTree> get_subdirectories() const;
 
-    /// Returns the absolute path
-    filesystem::path get_root() const { return m_root; }
+    /// Returns a list of files
+    /// \return
+    std::vector<filesystem::path> get_files() const;
 
-    // Returns the children of a given path
-    std::vector<filesystem::path> children_of(const filesystem::path &path) const;
+    bool operator==(const DirectoryTree &rhs) const {
+        return m_path == rhs.m_path;
+    }
 
-    private:
-    // Path to the root of the tree
-    const filesystem::path m_root;
+    bool operator!=(const DirectoryTree &rhs) const {
+        return !(rhs == *this);
+    }
 
-        // List of files in the directory in the form [parent] -> [directory]
-        file_map m_files;
+    friend std::ostream &operator<<(std::ostream &os, const DirectoryTree &tree);
 
-        // Separator for sub directories
-        const char m_separator = '-';
-
-    /// Helper function to recurse through the tree
-    /// \param ss
-    /// \param current_path
-    /// \param level
-    void recursive_str(std::stringstream &ss, const filesystem::path &current_path, int level) const;
-    };
+private:
+    /// Root path of this directory tree
+    const filesystem::path m_path;
+};
 
 } // imgr
 
