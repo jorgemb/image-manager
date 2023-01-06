@@ -1,0 +1,37 @@
+@startuml
+participant     wxApp as app
+participant     wxAlbumTree as tree
+participant     AlbumIterator as iterator
+participant     AlbumManager as manager
+database        PhotoStore as store
+
+autonumber
+
+-> tree : UpdateTree()
+tree -> app : get_album_manager()
+tree <-- app: AlbumManagerRef
+
+tree -> manager : begin()
+tree <-- manager : AlbumIterator
+
+loop while Album iterator is valid
+    tree <-- iterator : AlbumPtr
+    activate iterator
+    tree -> tree : AddTreeNode(AlbumPtr)
+
+    tree -> iterator : next()
+    note left of iterator
+        AlbumIterator provides an interface
+        that allows for lazy breadth-first visit
+    end note
+
+    opt As needed
+        iterator -> manager : get_sub_albums(album)
+        iterator <-- manager : AlbumList
+    end
+
+end
+
+
+
+@enduml

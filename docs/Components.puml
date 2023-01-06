@@ -4,6 +4,8 @@
 package "gui"{
     component wxGallery as gallery
     component wxGalleryImage as image
+    component wxPreview as preview
+    component ImageCache as cache
 }
 
 package "application"{
@@ -29,7 +31,9 @@ app --> config
 
 gallery --> image
 gallery --> manager
+gallery --> preview
 image --> manager
+preview -> manager
 
 manager --> store
 manager --> tree

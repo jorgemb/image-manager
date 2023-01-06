@@ -1,9 +1,9 @@
 @startuml
 'https://plantuml.com/sequence-diagram
 
-title Loading images with Gallery
-participant     wxApp as app
+title Loading thumbnail images with Gallery
 participant     wxGallery as gallery
+participant     wxApp as app
 participant     AlbumManager as manager
 database        PhotoStore as store
 
@@ -11,19 +11,21 @@ autonumber
 
 -> gallery : LoadAlbum(album_id)
 gallery -> app : get_album_manager()
-app --> gallery : AlbumManagerRef
+gallery <-- app: AlbumManagerRef
 gallery -> manager : get_album_photos(album_id)
 manager -> store : get_album_photos(album_id)
-store --> manager : PhotoList
-manager --> gallery : PhotoList
+manager <-- store : PhotoList
+gallery <-- manager : PhotoList
 
 loop On each Image from the PhotoList
     gallery -> manager : load_photo(photo_id, thumbnail=true)
     manager -> store : load_photo_thumbnail(photo_id)
-    store --> manager : ImageData
+    manager <-- store : ImageData
     manager -> manager : create_gui_image(ImageData)
-    manager --> gallery : wxImage
-    gallery -> gallery: create_gallery_image(wxImage)
+    gallery <-- manager : RawImageData
+    gallery -> gallery: create_gallery_image(RawImageData)
 end
+
+<-- gallery : ok?
 
 @enduml
