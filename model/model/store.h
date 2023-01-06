@@ -48,6 +48,14 @@ public:
         return m_parent_album;
     }
 
+    bool operator==(const Album &rhs) const {
+        return m_id == rhs.m_id;
+    }
+
+    bool operator!=(const Album &rhs) const {
+        return !(rhs == *this);
+    }
+
 private:
     // Default constructor
     Album() = default;
@@ -108,6 +116,14 @@ public:
     /// \return
     id_type get_id() const {
         return m_id;
+    }
+
+    bool operator==(const Photo &rhs) const {
+        return m_id == rhs.m_id;
+    }
+
+    bool operator!=(const Photo &rhs) const {
+        return !(rhs == *this);
     }
 
 private:
@@ -192,6 +208,14 @@ public:
     /// \return
     const std::shared_ptr<Photo> &get_photo() const {
         return m_photo;
+    }
+
+    bool operator==(const PhotoThumbnail &rhs) const {
+        return m_id == rhs.m_id;
+    }
+
+    bool operator!=(const PhotoThumbnail &rhs) const {
+        return !(rhs == *this);
     }
 
 private:

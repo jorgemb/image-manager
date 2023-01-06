@@ -10,6 +10,7 @@
 
 #include <iostream>
 #include <memory>
+#include <set>
 
 #include <boost/filesystem.hpp>
 
@@ -38,17 +39,17 @@ public:
 
         // Create album structure
         std::array<std::string, TOTAL_ALBUMS> directories;
-        std::for_each(directories.begin(), directories.end(), [](auto& dir){ dir = imgr::random_string(10); });
+        std::for_each(directories.begin(), directories.end(), [](auto &dir) { dir = imgr::random_string(10); });
 
         // Create photos in each directory
-        for(const auto& dir: directories){
+        for (const auto &dir: directories) {
             // Create directory
             fs::path current_album = temp_root / dir;
             fs::create_directory(current_album);
 
             // Create files
             for (int i = 0; i < PHOTOS_PER_ALBUM; ++i) {
-                auto& extension = imgr::random_uniform_choice(image_types);
+                auto &extension = imgr::random_uniform_choice(image_types);
                 fs::path photo_path = current_album / (imgr::random_string(10) + extension);
                 imgr::create_test_image(photo_path,
                                         imgr::random_uniform_choice(sizes),
@@ -76,33 +77,45 @@ private:
 
 CATCH_REGISTER_LISTENER(EnvironmentSetup)
 
-TEST_CASE("AlbumManager tests", "[AlbumManager]"){
+TEST_CASE("AlbumManager tests", "[AlbumManager]") {
 
     imgr::Config config("test.yml");
-    imgr::AlbumManager manager(config);
+    auto manager = imgr::AlbumManager::create(config);
 
     // Add the album root
     auto current_path = fs::current_path();
-    auto root_album = manager.add_root_album(current_path);
+    auto root_album = manager->add_root_album(current_path);
     REQUIRE(root_album);
     REQUIRE(!root_album->get_parent_album());
 
     // Check that we are getting the root albums
-    auto roots = manager.get_root_albums();
+    auto roots = manager->get_root_albums();
     REQUIRE(roots.size() == 1);
 
     auto root_album_copy = roots.front();
     REQUIRE(root_album->get_id() == root_album_copy->get_id());
 
-    auto root_photos = manager.get_album_photos(root_album->get_id());
+    auto root_photos = manager->get_album_photos(root_album->get_id());
     REQUIRE(root_photos.empty());
 
     // Check that each sub album has only the required amount of photos
-    auto root_sub_albums = manager.get_sub_albums(root_album->get_id());
+    auto root_sub_albums = manager->get_sub_albums(root_album->get_id());
     REQUIRE(root_sub_albums.size() == TOTAL_ALBUMS);
 
-    for(auto sub_album: root_sub_albums){
-        auto photos = manager.get_album_photos(sub_album->get_id());
+    for (auto sub_album: root_sub_albums) {
+        auto photos = manager->get_album_photos(sub_album->get_id());
         REQUIRE(photos.size() == PHOTOS_PER_ALBUM);
     }
+
+    // Check iteration
+    std::set<fs::path> expected_iteration{ current_path };
+    std::copy_if(fs::recursive_directory_iterator(current_path), fs::recursive_directory_iterator(),
+                 std::inserter(expected_iteration, expected_iteration.begin()),
+                 [](auto &val) { return fs::is_directory(val); });
+
+    std::set<fs::path> album_iteration;
+    std::transform(manager->begin(), manager->end(),
+                   std::inserter(album_iteration, album_iteration.begin()),
+                   [](auto &val) { return fs::path(val->get_absolute_path()); });
+    REQUIRE(expected_iteration == album_iteration);
 }
