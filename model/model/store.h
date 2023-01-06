@@ -15,12 +15,12 @@ using ID_TYPE = uint64_t;
 
 /// Type to be used when storing raw data
 using RawData = std::vector<uint8_t>;
-#pragma db value(RawData) type("BLOB")
+PRAGMA_DB(value(RawData) type("BLOB"))
 
 class Photo;
 
 /// Represents an album object, modeled as a folder in the filesystem
-#pragma db object pointer(std::shared_ptr)
+PRAGMA_DB(object pointer(std::shared_ptr))
 
 class Album {
 public:
@@ -55,11 +55,11 @@ private:
     friend class odb::access;
 
     /// ID of the album
-#pragma db id auto
+    PRAGMA_DB(id auto)
     id_type m_id;
 
     /// Absolute path in the disk
-#pragma db unique
+    PRAGMA_DB(unique)
     std::string m_absolute_path;
 
     /// Name of the album (normally the same as the directory name)
@@ -71,7 +71,7 @@ private:
 
 /// Represents a single photo object that is part of an album. Captures the relative
 /// filename within the album and the thumbnail.
-#pragma db object pointer(std::shared_ptr)
+PRAGMA_DB(object pointer(std::shared_ptr))
 
 class Photo {
 public:
@@ -116,20 +116,20 @@ private:
 
     friend class odb::access;
 
-#pragma db id auto
+    PRAGMA_DB(id auto)
     id_type m_id;
 
     std::string m_filename;
 
     uint16_t m_width, m_height;
 
-#pragma db not_null
+    PRAGMA_DB(not_null)
     std::shared_ptr<Album> m_album;
 };
 
-#pragma db object pointer(std::shared_ptr)
-
 /// Contains the thumbnail for a photo
+PRAGMA_DB(object pointer(std::shared_ptr))
+
 class PhotoThumbnail {
 public:
     using id_type = ID_TYPE;
@@ -200,8 +200,8 @@ private:
 
     friend class odb::access;
 
-#pragma db id auto
     /// ID
+    PRAGMA_DB(id auto)
     id_type m_id;
 
     uint16_t m_width, m_height;
@@ -209,7 +209,7 @@ private:
 
     RawData m_thumbnail;
 
-#pragma db not_null unique
+    PRAGMA_DB(not_null unique)
     std::shared_ptr<Photo> m_photo;
 };
 

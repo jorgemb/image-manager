@@ -33,6 +33,7 @@ if(IMGR_ENABLE_TESTING)
 endif()
 
 # Add subprojects
+add_subdirectory(model/)
 add_subdirectory(gui/)
 add_subdirectory(data/)
 add_subdirectory(app/)

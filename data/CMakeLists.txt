@@ -2,7 +2,6 @@ cmake_minimum_required(VERSION 3.16)
 
 find_package(yaml-cpp CONFIG REQUIRED)
 find_package(fmt CONFIG REQUIRED)
-find_package(odb CONFIG REQUIRED libodb sqlite)
 find_package(Boost REQUIRED COMPONENTS filesystem)
 find_package(OpenImageIO CONFIG REQUIRED)
 
@@ -11,13 +10,10 @@ add_library(data
         data/directory_tree.cpp
         data/config.h
         data/config.cpp
-        model/store.h
-        model/store-odb.cxx
-        model/store-odb.hxx
         data/photo_store.cpp
         data/photo_store.h)
 target_include_directories(data PUBLIC .)
-target_link_libraries(data PUBLIC yaml-cpp Boost::filesystem odb::libodb odb::libodb-sqlite OpenImageIO::OpenImageIO)
+target_link_libraries(data PUBLIC imgr::model yaml-cpp Boost::filesystem OpenImageIO::OpenImageIO)
 
 add_library(imgr::data ALIAS data)
 
