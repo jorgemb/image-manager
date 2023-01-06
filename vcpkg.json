@@ -8,6 +8,7 @@
     "libodb",
     "libodb-sqlite",
     "openimageio",
+    "sqlite3",
     "wxwidgets",
     "yaml-cpp"
   ]

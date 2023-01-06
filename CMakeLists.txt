@@ -14,6 +14,7 @@ endif()
 project("image-manager" VERSION 0.1)
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED on)
+set(Boost_NO_WARN_NEW_VERSIONS 1)
 
 # Parameters
 set(IMGR_ENABLE_TESTING on CACHE BOOL "Enable building of tests")

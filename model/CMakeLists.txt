@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
+find_package(unofficial-sqlite3 CONFIG REQUIRED) # Solves issue when including libodb
 find_package(odb CONFIG REQUIRED libodb sqlite)
 
 # Model library
