@@ -5,7 +5,7 @@ find_package(fmt CONFIG REQUIRED)
 
 set(APPLICATION_SRC
         app/album_manager.cpp
-        app/album_manager.h)
+        app/album_manager.h app/raw_image.cpp app/raw_image.h)
 
 set(APPLICATION_MAIN
         app/application.h

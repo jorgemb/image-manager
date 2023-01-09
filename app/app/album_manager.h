@@ -18,10 +18,11 @@ namespace imgr {
 
 /* Forward declarations */
 class Config;
+
 class AlbumIterator;
 
 /// Represent the album structure
-class AlbumManager : public std::enable_shared_from_this<AlbumManager> {
+class AlbumManager {
 public:
     using PhotoId = PhotoStore::id_type;
     using AlbumId = PhotoStore::id_type;
@@ -30,17 +31,9 @@ public:
     using PhotoList = PhotoStore::PhotoList;
     using AlbumList = PhotoStore::AlbumList;
 
-    /// Allows the creation of a new AlbumManager via shared pointer interface
+    /// Constructor with access to configuration file
     /// \param config
-    /// \return
-    [[nodiscard]]
-    static std::shared_ptr<AlbumManager> create(const Config &config) {
-        return std::shared_ptr<AlbumManager>(new AlbumManager(config));
-    }
-
-    /// Returns a shared pointer from this
-    /// \return
-//    std::shared_ptr<AlbumManager> get_ptr() { return shared_from_this(); }
+    explicit AlbumManager(const Config &config);
 
     /// Add an album root to the manager
     /// \param absolute_path
@@ -76,10 +69,6 @@ public:
     AlbumIterator end();
 
 private:
-    /// Constructor with access to configuration file
-    /// \param config
-    explicit AlbumManager(const Config &config);
-
     /// Photo store
     std::unique_ptr<PhotoStore> m_store;
 
@@ -93,8 +82,13 @@ private:
 class AlbumIterator : public std::iterator<std::input_iterator_tag, AlbumManager::AlbumPtr> {
 public:
     using AlbumPtr = AlbumManager::AlbumPtr;
+
     /// Default constructor. Creates an END iterator.
     AlbumIterator() = default;
+
+    /// Creates an album iterator to the given manager
+    /// \param manager
+    explicit AlbumIterator(AlbumManager *manager);
 
     /* OPERATORS */
 
@@ -109,13 +103,10 @@ public:
     }
 
     // Continues to the next element in the iteration
-    AlbumIterator& operator++();
-
-    // Creates the album iterator
-    static AlbumIterator create_iterator(const std::shared_ptr<AlbumManager> &manager);
+    AlbumIterator &operator++();
 
 private:
-    std::shared_ptr<AlbumManager> m_manager;
+    AlbumManager *m_manager{};
     std::deque<value_type> m_visit_queue;
 };
 

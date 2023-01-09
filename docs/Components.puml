@@ -11,6 +11,7 @@ package "gui"{
 package "application"{
     component wxApp as app
     component AlbumManager as manager
+    component RawImage as raw
 }
 
 package "data"{
@@ -32,12 +33,14 @@ app --> config
 gallery --> image
 gallery --> manager
 gallery --> preview
+gallery --> raw
 image --> manager
 preview -> manager
 
 manager --> store
 manager --> tree
 manager --> config
+manager --> raw
 
 store --> model_photo
 store --> model_album

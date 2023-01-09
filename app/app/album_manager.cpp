@@ -56,11 +56,11 @@ AlbumManager::AlbumPtr AlbumManager::create_album(const DirectoryTree &tree, Alb
     return album;
 }
 
-AlbumIterator AlbumManager::begin(){
-    return AlbumIterator::create_iterator(shared_from_this());
+AlbumIterator AlbumManager::begin() {
+    return AlbumIterator(this);
 }
 
-AlbumIterator AlbumManager::end(){
+AlbumIterator AlbumManager::end() {
     return {};
 }
 
@@ -85,18 +85,18 @@ AlbumIterator::AlbumPtr AlbumIterator::operator->() {
 bool AlbumIterator::operator==(const AlbumIterator &rhs) const {
     // Check trivial case
     bool both_empty = m_visit_queue.empty() && rhs.m_visit_queue.empty();
-    if(both_empty) return true;
+    if (both_empty) return true;
 
     // Check same manager
     bool same_manager = m_manager == rhs.m_manager;
-    if(!same_manager) return false;
+    if (!same_manager) return false;
 
     // If both are not empty, then the queues must hold the same elements
     return m_visit_queue == rhs.m_visit_queue;
 }
 
 AlbumIterator &AlbumIterator::operator++() {
-    if(!m_visit_queue.empty()){
+    if (!m_visit_queue.empty()) {
         // Retrieve element
         auto album = m_visit_queue.front();
         m_visit_queue.pop_front();
@@ -109,14 +109,9 @@ AlbumIterator &AlbumIterator::operator++() {
     return *this;
 }
 
-AlbumIterator AlbumIterator::create_iterator(const std::shared_ptr<AlbumManager> &manager) {
-    AlbumIterator iterator{};
-    iterator.m_manager = manager;
-
+AlbumIterator::AlbumIterator(AlbumManager *manager) : m_manager(manager) {
     auto root_albums = manager->get_root_albums();
-    std::copy(root_albums.begin(), root_albums.end(), std::back_inserter(iterator.m_visit_queue));
-
-    return iterator;
+    std::copy(root_albums.begin(), root_albums.end(), std::back_inserter(m_visit_queue));
 }
 
 } // imgr

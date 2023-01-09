@@ -21,9 +21,9 @@ loop On each Image from the PhotoList
     gallery -> manager : load_photo(photo_id, thumbnail=true)
     manager -> store : load_photo_thumbnail(photo_id)
     manager <-- store : ImageData
-    manager -> manager : create_gui_image(ImageData)
-    gallery <-- manager : RawImageData
-    gallery -> gallery: create_gallery_image(RawImageData)
+    manager -> manager : create_image(ImageData)
+    gallery <-- manager : RawImage
+    gallery -> gallery: create_gallery_image(RawImage)
 end
 
 <-- gallery : ok?
