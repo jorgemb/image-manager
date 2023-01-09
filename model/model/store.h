@@ -3,6 +3,7 @@
 
 #include <memory>
 #include <string>
+#include <utility>
 #include <vector>
 
 #include <odb/core.hxx>
@@ -26,8 +27,14 @@ class Album {
 public:
     using id_type = ID_TYPE;
 
-    Album(const std::string &absolute_path, const std::string &name, std::shared_ptr<Album> parent_album = nullptr)
-            : m_absolute_path(absolute_path), m_name(name), m_parent_album(std::move(parent_album)) {}
+    /// Initializer constructor
+    /// \param absolute_path
+    /// \param name
+    /// \param parent_album
+    Album(std::string absolute_path, std::string name, std::shared_ptr<Album> parent_album = nullptr)
+            : m_absolute_path(std::move(absolute_path)),
+              m_name(std::move(name)),
+              m_parent_album(std::move(parent_album)) {}
 
     /// Getter for ID
     /// \return
@@ -57,14 +64,15 @@ public:
     }
 
 private:
-    // Default constructor
-    Album() = default;
-
+    /// Allow setting of private members
     friend class odb::access;
+
+    /// Default constructor
+    Album() = default;
 
     /// ID of the album
     PRAGMA_DB(id auto)
-    id_type m_id;
+    id_type m_id = 0;
 
     /// Absolute path in the disk
     PRAGMA_DB(unique)
@@ -85,8 +93,13 @@ class Photo {
 public:
     using id_type = ID_TYPE;
 
-    Photo(const std::string &filename, uint16_t width, uint16_t height, const std::shared_ptr<Album> &album)
-            : m_filename(filename), m_width(width), m_height(height), m_album(album) {
+    /// Initializer constructor
+    /// \param filename
+    /// \param width
+    /// \param height
+    /// \param album
+    Photo(std::string filename, uint16_t width, uint16_t height, const std::shared_ptr<Album> &album)
+            : m_filename(std::move(filename)), m_width(width), m_height(height), m_album(album) {
     }
 
     /// Getter for filename
@@ -127,17 +140,18 @@ public:
     }
 
 private:
-    /// Private default constructor
-    Photo() = default;
-
+    /// Allow access to private members
     friend class odb::access;
 
+    /// Default constructor
+    Photo() = default;
+
     PRAGMA_DB(id auto)
-    id_type m_id;
+    id_type m_id = 0;
 
     std::string m_filename;
 
-    uint16_t m_width, m_height;
+    uint16_t m_width{}, m_height{};
 
     PRAGMA_DB(not_null)
     std::shared_ptr<Album> m_album;
@@ -219,17 +233,17 @@ public:
     }
 
 private:
-    /// Private default constructor
-    PhotoThumbnail() = default;;
-
     friend class odb::access;
+
+    /// Default constructor
+    PhotoThumbnail() = default;
 
     /// ID
     PRAGMA_DB(id auto)
-    id_type m_id;
+    id_type m_id = 0;
 
-    uint16_t m_width, m_height;
-    uint8_t m_channels;
+    uint16_t m_width{}, m_height{};
+    uint8_t m_channels{};
 
     RawData m_thumbnail;
 

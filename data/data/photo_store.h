@@ -24,9 +24,10 @@ public:
     using id_type = model::ID_TYPE;
     using AlbumPtr = odb::object_traits<model::Album>::pointer_type;
     using PhotoPtr = odb::object_traits<model::Photo>::pointer_type;
+    using ThumbnailPtr = odb::object_traits<model::PhotoThumbnail>::pointer_type;
+
     using PhotoList = std::vector<PhotoPtr>;
     using AlbumList = std::vector<AlbumPtr>;
-    using ThumbnailPtr = odb::object_traits<model::PhotoThumbnail>::pointer_type;
     using DatabaseType = odb::sqlite::database;
 
     using Dimension = uint16_t;
