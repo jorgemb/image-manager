@@ -31,7 +31,7 @@ public:
     /// \param absolute_path
     /// \param name
     /// \param parent_album
-    Album(std::string absolute_path, std::string name, std::shared_ptr<Album> parent_album = nullptr)
+    Album(std::string absolute_path, std::string name, std::shared_ptr<const Album> parent_album = nullptr)
             : m_absolute_path(std::move(absolute_path)),
               m_name(std::move(name)),
               m_parent_album(std::move(parent_album)) {}
@@ -51,7 +51,7 @@ public:
     }
 
     /// Getter for album parent
-    const std::shared_ptr<Album> &get_parent_album() const {
+    const std::shared_ptr<const Album> &get_parent_album() const {
         return m_parent_album;
     }
 
@@ -82,7 +82,7 @@ private:
     std::string m_name;
 
     /// Pointer to parent, if available
-    std::shared_ptr<Album> m_parent_album;
+    std::shared_ptr<const Album> m_parent_album;
 };
 
 /// Represents a single photo object that is part of an album. Captures the relative

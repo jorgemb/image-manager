@@ -26,8 +26,12 @@ public:
     using PhotoPtr = odb::object_traits<model::Photo>::pointer_type;
     using ThumbnailPtr = odb::object_traits<model::PhotoThumbnail>::pointer_type;
 
-    using PhotoList = std::vector<PhotoPtr>;
-    using AlbumList = std::vector<AlbumPtr>;
+    using AlbumCPtr = odb::object_traits<model::Album>::const_pointer_type;
+    using PhotoCPtr = odb::object_traits<model::Photo>::const_pointer_type;
+    using ThumbnailCPtr = odb::object_traits<model::PhotoThumbnail>::const_pointer_type;
+
+    using PhotoList = std::vector<PhotoCPtr>;
+    using AlbumList = std::vector<AlbumCPtr>;
     using DatabaseType = odb::sqlite::database;
 
     using Dimension = uint16_t;
@@ -40,12 +44,12 @@ public:
     /// Retrieves an album given an absolute path
     /// \param album_path
     /// \return
-    AlbumPtr get_album(const filesystem::path &album_path);
+    AlbumCPtr get_album(const filesystem::path &album_path);
 
     /// Retrieves an album given an id
     /// \param album_id
     /// \return
-    AlbumPtr get_album(model::Album::id_type album_id);
+    AlbumCPtr get_album(model::Album::id_type album_id);
 
     /// Retrieves all the root albums (the ones that have no parent)
     /// \return
@@ -60,7 +64,7 @@ public:
     /// \param album_path
     /// \param load_images
     /// \return
-    AlbumPtr create_album(const filesystem::path &album_path, bool load_images = true, AlbumPtr parent = nullptr);
+    AlbumCPtr create_album(const filesystem::path &album_path, bool load_images = true, AlbumCPtr parent = nullptr);
 
     /// Returns a list of the photos in the album
     /// \param album_id
@@ -70,7 +74,7 @@ public:
     /// Returns the thumbnail from a photo
     /// \param photo
     /// \return
-    ThumbnailPtr get_photo_thumbnail(model::Photo::id_type photo_id);
+    ThumbnailCPtr get_photo_thumbnail(model::Photo::id_type photo_id);
 
     /// Calculates the dimensions that keep the aspect ratio and where the largest one equals target_max
     /// \param width

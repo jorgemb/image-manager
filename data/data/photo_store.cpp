@@ -40,7 +40,7 @@ PhotoStore::PhotoStore(const filesystem::path &db_path, bool recreate)
     }
 }
 
-PhotoStore::AlbumPtr PhotoStore::get_album(const filesystem::path &album_path) {
+PhotoStore::AlbumCPtr PhotoStore::get_album(const filesystem::path &album_path) {
     // Search for the album in the database
     QueryTransaction t(m_database.begin());
     do_trace(t.get_transaction());
@@ -49,7 +49,7 @@ PhotoStore::AlbumPtr PhotoStore::get_album(const filesystem::path &album_path) {
     return album;
 }
 
-PhotoStore::AlbumPtr PhotoStore::get_album(model::Album::id_type album_id) {
+PhotoStore::AlbumCPtr PhotoStore::get_album(model::Album::id_type album_id) {
     // Search for the album in the database
     QueryTransaction t(m_database.begin());
     do_trace(t.get_transaction());
@@ -58,31 +58,31 @@ PhotoStore::AlbumPtr PhotoStore::get_album(model::Album::id_type album_id) {
     return album;
 }
 
-PhotoStore::AlbumList PhotoStore::get_root_albums(){
+PhotoStore::AlbumList PhotoStore::get_root_albums() {
     QueryTransaction t(m_database.begin());
 
     auto result = m_database.query<model::Album>(AlbumQuery::parent_album.is_null());
     AlbumList root_albums;
-    for(auto iter = result.begin(); iter != result.end(); ++iter){
+    for (auto iter = result.begin(); iter != result.end(); ++iter) {
         root_albums.emplace_back(iter.load());
     }
 
     return root_albums;
 }
 
-PhotoStore::AlbumList PhotoStore::get_children_albums(model::Album::id_type album_id){
+PhotoStore::AlbumList PhotoStore::get_children_albums(model::Album::id_type album_id) {
     QueryTransaction t(m_database.begin());
 
     auto result = m_database.query<model::Album>(AlbumQuery::parent_album->id == album_id);
     AlbumList children_albums;
-    for(auto iter = result.begin(); iter != result.end(); ++iter){
+    for (auto iter = result.begin(); iter != result.end(); ++iter) {
         children_albums.emplace_back(iter.load());
     }
 
     return children_albums;
 }
 
-PhotoStore::AlbumPtr PhotoStore::create_album(const filesystem::path &album_path, bool load_images, AlbumPtr parent) {
+PhotoStore::AlbumCPtr PhotoStore::create_album(const filesystem::path &album_path, bool load_images, AlbumCPtr parent) {
     odb::transaction t(m_database.begin());
     do_trace(t);
 
@@ -145,7 +145,7 @@ PhotoStore::PhotoList PhotoStore::get_album_photos(model::Album::id_type album_i
     QueryTransaction t(m_database.begin());
 
     // Retrieve all the photos
-    std::vector<PhotoPtr> album_photos;
+    PhotoList album_photos;
     PhotoResult photos(m_database.query<model::Photo>(PhotoQuery::album->id == album_id));
 
     for (auto iter = photos.begin(); iter != photos.end(); ++iter) {
@@ -155,7 +155,7 @@ PhotoStore::PhotoList PhotoStore::get_album_photos(model::Album::id_type album_i
     return album_photos;
 }
 
-PhotoStore::ThumbnailPtr PhotoStore::get_photo_thumbnail(model::Photo::id_type photo_id) {
+PhotoStore::ThumbnailCPtr PhotoStore::get_photo_thumbnail(model::Photo::id_type photo_id) {
     QueryTransaction t(m_database.begin());
 
     // Get the thumbnail for the current photo
