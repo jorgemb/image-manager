@@ -1,6 +1,10 @@
 #ifndef IMAGE_MANAGER_RAW_IMAGE_H
 #define IMAGE_MANAGER_RAW_IMAGE_H
 
+#include <model/store.h>
+
+#include <odb/traits.hxx>
+
 #include <vector>
 
 namespace imgr {
@@ -8,20 +12,35 @@ namespace imgr {
 /// Represent an image raw information to be used for the GUI
 class RawImage {
 public:
-    /// Constructor where data is being copied
-    /// \param width
-    /// \param height
-    /// \param data
-    RawImage(unsigned int width, unsigned int height, const std::vector<uint8_t> &data);
+    /// Get width
+    /// \return
+    virtual unsigned int get_width() const = 0;
 
-    /// Constructor where data is being moved
-    /// \param width
-    /// \param height
-    /// \param data
-    RawImage(unsigned int width, unsigned int height, std::vector<uint8_t> &&data);
+    /// Get height
+    /// \return
+    virtual unsigned int get_height() const = 0;
+
+    /// Get internal bit information
+    /// \return
+    virtual const uint8_t *get_data() const = 0;
+};
+
+class RawImage_Thumbnail : public RawImage {
+public:
+    using ThumbnailPtr = odb::object_traits<model::PhotoThumbnail>::const_pointer_type;
+
+    /// Gets a reference to the thumbnail
+    /// \param thumbnail
+    explicit RawImage_Thumbnail(ThumbnailPtr thumbnail);
+
+    unsigned int get_width() const override;
+
+    unsigned int get_height() const override;
+
+    const uint8_t *get_data() const override;
+
 private:
-    unsigned int m_width, m_height;
-    std::vector<uint8_t> m_data;
+    ThumbnailPtr m_thumbnail;
 };
 
 } // imgr

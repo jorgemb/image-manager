@@ -5,11 +5,18 @@
 #include "raw_image.h"
 
 namespace imgr {
-RawImage::RawImage(unsigned int width, unsigned int height, const std::vector<uint8_t> &data) : m_width(width),
-                                                                                                m_height(height),
-                                                                                                m_data(data) {}
 
-RawImage::RawImage(unsigned int width, unsigned int height, std::vector<uint8_t> &&data) : m_width(width),
-                                                                                           m_height(height),
-                                                                                           m_data(std::move(data)) {}
+RawImage_Thumbnail::RawImage_Thumbnail(RawImage_Thumbnail::ThumbnailPtr thumbnail) : m_thumbnail(thumbnail) {}
+
+unsigned int RawImage_Thumbnail::get_width() const {
+    return m_thumbnail->get_width();
+}
+
+unsigned int RawImage_Thumbnail::get_height() const {
+    return m_thumbnail->get_height();
+}
+
+const uint8_t *RawImage_Thumbnail::get_data() const {
+    return m_thumbnail->get_data().data();
+}
 } // imgr
