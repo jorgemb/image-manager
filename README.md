@@ -8,9 +8,9 @@ libgstreamer-plugins-base1.0-dev
 ```
 
 ## ToDo list
+* Update album tree management in the GUI
 * Implement get_thumbnail workflow
 * Show thumbnails in the GUI
-* Update album tree management in the GUI
 * Implement get_full_image workflow
 * Do lazy evaluation for loading images from albums
   * Load metadata of images first

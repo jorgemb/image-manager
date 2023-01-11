@@ -1055,11 +1055,11 @@ namespace odb
     // m_album
     //
     {
-      ::std::shared_ptr< ::imgr::model::Album > const& v =
+      ::std::shared_ptr< const ::imgr::model::Album > const& v =
         o.m_album;
 
       typedef object_traits< ::imgr::model::Album > obj_traits;
-      typedef odb::pointer_traits< ::std::shared_ptr< ::imgr::model::Album > > ptr_traits;
+      typedef odb::pointer_traits< ::std::shared_ptr< const ::imgr::model::Album > > ptr_traits;
 
       bool is_null (ptr_traits::null_ptr (v));
       if (!is_null)
@@ -1151,11 +1151,11 @@ namespace odb
     // m_album
     //
     {
-      ::std::shared_ptr< ::imgr::model::Album >& v =
+      ::std::shared_ptr< const ::imgr::model::Album >& v =
         o.m_album;
 
       typedef object_traits< ::imgr::model::Album > obj_traits;
-      typedef odb::pointer_traits< ::std::shared_ptr< ::imgr::model::Album > > ptr_traits;
+      typedef odb::pointer_traits< ::std::shared_ptr< const ::imgr::model::Album > > ptr_traits;
 
       if (i.m_album_null)
         v = ptr_traits::pointer_type ();
@@ -1901,11 +1901,11 @@ namespace odb
     // m_photo
     //
     {
-      ::std::shared_ptr< ::imgr::model::Photo > const& v =
+      ::std::shared_ptr< const ::imgr::model::Photo > const& v =
         o.m_photo;
 
       typedef object_traits< ::imgr::model::Photo > obj_traits;
-      typedef odb::pointer_traits< ::std::shared_ptr< ::imgr::model::Photo > > ptr_traits;
+      typedef odb::pointer_traits< ::std::shared_ptr< const ::imgr::model::Photo > > ptr_traits;
 
       bool is_null (ptr_traits::null_ptr (v));
       if (!is_null)
@@ -2011,11 +2011,11 @@ namespace odb
     // m_photo
     //
     {
-      ::std::shared_ptr< ::imgr::model::Photo >& v =
+      ::std::shared_ptr< const ::imgr::model::Photo >& v =
         o.m_photo;
 
       typedef object_traits< ::imgr::model::Photo > obj_traits;
-      typedef odb::pointer_traits< ::std::shared_ptr< ::imgr::model::Photo > > ptr_traits;
+      typedef odb::pointer_traits< ::std::shared_ptr< const ::imgr::model::Photo > > ptr_traits;
 
       if (i.m_photo_null)
         v = ptr_traits::pointer_type ();

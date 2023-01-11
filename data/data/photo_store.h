@@ -64,7 +64,7 @@ public:
     /// \param album_path
     /// \param load_images
     /// \return
-    AlbumCPtr create_album(const filesystem::path &album_path, bool load_images = true, AlbumCPtr parent = nullptr);
+    AlbumCPtr create_album(const filesystem::path &album_path, bool load_images = true, const AlbumCPtr& parent = nullptr);
 
     /// Returns a list of the photos in the album
     /// \param album_id
@@ -95,6 +95,9 @@ public:
     }
 
 private:
+    /// Creates a thumbnail if it doesn't exist
+    ThumbnailCPtr create_thumbnail(const PhotoCPtr& image);
+
     /// Enable tracing for the current transaction
     /// \param t
     inline void do_trace(odb::transaction &t) {
@@ -108,7 +111,7 @@ private:
     odb::session m_session;
 
     /* CONSTANTS */
-    const Dimension THUMBNAIL_SIZE = 128;
+    const Dimension THUMBNAIL_SIZE = 256;
     const std::string THUMBNAIL_NAME = "thumbnail.jpg";
 
     /* DEFINITIONS */

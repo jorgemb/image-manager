@@ -59,9 +59,8 @@ public:
 
         // Create yaml file for testing
         std::ofstream yaml_test("test.yml");
-        yaml_test << fmt::format("# Test files\nsearch_directories:\n - {}\n - {}\n",
-                                 fs::current_path().string(),
-                                 (fs::current_path() / "sandbox").string())
+        yaml_test << fmt::format("# Test files\nsearch_directories:\n - {}\n",
+                                 fs::current_path().string())
                   << fmt::format("database:\n file: test.db\n")
                   << std::endl;
     }
@@ -84,13 +83,17 @@ TEST_CASE("AlbumManager tests", "[AlbumManager]") {
 
     // Add the album root
     auto current_path = fs::current_path();
-    auto root_album = manager.add_root_album(current_path);
-    REQUIRE(root_album);
-    REQUIRE(!root_album->get_parent_album());
+//    auto root_album = manager.add_root_album(current_path);
+//    REQUIRE(root_album);
+//    REQUIRE(!root_album->get_parent_album());
 
     // Check that we are getting the root albums
     auto roots = manager.get_root_albums();
     REQUIRE(roots.size() == 1);
+
+    auto root_album = roots.front();
+    REQUIRE(root_album);
+    REQUIRE(!root_album->get_parent_album());
 
     auto root_album_copy = roots.front();
     REQUIRE(root_album->get_id() == root_album_copy->get_id());

@@ -9,6 +9,7 @@
 #include <odb/sqlite/database.hxx>
 
 #include <OpenImageIO/imageio.h>
+#include <OpenImageIO/filter.h>
 #include <OpenImageIO/imagebuf.h>
 #include <OpenImageIO/imagebufalgo.h>
 #include <OpenImageIO/filesystem.h>
@@ -17,11 +18,11 @@
 namespace imgr {
 
 /// Class to do query transactions that commits on destruction
-class QueryTransaction {
+class AutoTransaction {
 public:
-    QueryTransaction(odb::transaction_impl *impl) : m_transaction(impl) {}
+    AutoTransaction(odb::transaction_impl *impl) : m_transaction(impl) {}
 
-    ~QueryTransaction() { m_transaction.commit(); }
+    ~AutoTransaction() { m_transaction.commit(); }
 
     odb::transaction &get_transaction() { return m_transaction; }
 
@@ -42,7 +43,7 @@ PhotoStore::PhotoStore(const filesystem::path &db_path, bool recreate)
 
 PhotoStore::AlbumCPtr PhotoStore::get_album(const filesystem::path &album_path) {
     // Search for the album in the database
-    QueryTransaction t(m_database.begin());
+    AutoTransaction t(m_database.begin());
     do_trace(t.get_transaction());
 
     AlbumPtr album = m_database.query_one<model::Album>(AlbumQuery::absolute_path == album_path.string());
@@ -51,7 +52,7 @@ PhotoStore::AlbumCPtr PhotoStore::get_album(const filesystem::path &album_path) 
 
 PhotoStore::AlbumCPtr PhotoStore::get_album(model::Album::id_type album_id) {
     // Search for the album in the database
-    QueryTransaction t(m_database.begin());
+    AutoTransaction t(m_database.begin());
     do_trace(t.get_transaction());
 
     AlbumPtr album = m_database.query_one<model::Album>(AlbumQuery::id == album_id);
@@ -59,7 +60,7 @@ PhotoStore::AlbumCPtr PhotoStore::get_album(model::Album::id_type album_id) {
 }
 
 PhotoStore::AlbumList PhotoStore::get_root_albums() {
-    QueryTransaction t(m_database.begin());
+    AutoTransaction t(m_database.begin());
 
     auto result = m_database.query<model::Album>(AlbumQuery::parent_album.is_null());
     AlbumList root_albums;
@@ -71,7 +72,7 @@ PhotoStore::AlbumList PhotoStore::get_root_albums() {
 }
 
 PhotoStore::AlbumList PhotoStore::get_children_albums(model::Album::id_type album_id) {
-    QueryTransaction t(m_database.begin());
+    AutoTransaction t(m_database.begin());
 
     auto result = m_database.query<model::Album>(AlbumQuery::parent_album->id == album_id);
     AlbumList children_albums;
@@ -82,7 +83,8 @@ PhotoStore::AlbumList PhotoStore::get_children_albums(model::Album::id_type albu
     return children_albums;
 }
 
-PhotoStore::AlbumCPtr PhotoStore::create_album(const filesystem::path &album_path, bool load_images, AlbumCPtr parent) {
+PhotoStore::AlbumCPtr
+PhotoStore::create_album(const filesystem::path &album_path, bool load_images, const AlbumCPtr &parent) {
     odb::transaction t(m_database.begin());
     do_trace(t);
 
@@ -106,33 +108,7 @@ PhotoStore::AlbumCPtr PhotoStore::create_album(const filesystem::path &album_pat
                                                             album);
             m_database.persist(new_photo);
 
-            // Create thumbnail
-            Dimension width, height;
-            int channels = 3;
-            std::tie(width, height) = calculate_dimensions(spec.width, spec.height, THUMBNAIL_SIZE);
 
-            auto thumbnail_spec = OIIO::ImageSpec{width, height, channels, OIIO::TypeDesc::UINT8};
-            OIIO::ImageBuf image_thumbnail(thumbnail_spec);
-            image_thumbnail.make_writable();
-
-            bool ok = OIIO::ImageBufAlgo::resize(image_thumbnail, image);
-            // TODO: Handle failure of resize
-
-            // .. copy to buffer
-            std::vector<uint8_t> buffer;
-            OIIO::Filesystem::IOVecOutput out_buffer(buffer);
-
-            auto out = OIIO::ImageOutput::create(THUMBNAIL_NAME, &out_buffer);
-            out->open(THUMBNAIL_NAME, thumbnail_spec);
-            image_thumbnail.write(out.get());
-            out->close();
-
-            // Create Thumbnail
-            auto photo_thumbnail = std::make_shared<model::PhotoThumbnail>(width,
-                                                                           height, channels,
-                                                                           std::move(buffer),
-                                                                           new_photo);
-            m_database.persist(photo_thumbnail);
         }
     }
 
@@ -142,7 +118,7 @@ PhotoStore::AlbumCPtr PhotoStore::create_album(const filesystem::path &album_pat
 }
 
 PhotoStore::PhotoList PhotoStore::get_album_photos(model::Album::id_type album_id) {
-    QueryTransaction t(m_database.begin());
+    AutoTransaction t(m_database.begin());
 
     // Retrieve all the photos
     PhotoList album_photos;
@@ -156,12 +132,56 @@ PhotoStore::PhotoList PhotoStore::get_album_photos(model::Album::id_type album_i
 }
 
 PhotoStore::ThumbnailCPtr PhotoStore::get_photo_thumbnail(model::Photo::id_type photo_id) {
-    QueryTransaction t(m_database.begin());
+    AutoTransaction t(m_database.begin());
 
     // Get the thumbnail for the current photo
     auto thumbnail = m_database.query_one<model::PhotoThumbnail>(ThumbnailQuery::photo->id == photo_id);
+    if(thumbnail){
+        return thumbnail;
+    } else {
+        auto photo = m_database.query_one<model::Photo>(PhotoQuery::id == photo_id);
+        return create_thumbnail(photo);
+    }
+}
 
-    return thumbnail;
+PhotoStore::ThumbnailCPtr PhotoStore::create_thumbnail(const PhotoCPtr &photo) {
+    // Load image from file
+    auto &album = photo->get_album();
+    auto image_path = filesystem::path(album->get_absolute_path()) / photo->get_filename();
+    auto image = OIIO::ImageBuf(image_path.string());
+
+    // Create thumbnail
+    Dimension width, height;
+    int channels = 3;
+    std::tie(width, height) = calculate_dimensions(
+            photo->get_width(),
+            photo->get_height(),
+            THUMBNAIL_SIZE);
+
+    auto thumbnail_spec = OIIO::ImageSpec{width, height, channels, OIIO::TypeDesc::UINT8};
+    OIIO::ImageBuf image_thumbnail(thumbnail_spec);
+    image_thumbnail.make_writable();
+
+    bool ok = OIIO::ImageBufAlgo::resize(image_thumbnail, image, "box");
+    // TODO: Handle failure of resize
+
+    // .. copy to buffer
+    std::vector<uint8_t> buffer;
+    OIIO::Filesystem::IOVecOutput out_buffer(buffer);
+
+    auto out = OIIO::ImageOutput::create(THUMBNAIL_NAME, &out_buffer);
+    out->open(THUMBNAIL_NAME, thumbnail_spec);
+    image_thumbnail.write(out.get());
+    out->close();
+
+    // Create Thumbnail
+    auto photo_thumbnail = std::make_shared<model::PhotoThumbnail>(width,
+                                                                   height, channels,
+                                                                   std::move(buffer),
+                                                                   photo);
+    m_database.persist(photo_thumbnail);
+
+    return photo_thumbnail;
 }
 
 } // imgr

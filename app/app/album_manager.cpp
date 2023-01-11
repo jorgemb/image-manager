@@ -14,21 +14,24 @@ AlbumManager::AlbumManager(const Config &config) {
     // Create the PhotoStore
     const auto &params = config.get_connection_parameters();
     m_store = std::make_unique<PhotoStore>(params.at("file"));
+
+    // Get the root albums
+    for (auto &root_album: config.get_search_directories()) {
+        AlbumManager::add_root_album(root_album);
+    }
 }
 
-AlbumManager::AlbumPtr AlbumManager::add_root_album(const filesystem::path &absolute_path) {
+AlbumManager::AlbumCPtr AlbumManager::add_root_album(const filesystem::path &absolute_path) {
     // Verify if the album already exists
-    if (m_store->get_album(absolute_path)) {
-        return false;
+    if (auto existing_album = m_store->get_album(absolute_path)) {
+        return existing_album;
     }
 
     // Create the album and return
-    AlbumPtr album = create_album(DirectoryTree{absolute_path}, nullptr);
-
-    return album;
+    return create_album(DirectoryTree{absolute_path}, nullptr);
 }
 
-std::vector<AlbumManager::AlbumPtr> AlbumManager::get_root_albums() {
+AlbumManager::AlbumList AlbumManager::get_root_albums() {
     return m_store->get_root_albums();
 }
 
@@ -40,11 +43,8 @@ AlbumManager::PhotoList AlbumManager::get_album_photos(AlbumManager::AlbumId id)
     return m_store->get_album_photos(id);
 }
 
-//AlbumManager::ImagePtr AlbumManager::load_photo_thumbnail(PhotoId id) {
-//    m_store->get_photo_thumbnail(id);
-//}
 
-AlbumManager::AlbumPtr AlbumManager::create_album(const DirectoryTree &tree, AlbumManager::AlbumPtr parent) {
+AlbumManager::AlbumCPtr AlbumManager::create_album(const DirectoryTree &tree, const AlbumManager::AlbumCPtr &parent) {
     // Creates the current album
     auto album = m_store->create_album(tree.get_path(), true, parent);
 
@@ -54,6 +54,11 @@ AlbumManager::AlbumPtr AlbumManager::create_album(const DirectoryTree &tree, Alb
     }
 
     return album;
+}
+
+AlbumManager::ThumbnailCPtr AlbumManager::load_photo_thumbnail(PhotoId id) {
+    // Get thumbnail
+    return m_store->get_photo_thumbnail(id);
 }
 
 AlbumIterator AlbumManager::begin() {
@@ -66,7 +71,7 @@ AlbumIterator AlbumManager::end() {
 
 /// ALBUM ITERATOR ///
 
-AlbumIterator::AlbumPtr &AlbumIterator::operator*() {
+AlbumIterator::AlbumCPtr &AlbumIterator::operator*() {
     if (!m_visit_queue.empty()) {
         return m_visit_queue.front();
     } else {
@@ -74,7 +79,7 @@ AlbumIterator::AlbumPtr &AlbumIterator::operator*() {
     }
 }
 
-AlbumIterator::AlbumPtr AlbumIterator::operator->() {
+AlbumIterator::AlbumCPtr AlbumIterator::operator->() {
     if (!m_visit_queue.empty()) {
         return m_visit_queue.front();
     } else {

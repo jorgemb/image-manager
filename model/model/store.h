@@ -121,7 +121,7 @@ public:
 
     /// Returns the Album to which this photo belongs
     /// \return
-    const std::shared_ptr<Album> &get_album() const {
+    const std::shared_ptr<const Album> &get_album() const {
         return m_album;
     }
 
@@ -154,7 +154,7 @@ private:
     uint16_t m_width{}, m_height{};
 
     PRAGMA_DB(not_null)
-    std::shared_ptr<Album> m_album;
+    std::shared_ptr<const Album> m_album;
 };
 
 /// Contains the thumbnail for a photo
@@ -169,21 +169,9 @@ public:
     /// \param height
     /// \param thumbnail
     /// \param photo
-    PhotoThumbnail(uint16_t width, uint16_t height, uint8_t channels, const RawData &thumbnail,
-                   const std::shared_ptr<Photo> &photo) : m_width(width), m_height(height), m_channels(channels),
-                                                          m_thumbnail(thumbnail),
-                                                          m_photo(photo) {
-
-    }
-
-    /// Constructor that allows moving the buffer
-    /// \param width
-    /// \param height
-    /// \param thumbnail
-    /// \param photo
-    PhotoThumbnail(uint16_t width, uint16_t height, uint8_t channels, RawData &&thumbnail,
-                   const std::shared_ptr<Photo> &photo) : m_width(width), m_height(height), m_channels(channels),
-                                                          m_thumbnail(thumbnail),
+    PhotoThumbnail(uint16_t width, uint16_t height, uint8_t channels, RawData thumbnail,
+                   const std::shared_ptr<const Photo> &photo) : m_width(width), m_height(height), m_channels(channels),
+                                                          m_thumbnail(std::move(thumbnail)),
                                                           m_photo(photo) {
 
     }
@@ -220,7 +208,7 @@ public:
 
     /// Returns the photo associated to the thumbnail
     /// \return
-    const std::shared_ptr<Photo> &get_photo() const {
+    const std::shared_ptr<const Photo> &get_photo() const {
         return m_photo;
     }
 
@@ -248,7 +236,7 @@ private:
     RawData m_thumbnail;
 
     PRAGMA_DB(not_null unique)
-    std::shared_ptr<Photo> m_photo;
+    std::shared_ptr<const Photo> m_photo;
 };
 
 }

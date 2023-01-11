@@ -9,15 +9,15 @@ package "gui"{
 }
 
 package "application"{
-    component wxApp as app
+    component App as app
     component AlbumManager as manager
-    component RawImage as raw
 }
 
 package "data"{
     component DirectoryTree as tree
     component PhotoStore as store
     component Config as config
+    component RawImage as raw
 }
 
 database "DB"{
@@ -26,16 +26,18 @@ database "DB"{
     component Thumbnail as model_thumbnail
 }
 
-
+note right of app
+    App includes the wxApp and
+    main wxWindow
+end note
 
 app --> config
+app --> gallery
+app --> preview
 
 gallery --> image
-gallery --> manager
 gallery --> preview
-gallery --> raw
-image --> manager
-preview -> manager
+image --> manage
 
 manager --> store
 manager --> tree

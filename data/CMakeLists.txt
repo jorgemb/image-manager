@@ -12,7 +12,9 @@ add_library(data
         data/config.h
         data/config.cpp
         data/photo_store.cpp
-        data/photo_store.h)
+        data/photo_store.h
+        data/raw_image.h
+        )
 target_include_directories(data PUBLIC .)
 target_link_libraries(data PUBLIC imgr::model yaml-cpp Boost::filesystem OpenImageIO::OpenImageIO)
 

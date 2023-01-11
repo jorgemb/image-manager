@@ -11,9 +11,11 @@
 
 namespace imgr {
 namespace filesystem = boost::filesystem;
-
+    /// Displays a
     class wxImageGallery : public wxScrolledWindow {
     public:
+        using ImageList = std::vector<std::unique_ptr<wxImage>>;
+
         /// Provided constructor
         /// \param parent
         /// \param winid
@@ -22,13 +24,9 @@ namespace filesystem = boost::filesystem;
         /// \param style
         wxImageGallery(wxWindow *parent, wxWindowID winid, const wxPoint &pos, const wxSize &size, long style);
 
-        /// Changes the path of the folder to load
-        /// \param images_path
-        void SetImagesPath(const filesystem::path &images_path);
-
-    private:
-        /// Current path being displayed
-        filesystem::path m_current_path;
+        /// Sets the image
+        /// \param images
+        void SetImages(const ImageList& images);
     };
 
 } // imgr

@@ -18,15 +18,17 @@ namespace imgr {
 
 /* Forward declarations */
 class Config;
-
 class AlbumIterator;
+class RawImage;
 
 /// Represent the album structure
 class AlbumManager {
 public:
     using PhotoId = PhotoStore::id_type;
     using AlbumId = PhotoStore::id_type;
-    using AlbumPtr = PhotoStore::AlbumPtr;
+    using AlbumCPtr = PhotoStore::AlbumCPtr;
+    using PhotoCPtr = PhotoStore::PhotoCPtr;
+    using ThumbnailCPtr = PhotoStore::ThumbnailCPtr;
 
     using PhotoList = PhotoStore::PhotoList;
     using AlbumList = PhotoStore::AlbumList;
@@ -38,7 +40,7 @@ public:
     /// Add an album root to the manager
     /// \param absolute_path
     /// \return
-    AlbumPtr add_root_album(const filesystem::path &absolute_path);
+    AlbumCPtr add_root_album(const filesystem::path &absolute_path);
 
     /// Returns a list with the root albums
     /// \return
@@ -57,7 +59,12 @@ public:
     /// Loads the thumbnail of a given photo
     /// \param id
     /// \return
-//    ImagePtr load_photo_thumbnail(PhotoId id);
+    ThumbnailCPtr load_photo_thumbnail(PhotoId id);
+
+    /// Loads a photo
+    /// \param id
+    /// \return
+//    std::unique_ptr<RawImage> load_photo(PhotoId id);
 
     /// Returns an iterator for the AlbumManager starting from the provided album
     /// \param root
@@ -75,13 +82,13 @@ private:
     /// Creates a new album in the given tree, and recursively adds the subdirectories
     /// \param tree
     /// \param parent
-    AlbumPtr create_album(const DirectoryTree &tree, AlbumPtr parent);
+    AlbumCPtr create_album(const DirectoryTree &tree, const AlbumCPtr& parent);
 };
 
 /// Allows lazy breadth-first iteration of albums
-class AlbumIterator : public std::iterator<std::input_iterator_tag, AlbumManager::AlbumPtr> {
+class AlbumIterator : public std::iterator<std::input_iterator_tag, AlbumManager::AlbumCPtr> {
 public:
-    using AlbumPtr = AlbumManager::AlbumPtr;
+    using AlbumCPtr = AlbumManager::AlbumCPtr;
 
     /// Default constructor. Creates an END iterator.
     AlbumIterator() = default;
@@ -92,9 +99,9 @@ public:
 
     /* OPERATORS */
 
-    AlbumPtr &operator*();
+    AlbumCPtr &operator*();
 
-    AlbumPtr operator->();
+    AlbumCPtr operator->();
 
     bool operator==(const AlbumIterator &rhs) const;
 
