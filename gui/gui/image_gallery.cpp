@@ -26,12 +26,13 @@ void wxImageGallery::SetImages(const wxImageGallery::ImageList &images) {
     }
 
     // Create the new sizer
-    SetSizer(sizer_gallery);
+    SetSizer(sizer_gallery, true);
     Layout();
     sizer_gallery->FitInside(this);
 
     // Clear all
-    Refresh(true);
+    Refresh();
+    Update();
 }
 
 } // imgr
