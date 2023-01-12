@@ -27,19 +27,10 @@ ImageManager::ImageManager( wxWindow* parent, wxWindowID id, const wxString& tit
 	panel_image = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxFULL_REPAINT_ON_RESIZE|wxTAB_TRAVERSAL );
 	top_box_ver->Add( panel_image, 2, wxEXPAND | wxALL, 5 );
 
-	panel_gallery = new wxImageGallery( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxALWAYS_SHOW_SB|wxHSCROLL );
+	panel_gallery = new wxImageGallery( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxHSCROLL );
 	panel_gallery->SetScrollRate( 5, 5 );
 	panel_gallery->SetMinSize( wxSize( -1,200 ) );
 
-	wxFlexGridSizer* fgSizer1;
-	fgSizer1 = new wxFlexGridSizer( 0, 2, 0, 0 );
-	fgSizer1->SetFlexibleDirection( wxBOTH );
-	fgSizer1->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
-
-
-	panel_gallery->SetSizer( fgSizer1 );
-	panel_gallery->Layout();
-	fgSizer1->Fit( panel_gallery );
 	top_box_ver->Add( panel_gallery, 1, wxEXPAND | wxALL, 5 );
 
 

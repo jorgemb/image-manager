@@ -26,7 +26,9 @@ namespace filesystem = boost::filesystem;
 
         /// Sets the image
         /// \param images
-        void SetImages(const ImageList& images);
+        void SetImages(ImageList &&images);
+    private:
+        ImageList m_current_images;
     };
 
 } // imgr

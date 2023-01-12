@@ -32,7 +32,6 @@ protected:
 
 private:
     using ImageList = wxImageGallery::ImageList;
-    ImageList m_thumbnails;
 };
 
 /// Represents a node for the album tree data

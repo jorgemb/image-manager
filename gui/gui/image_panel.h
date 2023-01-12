@@ -12,7 +12,7 @@ public:
     /// Default constructor with parent and path
     /// \param parent
     /// \param image_path
-    wxImagePanel(wxWindow *parent, const wxImage *image);
+    wxImagePanel(wxWindow *parent, const wxImage &image);
 
     /// On paint event
     /// \param evt
@@ -35,8 +35,12 @@ private:
     /// \param expected_size
     void DoResize(const wxSize &expected_size);
 
+    // DEBUG
+    static int NEXT_ID;
+    int ID;
+
     // Image to show
-    const wxImage *m_image;
+    const wxImage &m_image;
     wxImage m_image_resized;
     int m_last_width = -1, m_last_height = -1;
 

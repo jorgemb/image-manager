@@ -18,8 +18,8 @@
 #include <wx/string.h>
 #include <wx/treectrl.h>
 #include <wx/panel.h>
-#include <wx/sizer.h>
 #include <wx/scrolwin.h>
+#include <wx/sizer.h>
 #include <wx/frame.h>
 
 ///////////////////////////////////////////////////////////////////////////

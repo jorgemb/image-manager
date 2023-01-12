@@ -266,7 +266,7 @@
                                 <property name="tooltip"></property>
                                 <property name="window_extra_style"></property>
                                 <property name="window_name"></property>
-                                <property name="window_style">wxALWAYS_SHOW_SB|wxHSCROLL</property>
+                                <property name="window_style">wxHSCROLL</property>
                             </object>
                         </object>
                     </object>

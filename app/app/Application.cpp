@@ -31,10 +31,9 @@ void ImageManagerWindow::TreeAlbums_OnTreeSelChanged(wxTreeEvent &event) {
             auto thumbnail = album_manager.load_photo_thumbnail(photo->get_id());
             return Image::create_image(thumbnail);
         });
-        panel_gallery->SetImages(images);
+        panel_gallery->SetImages(std::move(images));
 
         // Copy the new album photos
-        m_thumbnails = std::move(images);
     } else {
         bar_status->SetStatusText("");
     }
